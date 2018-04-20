@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Collections;
 import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     private LayoutInflater inflater;
-    List<RVRowInformation> data = Collections.emptyList();
+    List<RVRowInformation> data;
 
     public RVAdapter(Context context, List<RVRowInformation> data){
 
@@ -54,7 +53,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         TextView title;
         TextView subtitle;
 
-        public MyViewHolder(View itemView) {
+        private MyViewHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.rv_row_icon);
             title = itemView.findViewById(R.id.rv_row_title);

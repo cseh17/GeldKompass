@@ -1,6 +1,7 @@
 package com.atm_search.cseh_17.atm_search;
 
 import android.Manifest;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -47,6 +48,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -75,19 +78,19 @@ public class main_map_atm_display extends AppCompatActivity implements
     FusedLocationProviderClient mFusedLocationClient;
     GoogleAPIService mService;
     private RecyclerView recyclerView;
-    private RVAdapter adapter;
-    LinkedList<RVRowInformation> data = new LinkedList<RVRowInformation>(Arrays.asList(new RVRowInformation()));
-    int[] images = {R.drawable.ic_list_black_24dp};
+    LinkedList<RVRowInformation> data = new LinkedList<>(Arrays.asList(new RVRowInformation()));
+    int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final};
 
 
     protected void onCreate(Bundle savedInstanceState) {
+        RVAdapter adapter;
         super.onCreate(savedInstanceState);
         data.remove(0);
         // Retrieve the content view that renders the map
         setContentView(R.layout.activity_main_map_atm_display);
 
         // Initialise RecyclerView
-        recyclerView = (RecyclerView) findViewById(R.id.rv_list_items);
+        recyclerView = findViewById(R.id.rv_list_items);
 
         adapter = new RVAdapter(this, data);
         recyclerView.setAdapter(adapter);
@@ -95,7 +98,7 @@ public class main_map_atm_display extends AppCompatActivity implements
         recyclerView.setVisibility(View.GONE);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -107,9 +110,9 @@ public class main_map_atm_display extends AppCompatActivity implements
 
 
         // Request Runtime permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //checkLocationPermission();
+        //}
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -151,7 +154,7 @@ public class main_map_atm_display extends AppCompatActivity implements
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         rlp.setMargins(0,30,30,0);
 
-        FloatingActionButton floatingmyLocationButton = (FloatingActionButton) findViewById(R.id.myLocationButton);
+        FloatingActionButton floatingmyLocationButton = findViewById(R.id.myLocationButton);
         floatingmyLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,11 +168,7 @@ public class main_map_atm_display extends AppCompatActivity implements
     private String getUrlBank(double latitude, double longitude, String atm) {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location="+latitude+","+longitude);
-        googlePlacesUrl.append("&rankby=distance");
-        googlePlacesUrl.append("&type="+atm);
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
+        googlePlacesUrl.append("location="+latitude+","+longitude).append("&rankby=distance").append("&type="+atm).append("&sensor=true").append("&key="+getResources().getString(R.string.browser_key));
         Log.i("getUrl", googlePlacesUrl.toString());
 
         return googlePlacesUrl.toString();
@@ -178,12 +177,8 @@ public class main_map_atm_display extends AppCompatActivity implements
     private String getUrlAtm(double latitude, double longitude, String atm) {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location="+latitude+","+longitude);
-        googlePlacesUrl.append("&rankby=distance");
-        googlePlacesUrl.append("&keyword="+atm);
+        googlePlacesUrl.append("location="+latitude+","+longitude).append("&rankby=distance").append("&keyword="+atm).append("&sensor=true").append("&key="+getResources().getString(R.string.browser_key));
         //googlePlacesUrl.append("&type=atm");
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
         Log.i("getUrl", googlePlacesUrl.toString());
 
         return googlePlacesUrl.toString();
@@ -192,7 +187,7 @@ public class main_map_atm_display extends AppCompatActivity implements
     // Function to search and display atms.
     private void nearByAtms(final String atmName) {
         mMap.clear();
-        final ProgressBar loadingProgressBar = (ProgressBar)findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
         String url = getUrlAtm(latitude, longitude, atmName);
@@ -214,6 +209,7 @@ public class main_map_atm_display extends AppCompatActivity implements
                                 boolean toDisplay = true;
                                 Results googlePlace = response.body().getResults()[i];
                                 String[] checkType = googlePlace.getTypes();
+                                RVRowInformation thisRow = new RVRowInformation();
 
                                 // Check for doublettes that are also displayed under the banks search
                                 for (int j = 0; j < checkType.length; j++) {
@@ -258,16 +254,38 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                                     // Because of the collaboration between Shell and Postank, one can pick up cash from all Shell stations as it was a Postbank ATM
                                     // Check if it is a Shell station, but display "Postbank" instead
-                                    if (placeName.toLowerCase().contains("shell")){
+                                    if (placeName.toLowerCase().contains("shell")) {
                                         placeName = "Postbank";
                                     }
                                     LatLng latLng = new LatLng(lat, lng);
                                     markerOptions.position(latLng);
                                     markerOptions.title(placeName);
-                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+
+                                    if (placeName.toLowerCase().contains("deutsche")) {
+                                        markerOptions.title("Deutsche Bank");
+                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                                    } else {
+                                        if (placeName.toLowerCase().contains("shell")) {
+                                            markerOptions.title("Postbank");
+                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                        } else {
+                                            if (placeName.toLowerCase().contains("ing")) {
+                                                markerOptions.title("ING DiBa");
+                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
+                                            } else {
+                                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                            }
+                                        }
+                                    }
 
                                     // Add Marker to map
                                     mMap.addMarker(markerOptions);
+                                    thisRow.rowTitle = markerOptions.getTitle();
+                                    thisRow.rowSubtitle = placeName;
+                                    thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
+                                    data.add(thisRow);
+                                    Collections.sort(data, new DataCompare());
                                 }
                             }
                         }
@@ -285,7 +303,7 @@ public class main_map_atm_display extends AppCompatActivity implements
     private void nearByBanks() {
         mMap.clear();
         data.clear();
-        final ProgressBar loadingProgressBar = (ProgressBar)findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         Log.i("Ausgeführt", "now");
         String url = getUrlBank(latitude, longitude, "bank");
@@ -305,6 +323,7 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                                 boolean toDisplay = true;
                                 Results googlePlace = response.body().getResults()[i];
+                                RVRowInformation thisRow = new RVRowInformation();
 
                                 if (i == 0) {
                                     Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
@@ -386,41 +405,96 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                                     LatLng latLng = new LatLng(lat, lng);
                                     markerOptions.position(latLng);
-                                    markerOptions.title(placeName);
                                     if (placeName.toLowerCase().contains("commerzbank")){
                                         markerOptions.title("Commerzbank");
+                                        thisRow.iconId = images[1];
                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
                                     } else {
                                         if (placeName.toLowerCase().contains("sparkasse")){
+                                            markerOptions.title(placeName);
+                                            thisRow.iconId = images[9];
                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
                                         } else {
                                             if (placeName.toLowerCase().contains("deutsche")){
                                                 markerOptions.title("Deutsche Bank");
+                                                thisRow.iconId = images[2];
                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
                                         } else {
                                                 if (placeName.toLowerCase().contains("post")){
                                                     markerOptions.title("Postbank");
+                                                    thisRow.iconId = images[5];
                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
                                             } else {
                                                     if (placeName.toLowerCase().contains("volks")){
                                                         markerOptions.title("Volksbank");
+                                                        thisRow.iconId = images[11];
                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
                                                 } else {
-                                                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                                        if (placeName.toLowerCase().contains("bb")){
+                                                            markerOptions.title("BBBank");
+                                                            thisRow.iconId = images[0];
+                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                                                        } else {
+                                                            if (placeName.toLowerCase().contains("hypo")){
+                                                                markerOptions.title("HypoVereinsbank");
+                                                                thisRow.iconId = images[3];
+                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
+                                                            } else {
+                                                                if (placeName.toLowerCase().contains("psd")){
+                                                                    markerOptions.title("PSD Bank");
+                                                                    thisRow.iconId = images[6];
+                                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.psd_bank_logo_final));
+                                                                } else {
+                                                                    if (placeName.toLowerCase().contains("santander")){
+                                                                        markerOptions.title("Santander");
+                                                                        thisRow.iconId = images[7];
+                                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
+                                                                    } else {
+                                                                        if (placeName.toLowerCase().contains("sparda")){
+                                                                            markerOptions.title("Sparda-Bank");
+                                                                            thisRow.iconId = images[8];
+                                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
+                                                                        } else {
+                                                                            if (placeName.toLowerCase().contains("targo")){
+                                                                                markerOptions.title("TargoBank");
+                                                                                thisRow.iconId = images[10];
+                                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
+                                                                            } else {
+                                                                                markerOptions.title(placeName);
+                                                                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                                                            }
+
+                                                                        }
+
+                                                                    }
+
+                                                                }
+
+                                                            }
+
+                                                        }
+
                                                     }
+
                                                 }
+
                                             }
+
                                         }
+
                                     }
+
                                     //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
 
                                     // Add Marker to map
                                     mMap.addMarker(markerOptions);
-                                    RVRowInformation thisRow = new RVRowInformation();
-                                    thisRow.iconId = images[0];
-                                    thisRow.rowTitle = placeName;
+                                    thisRow.rowTitle = markerOptions.getTitle();
                                     thisRow.rowSubtitle = placeName;
+                                    thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
+                                    //thisRow.rowSubtitle = new StringBuilder().append("umgefähre Entfernung: ").append(String.format(Locale.GERMAN, "%.0f", locationToAtmDistance)).append(" m").toString();
                                     data.add(thisRow);
+                                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(main_map_atm_display.this));
+
                                 }
                             }
                         }
@@ -500,16 +574,11 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                     //Move map camera
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
-                    //nearByAtms();
-
-                    //Log.i("Ausgeführt in: ", "mLocationCallback");
-                    //nearByBanks();
                 }
             }
         };
 
-        private boolean checkLocationPermission() {
+        private void checkLocationPermission() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 // Check if the explanation should be showed
@@ -532,9 +601,6 @@ public class main_map_atm_display extends AppCompatActivity implements
                     // No explanation needed - request the permission
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
                 }
-                return false;
-            } else {
-                return true;
             }
         }
 
@@ -561,8 +627,9 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                         // Permissions denied, disable the functionality that depends on the permission.
                         Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+                        final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
+                        loadingProgressBar.setVisibility(View.GONE);
                     }
-                    return;
                 }
             }
         }
@@ -630,5 +697,16 @@ public class main_map_atm_display extends AppCompatActivity implements
         if (mGoogleApiClient != null){
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+    }
+
+    class DataCompare implements Comparator<RVRowInformation>{
+
+        @Override
+        public int compare(RVRowInformation rvri1, RVRowInformation rvri2) {
+            Double comp1, comp2;
+            comp1 = Double.parseDouble(rvri1.rowSubtitle);
+            comp2 = Double.parseDouble(rvri2.rowSubtitle);
+            return comp1.compareTo(comp2);
+    }
     }
 }
