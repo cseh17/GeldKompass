@@ -37,8 +37,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         RVRowInformation current = data.get(position);
 
         holder.icon.setImageResource(current.iconId);
+        String rowSubtitle = new StringBuilder().append("umgefähre Entfernung: ").append(current.rowSubtitle).append(" m").toString();
         holder.title.setText(current.rowTitle);
-        holder.subtitle.setText(current.rowSubtitle);
+        holder.subtitle.setText(rowSubtitle);
 
     }
 

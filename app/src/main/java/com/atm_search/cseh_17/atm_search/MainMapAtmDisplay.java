@@ -1,7 +1,7 @@
 package com.atm_search.cseh_17.atm_search;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -43,6 +43,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -60,7 +61,7 @@ import retrofit2.Response;
 
 
 // Activity that displays a map showing the place at the device's current location
-public class main_map_atm_display extends AppCompatActivity implements
+public class MainMapAtmDisplay extends AppCompatActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -77,9 +78,10 @@ public class main_map_atm_display extends AppCompatActivity implements
     SupportMapFragment mapFragment;
     FusedLocationProviderClient mFusedLocationClient;
     GoogleAPIService mService;
+    private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
     private RecyclerView recyclerView;
     LinkedList<RVRowInformation> data = new LinkedList<>(Arrays.asList(new RVRowInformation()));
-    int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final};
+    int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.generic_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final};
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,96 +200,114 @@ public class main_map_atm_display extends AppCompatActivity implements
                     public void onResponse(Call<MyAtms> call, Response<MyAtms> response) {
                         if (response.isSuccessful()) {
 
-                            int zaehler = response.body().getResults().length;
+                            // Check if the response body is empty. If not, do all tasks. If empty, play alert Dialog with custom message.
+                            if (response.body().getResults().length != 0){
 
-                            if (zaehler > 10){
-                                zaehler = 10;
-                            }
+                                int zaehler = response.body().getResults().length;
 
-                            for (int i = 0; i < zaehler; i++) {
+                                if (zaehler > 10){
+                                    zaehler = 10;
+                                }
 
-                                boolean toDisplay = true;
-                                Results googlePlace = response.body().getResults()[i];
-                                String[] checkType = googlePlace.getTypes();
-                                RVRowInformation thisRow = new RVRowInformation();
+                                for (int i = 0; i < zaehler; i++) {
 
-                                // Check for doublettes that are also displayed under the banks search
-                                for (int j = 0; j < checkType.length; j++) {
-                                    if (checkType[j].equals("bank")) {
+                                    boolean toDisplay = true;
+                                    Results googlePlace = response.body().getResults()[i];
+                                    String[] checkType = googlePlace.getTypes();
+                                    RVRowInformation thisRow = new RVRowInformation();
+
+                                    // Check for doublettes that are also displayed under the banks search
+                                    for (int j = 0; j < checkType.length; j++) {
+                                        if (checkType[j].equals("bank")) {
+                                            toDisplay = false;
+                                            if (zaehler < 20) {
+                                                zaehler = zaehler + 1;
+                                            }
+                                        }
+                                    }
+
+                                    // Calculates air distance between location & atm
+                                    Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
+                                    Log.i("Distance to ATM: ", locationToAtmDistance.toString());
+
+                                    // Check if distance is greater than 1500m, and hid all results that are farer than that.
+                                    if (locationToAtmDistance > 1500) {
                                         toDisplay = false;
                                         if (zaehler < 20) {
                                             zaehler = zaehler + 1;
                                         }
                                     }
-                                }
-
-                                // Calculates air distance between location & atm
-                                Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
-                                Log.i("Distance to ATM: ", locationToAtmDistance.toString());
-
-                                // Check if distance is greater than 1500m, and hid all results that are farer than that.
-                                if (locationToAtmDistance > 1500) {
-                                    toDisplay = false;
-                                    if (zaehler < 20) {
-                                        zaehler = zaehler + 1;
-                                    }
-                                }
 
 
-                                String placeName = googlePlace.getName();
-                                if (!placeName.toLowerCase().contains("shell")
-                                        && !placeName.toLowerCase().contains("pax")
-                                        && !placeName.toLowerCase().contains("diba")
-                                        && !placeName.toLowerCase().contains("deutsche")) {
-                                    toDisplay = false;
-                                    if (zaehler < 20) {
-                                        zaehler = zaehler + 1;
-                                    }
-                                }
-
-
-                                if (toDisplay) {
-                                    MarkerOptions markerOptions = new MarkerOptions();
-
-                                    double lat = Double.parseDouble(googlePlace.getGeometry().getLocation().getLat());
-                                    double lng = Double.parseDouble(googlePlace.getGeometry().getLocation().getLng());
-
-                                    // Because of the collaboration between Shell and Postank, one can pick up cash from all Shell stations as it was a Postbank ATM
-                                    // Check if it is a Shell station, but display "Postbank" instead
-                                    if (placeName.toLowerCase().contains("shell")) {
-                                        placeName = "Postbank";
-                                    }
-                                    LatLng latLng = new LatLng(lat, lng);
-                                    markerOptions.position(latLng);
-                                    markerOptions.title(placeName);
-
-
-                                    if (placeName.toLowerCase().contains("deutsche")) {
-                                        markerOptions.title("Deutsche Bank");
-                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
-                                    } else {
-                                        if (placeName.toLowerCase().contains("shell")) {
-                                            markerOptions.title("Postbank");
-                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
-                                        } else {
-                                            if (placeName.toLowerCase().contains("ing")) {
-                                                markerOptions.title("ING DiBa");
-                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
-                                            } else {
-                                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                                            }
+                                    String placeName = googlePlace.getName();
+                                    if (!placeName.toLowerCase().contains("shell")
+                                            && !placeName.toLowerCase().contains("pax")
+                                            && !placeName.toLowerCase().contains("diba")
+                                            && !placeName.toLowerCase().contains("deutsche")) {
+                                        toDisplay = false;
+                                        if (zaehler < 20) {
+                                            zaehler = zaehler + 1;
                                         }
                                     }
 
-                                    // Add Marker to map
-                                    mMap.addMarker(markerOptions);
-                                    thisRow.rowTitle = markerOptions.getTitle();
-                                    thisRow.rowSubtitle = placeName;
-                                    thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
-                                    data.add(thisRow);
-                                    Collections.sort(data, new DataCompare());
+
+                                    if (toDisplay) {
+                                        MarkerOptions markerOptions = new MarkerOptions();
+
+                                        double lat = Double.parseDouble(googlePlace.getGeometry().getLocation().getLat());
+                                        double lng = Double.parseDouble(googlePlace.getGeometry().getLocation().getLng());
+
+                                        // Because of the collaboration between Shell and Postank, one can pick up cash from all Shell stations as it was a Postbank ATM
+                                        // Check if it is a Shell station, but display "Postbank" instead
+                                        if (placeName.toLowerCase().contains("shell")) {
+                                            placeName = "Postbank";
+                                        }
+                                        LatLng latLng = new LatLng(lat, lng);
+                                        markerOptions.position(latLng);
+                                        markerOptions.title(placeName);
+
+
+                                        if (placeName.toLowerCase().contains("deutsche")) {
+                                            markerOptions.title("Deutsche Bank");
+                                            thisRow.iconId = images[2];
+                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                                        } else {
+                                            if (placeName.toLowerCase().contains("shell")) {
+                                                markerOptions.title("Postbank");
+                                                thisRow.iconId = images[7];
+                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                            } else {
+                                                if (placeName.toLowerCase().contains("ing")) {
+                                                    markerOptions.title("ING DiBa");
+                                                    thisRow.iconId = images[5];
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
+                                                } else {
+                                                    if (placeName.toLowerCase().contains("pax")) {
+                                                        markerOptions.title("Pax Bank");
+                                                        thisRow.iconId = images[6];
+                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
+                                                    } else {
+                                                        thisRow.iconId = images[3];
+                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Add Marker to map
+                                        mMap.addMarker(markerOptions);
+                                        thisRow.rowTitle = markerOptions.getTitle();
+                                        thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
+                                        data.add(thisRow);
+                                        Collections.sort(data, new DataCompare());
+                                    }
                                 }
-                            }
+                        } else
+                            // Handle if no results were found
+                            loadingProgressBar.setVisibility(View.GONE);
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(MainMapAtmDisplay.this, "No results");
+
                         }
                         loadingProgressBar.setVisibility(View.GONE);
                     }
@@ -412,7 +432,7 @@ public class main_map_atm_display extends AppCompatActivity implements
                                     } else {
                                         if (placeName.toLowerCase().contains("sparkasse")){
                                             markerOptions.title(placeName);
-                                            thisRow.iconId = images[9];
+                                            thisRow.iconId = images[11];
                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
                                         } else {
                                             if (placeName.toLowerCase().contains("deutsche")){
@@ -422,12 +442,12 @@ public class main_map_atm_display extends AppCompatActivity implements
                                         } else {
                                                 if (placeName.toLowerCase().contains("post")){
                                                     markerOptions.title("Postbank");
-                                                    thisRow.iconId = images[5];
+                                                    thisRow.iconId = images[7];
                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
                                             } else {
                                                     if (placeName.toLowerCase().contains("volks")){
                                                         markerOptions.title("Volksbank");
-                                                        thisRow.iconId = images[11];
+                                                        thisRow.iconId = images[13];
                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
                                                 } else {
                                                         if (placeName.toLowerCase().contains("bb")){
@@ -437,31 +457,32 @@ public class main_map_atm_display extends AppCompatActivity implements
                                                         } else {
                                                             if (placeName.toLowerCase().contains("hypo")){
                                                                 markerOptions.title("HypoVereinsbank");
-                                                                thisRow.iconId = images[3];
+                                                                thisRow.iconId = images[4];
                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
                                                             } else {
                                                                 if (placeName.toLowerCase().contains("psd")){
                                                                     markerOptions.title("PSD Bank");
-                                                                    thisRow.iconId = images[6];
+                                                                    thisRow.iconId = images[8];
                                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.psd_bank_logo_final));
                                                                 } else {
                                                                     if (placeName.toLowerCase().contains("santander")){
                                                                         markerOptions.title("Santander");
-                                                                        thisRow.iconId = images[7];
+                                                                        thisRow.iconId = images[9];
                                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
                                                                     } else {
                                                                         if (placeName.toLowerCase().contains("sparda")){
                                                                             markerOptions.title("Sparda-Bank");
-                                                                            thisRow.iconId = images[8];
+                                                                            thisRow.iconId = images[10];
                                                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
                                                                         } else {
                                                                             if (placeName.toLowerCase().contains("targo")){
                                                                                 markerOptions.title("TargoBank");
-                                                                                thisRow.iconId = images[10];
+                                                                                thisRow.iconId = images[12];
                                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
                                                                             } else {
                                                                                 markerOptions.title(placeName);
-                                                                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                                                                thisRow.iconId = images[3];
+                                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
                                                                             }
 
                                                                         }
@@ -484,16 +505,15 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                                     }
 
-                                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
-
                                     // Add Marker to map
                                     mMap.addMarker(markerOptions);
+
+                                    // Add to ListView
                                     thisRow.rowTitle = markerOptions.getTitle();
-                                    thisRow.rowSubtitle = placeName;
                                     thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
                                     //thisRow.rowSubtitle = new StringBuilder().append("umgefähre Entfernung: ").append(String.format(Locale.GERMAN, "%.0f", locationToAtmDistance)).append(" m").toString();
                                     data.add(thisRow);
-                                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(main_map_atm_display.this));
+                                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MainMapAtmDisplay.this));
 
                                 }
                             }
@@ -547,6 +567,7 @@ public class main_map_atm_display extends AppCompatActivity implements
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setMinZoomPreference(12);
+        mMap.setLatLngBoundsForCameraTarget(allowedBoundsGermany);
     }
 
     private  synchronized void buildGoogleApiClient() {
@@ -565,6 +586,8 @@ public class main_map_atm_display extends AppCompatActivity implements
                 for (Location location : locationResult.getLocations()) {
                     Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                     mLastLocation = location;
+
+
                     if (mCurrentLocationMarker != null) {
                         mCurrentLocationMarker.remove();
                     }
@@ -592,7 +615,7 @@ public class main_map_atm_display extends AppCompatActivity implements
 
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     // Promt the user once explanation has been shown
-                                    ActivityCompat.requestPermissions(main_map_atm_display.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+                                    ActivityCompat.requestPermissions(MainMapAtmDisplay.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
                                 }
                             })
                             .create()
@@ -685,14 +708,35 @@ public class main_map_atm_display extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        // Move Camera
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        Log.i("Ausgeführt in: ", "onLocationChanged");
-        nearByBanks();
-        nearByAtms("atm");
-        //nearByAtms("ing diba");
-        //nearByAtms("deutsche bank");
-        //nearByAtms("pax bank");
+        // Check if the location is inside DE
+        if (allowedBoundsGermany.contains(latLng)) {
+
+            // Move Camera
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            Log.i("Ausgeführt in: ", "onLocationChanged");
+            nearByBanks();
+            nearByAtms("atm");
+            //nearByAtms("ing diba");
+            //nearByAtms("deutsche bank");
+            //nearByAtms("pax bank");
+        } else {
+
+            CustomAlertDialog alert = new CustomAlertDialog();
+            alert.showDialog(this, "This app only works inside the borders of Germany");
+
+
+
+            //new AlertDialog.Builder(this)
+                    //.setTitle("Location Outside of Germany")
+                    //.setMessage("This app only works inside the borders of Germany")
+                    //.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                        //public void onClick(DialogInterface dialogInterface, int i) {
+                        //}
+                    //})
+                    //.create()
+                    //.show();
+        }
 
         if (mGoogleApiClient != null){
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);

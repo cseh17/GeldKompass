@@ -50,6 +50,8 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             } else {
                 if (getTitle(marker, mWindow).toLowerCase().contains("bbb") | getTitle(marker, mWindow).toLowerCase().contains("pax") | getTitle(marker, mWindow).toLowerCase().contains("santander") | getTitle(marker, mWindow).toLowerCase().contains("sparda") | getTitle(marker, mWindow).toLowerCase().contains("targo")){
                     image.setImageResource(R.drawable.detail_logo_cash_pool);
+                } else {
+                    image.setImageResource(R.drawable.detail_logos_generic);
                 }
             }
         }

@@ -16,6 +16,7 @@
         android:layout_toEndOf="@+id/ciw_logo"
         android:textSize="25sp"
         android:paddingLeft="10dp"
+        android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:gravity="center_vertical"
         android:text="Dummy Text"/>
@@ -26,7 +27,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ciw_title"
         android:layout_toEndOf="@+id/ciw_logo"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
         android:text="Dummy Text 2"
-        android:textSize="12sp" />
+        android:textSize="18sp" />
 
 </RelativeLayout>
