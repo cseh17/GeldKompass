@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.atm_search.cseh_17.atm_search.Model.MyAtms;
 import com.atm_search.cseh_17.atm_search.Model.Results;
 import com.atm_search.cseh_17.atm_search.Remote.GoogleAPIService;
+import com.atm_search.cseh_17.atm_search.BlackListFilter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -82,10 +83,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private RecyclerView recyclerView;
     LinkedList<RVRowInformation> data = new LinkedList<>(Arrays.asList(new RVRowInformation()));
     int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.generic_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final};
+    RVAdapter adapter;
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        RVAdapter adapter;
         super.onCreate(savedInstanceState);
         data.remove(0);
         // Retrieve the content view that renders the map
@@ -93,7 +94,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
         // Initialise RecyclerView
         recyclerView = findViewById(R.id.rv_list_items);
-
         adapter = new RVAdapter(this, data);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -188,7 +188,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
     // Function to search and display atms.
     private void nearByAtms(final String atmName) {
-        mMap.clear();
         final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
@@ -201,11 +200,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         if (response.isSuccessful()) {
 
                             // Check if the response body is empty. If not, do all tasks. If empty, play alert Dialog with custom message.
-                            if (response.body().getResults().length != 0){
+                            if (response.body().getResults().length != 0) {
 
                                 int zaehler = response.body().getResults().length;
 
-                                if (zaehler > 10){
+                                if (zaehler > 10) {
                                     zaehler = 10;
                                 }
 
@@ -302,14 +301,15 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                         Collections.sort(data, new DataCompare());
                                     }
                                 }
-                        } else
-                            // Handle if no results were found
-                            loadingProgressBar.setVisibility(View.GONE);
-                            CustomAlertDialog alert = new CustomAlertDialog();
-                            alert.showDialog(MainMapAtmDisplay.this, "No results");
-
+                            } else {
+                                // Handle if no results were found
+                                loadingProgressBar.setVisibility(View.GONE);
+                                CustomAlertDialog alert = new CustomAlertDialog();
+                                alert.showDialog(MainMapAtmDisplay.this, "No results");
+                            }
                         }
                         loadingProgressBar.setVisibility(View.GONE);
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -350,7 +350,15 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                     if (locationToAtmDistance > 500) {
                                         //Move map camera
                                         LatLng latLng = new LatLng(latitude, longitude);
-                                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+                                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                                    }
+                                }
+
+                                String placeName = googlePlace.getName();
+                                toDisplay = BlackListFilter.isBlacklisted(placeName.toLowerCase());
+                                if (toDisplay == false) {
+                                    if (zaehler < 20) {
+                                        zaehler = zaehler + 1;
                                     }
                                 }
                                 String[] checkType = googlePlace.getTypes();
@@ -373,7 +381,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 }
 
 
-                                String placeName = googlePlace.getName();
+
                                 if (!placeName.toLowerCase().contains("bank")
                                         && !placeName.toLowerCase().contains("kasse")
                                         && !placeName.toLowerCase().contains("diba")
@@ -385,36 +393,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                     }
                                 }
 
-                                if (placeName.toLowerCase().contains("schwä")
-                                        || placeName.toLowerCase().contains("que")
-                                        || placeName.toLowerCase().contains("ready")
-                                        || placeName.toLowerCase().contains("aktien")
-                                        || placeName.toLowerCase().contains("atm")
-                                        || placeName.toLowerCase().contains("reise")
-                                        || placeName.toLowerCase().contains("gmbh")
-                                        || placeName.toLowerCase().contains("akademie")
-                                        || placeName.toLowerCase().contains("bau")
-                                        || placeName.toLowerCase().contains("theke")
-                                        || placeName.toLowerCase().contains("firmen")
-                                        || placeName.toLowerCase().contains("autoschalter")
-                                        || placeName.toLowerCase().contains("totta")
-                                        || placeName.toLowerCase().contains("sarasin")
-                                        || placeName.toLowerCase().contains("kölner")
-                                        || placeName.toLowerCase().contains("bankhaus")
-                                        || placeName.toLowerCase().contains("vontobel")
-                                        || placeName.toLowerCase().contains("bethmann")
-                                        || placeName.toLowerCase().contains("lbbw")
-                                        || placeName.toLowerCase().contains("vontobel")
-                                        || placeName.toLowerCase().contains("sozialwirtschaft")
-                                        || placeName.toLowerCase().contains("privat")
-                                        || placeName.toLowerCase().contains("beruf")
-                                        || placeName.toLowerCase().contains("vermögen")
-                                        || placeName.toLowerCase().contains("gewerbekunden")) {
-                                    toDisplay = false;
-                                    if (zaehler < 20) {
-                                        zaehler = zaehler + 1;
-                                    }
-                                }
 
 
                                 if (toDisplay) {
