@@ -48,7 +48,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             if (getTitle(marker, mWindow).toLowerCase().contains("deutsche") | getTitle(marker, mWindow).toLowerCase().contains("commerz") | getTitle(marker, mWindow).toLowerCase().contains("post") | getTitle(marker, mWindow).toLowerCase().contains("hypo") | getTitle(marker, mWindow).toLowerCase().contains("dresdener")){
                 image.setImageResource(R.drawable.detail_logo_cash_group);
             } else {
-                if (getTitle(marker, mWindow).toLowerCase().contains("bbb") | getTitle(marker, mWindow).toLowerCase().contains("pax") | getTitle(marker, mWindow).toLowerCase().contains("santander") | getTitle(marker, mWindow).toLowerCase().contains("sparda") | getTitle(marker, mWindow).toLowerCase().contains("targo")){
+                if (getTitle(marker, mWindow).toLowerCase().contains("bbb") | getTitle(marker, mWindow).toLowerCase().contains("pax") | getTitle(marker, mWindow).toLowerCase().contains("santander") | getTitle(marker, mWindow).toLowerCase().contains("sparda") | getTitle(marker, mWindow).toLowerCase().contains("targo") | getTitle(marker, mWindow).toLowerCase().contains("degussa") | getTitle(marker, mWindow).toLowerCase().contains("südwest") | getTitle(marker, mWindow).toLowerCase().contains("national") | getTitle(marker, mWindow).toLowerCase().contains("olb") | getTitle(marker, mWindow).toLowerCase().contains("oldenburgische")){
                     image.setImageResource(R.drawable.detail_logo_cash_pool);
                 } else {
                     image.setImageResource(R.drawable.detail_logos_generic);

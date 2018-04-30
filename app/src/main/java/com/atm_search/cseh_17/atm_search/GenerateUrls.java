@@ -22,7 +22,4 @@ public class GenerateUrls {
         return googlePlacesUrl.toString();
     }
 
-
-
-
 }
