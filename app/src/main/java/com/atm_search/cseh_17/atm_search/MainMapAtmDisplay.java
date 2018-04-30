@@ -1,14 +1,13 @@
 package com.atm_search.cseh_17.atm_search;
 
 import android.Manifest;
-import android.app.Activity;
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.Build;
-import android.os.Bundle;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,18 +25,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-
 import com.atm_search.cseh_17.atm_search.Model.MyAtms;
 import com.atm_search.cseh_17.atm_search.Model.Results;
 import com.atm_search.cseh_17.atm_search.Remote.GoogleAPIService;
-import com.atm_search.cseh_17.atm_search.BlackListFilter;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,12 +46,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,7 +65,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener{
 
-    //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -81,14 +77,14 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     GoogleAPIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
     private RecyclerView recyclerView;
-    LinkedList<RVRowInformation> data = new LinkedList<>(Arrays.asList(new RVRowInformation()));
+    LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
     int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.generic_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final};
     RVAdapter adapter;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        data.remove(0);
+
         // Retrieve the content view that renders the map
         setContentView(R.layout.activity_main_map_atm_display);
 
@@ -100,8 +96,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         recyclerView.setVisibility(View.GONE);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        TabLayout tabLayout = findViewById(R.id.tabs);
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -110,19 +104,20 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         // Initialise Service
         mService = Common.getGooglePIService();
 
-
         // Request Runtime permission
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //checkLocationPermission();
         //}
 
+        // Initialise TabView
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
                     case 0:
                         recyclerView.setVisibility(View.GONE);
-                        mapFragment.getView().setVisibility(View.VISIBLE);
+                        Objects.requireNonNull(mapFragment.getView()).setVisibility(View.VISIBLE);
                         //Log.i("Ausgeführt in: ", "map-tab");
                         //if (mMap != null){
                             //nearByAtms("atm");
@@ -130,7 +125,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         //}
                         break;
                     case 1:
-                        mapFragment.getView().setVisibility(View.GONE);
+                        Objects.requireNonNull(mapFragment.getView()).setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         break;
 
@@ -149,13 +144,16 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             }
         });
 
-        View navToolbarButtons = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("4"));
+        // Get the MapNavigationButtons set
+        View navToolbarButtons = ((View) Objects.requireNonNull(mapFragment.getView()).findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("4"));
 
+        // Move them to the right side of the mapView
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) navToolbarButtons.getLayoutParams();
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         rlp.setMargins(0,30,30,0);
 
+        // Create floatin MyLocationButton, and set ClickListeners
         FloatingActionButton floatingmyLocationButton = findViewById(R.id.myLocationButton);
         floatingmyLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,44 +163,35 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             }
         });
 
-    }
+        //Create 3 filterButons and add ClickListeners
+        FloatingActionButton floatingCashGroupFilterButon = findViewById(R.id.filterCashGroupButton);
+        floatingCashGroupFilterButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String broserKey = getResources().getString(R.string.browser_key);
+                FilterCashGroup.nearByBanksFilteredCashGroup(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", broserKey) );
+            }
+        });
 
-    private String getUrlBank(double latitude, double longitude, String atm) {
-
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location="+latitude+","+longitude).append("&rankby=distance").append("&type="+atm).append("&sensor=true").append("&key="+getResources().getString(R.string.browser_key));
-        Log.i("getUrl", googlePlacesUrl.toString());
-
-        return googlePlacesUrl.toString();
-    }
-
-    private String getUrlAtm(double latitude, double longitude, String atm) {
-
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location="+latitude+","+longitude).append("&rankby=distance").append("&keyword="+atm).append("&sensor=true").append("&key="+getResources().getString(R.string.browser_key));
-        //googlePlacesUrl.append("&type=atm");
-        Log.i("getUrl", googlePlacesUrl.toString());
-
-        return googlePlacesUrl.toString();
     }
 
     // Function to search and display atms.
-    private void nearByAtms(final String atmName) {
+    private void nearByAtms() {
         final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
-        String url = getUrlAtm(latitude, longitude, atmName);
+        String browserKey = getResources().getString(R.string.browser_key);
 
-        mService.getNearByPoi(url)
+        mService.getNearByPoi(GenerateUrls.getUrlAtm(latitude, longitude, browserKey))
                 .enqueue(new Callback<MyAtms>() {
                     @Override
-                    public void onResponse(Call<MyAtms> call, Response<MyAtms> response) {
+                    public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
                         if (response.isSuccessful()) {
 
                             // Check if the response body is empty. If not, do all tasks. If empty, play alert Dialog with custom message.
-                            if (response.body().getResults().length != 0) {
+                            if (Objects.requireNonNull(response.body()).getResults().length != 0) {
 
-                                int zaehler = response.body().getResults().length;
+                                int zaehler = Objects.requireNonNull(response.body()).getResults().length;
 
                                 if (zaehler > 10) {
                                     zaehler = 10;
@@ -211,13 +200,13 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 for (int i = 0; i < zaehler; i++) {
 
                                     boolean toDisplay = true;
-                                    Results googlePlace = response.body().getResults()[i];
+                                    Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
                                     String[] checkType = googlePlace.getTypes();
                                     RVRowInformation thisRow = new RVRowInformation();
 
                                     // Check for doublettes that are also displayed under the banks search
-                                    for (int j = 0; j < checkType.length; j++) {
-                                        if (checkType[j].equals("bank")) {
+                                    for (String aCheckType : checkType) {
+                                        if (aCheckType.equals("bank")) {
                                             toDisplay = false;
                                             if (zaehler < 20) {
                                                 zaehler = zaehler + 1;
@@ -239,6 +228,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
 
                                     String placeName = googlePlace.getName();
+                                    Log.i("ATM Name ", placeName);
                                     if (!placeName.toLowerCase().contains("shell")
                                             && !placeName.toLowerCase().contains("pax")
                                             && !placeName.toLowerCase().contains("diba")
@@ -313,7 +303,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void onFailure(Call<MyAtms> call, Throwable t) {
+                    public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
                     }
                 });
@@ -321,28 +311,31 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
     // Function to search and display Bank branches.
     private void nearByBanks() {
+
+        // Clear map & dataset. Avoids duplicates on map & on list
         mMap.clear();
         data.clear();
+
         final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         Log.i("Ausgeführt", "now");
-        String url = getUrlBank(latitude, longitude, "bank");
+        String broserKey = getResources().getString(R.string.browser_key);
 
-        mService.getNearByPoi(url)
+        mService.getNearByPoi(GenerateUrls.getUrlBank(latitude, longitude, "bank", broserKey))
                 .enqueue(new Callback<MyAtms>() {
                     @Override
-                    public void onResponse(Call<MyAtms> call, Response<MyAtms> response) {
+                    public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
                         if (response.isSuccessful()){
 
-                            int zaehler = response.body().getResults().length;
+                            int zaehler = Objects.requireNonNull(response.body()).getResults().length;
 
                             if (zaehler > 10){
                                 zaehler = 10;
                             }
                             for (Integer i = 0; i < zaehler; i++){
 
-                                boolean toDisplay = true;
-                                Results googlePlace = response.body().getResults()[i];
+                                boolean toDisplay;
+                                Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
                                 RVRowInformation thisRow = new RVRowInformation();
 
                                 if (i == 0) {
@@ -356,15 +349,15 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                                 String placeName = googlePlace.getName();
                                 toDisplay = BlackListFilter.isBlacklisted(placeName.toLowerCase());
-                                if (toDisplay == false) {
+                                if (!toDisplay) {
                                     if (zaehler < 20) {
                                         zaehler = zaehler + 1;
                                     }
                                 }
                                 String[] checkType = googlePlace.getTypes();
-                                for (int j = 0; j< checkType.length; j++) {
+                                for (String aCheckType : checkType) {
                                     //Log.d("TYPE", checkType[j]);
-                                    if (checkType[j].equals("insurance_agency")) {
+                                    if (aCheckType.equals("insurance_agency")) {
                                         toDisplay = false;
                                         if (zaehler < 20) {
                                             zaehler = zaehler + 1;
@@ -501,7 +494,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
 
                     @Override
-                    public void onFailure(Call<MyAtms> call, Throwable t) {
+                    public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
                     }
                 });
@@ -524,6 +517,18 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mLocationRequest.setFastestInterval(120000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        // Check if the map has been loaded, and the View is not empty
+        if (mMap != null &&
+                Objects.requireNonNull(mapFragment.getView()).findViewById(Integer.parseInt("1")) != null) {
+            // Get the View
+            View locationCompass = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("5"));
+            // Position the CompassButton
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationCompass.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+            layoutParams.setMargins(30, 280,0, 0);
+        }
+
+        // Check for Android(SDK) version.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -605,7 +610,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             }
         }
 
-        public void onRequestPermissionsResult(int reqestCode, String permissions[], int[] grantResults){
+        public void onRequestPermissionsResult(int reqestCode, @NonNull String permissions[], @NonNull int[] grantResults){
 
             switch (reqestCode){
                 case MY_PERMISSIONS_REQUEST_LOCATION:{
@@ -676,11 +681,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             Geocoder geocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.isEmpty()){
-                getSupportActionBar().setSubtitle("Standort wird ermittlet");
+                Objects.requireNonNull(getSupportActionBar()).setSubtitle("Standort wird ermittlet");
             } else {
-                if (addresses.size() > 0){
-                    getSupportActionBar().setSubtitle("In der Nähe von " + addresses.get(0).getLocality());
-                }
+                Objects.requireNonNull(getSupportActionBar()).setSubtitle("In der Nähe von " + addresses.get(0).getLocality());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -693,7 +696,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             Log.i("Ausgeführt in: ", "onLocationChanged");
             nearByBanks();
-            nearByAtms("atm");
+            nearByAtms();
             //nearByAtms("ing diba");
             //nearByAtms("deutsche bank");
             //nearByAtms("pax bank");
