@@ -1,4 +1,4 @@
-package com.atm_search.cseh_17.atm_search;
+package com.atm_search.cseh_17.geld_kompass;
 
 
 /**

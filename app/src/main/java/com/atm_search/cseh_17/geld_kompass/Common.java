@@ -1,8 +1,7 @@
-package com.atm_search.cseh_17.atm_search;
+package com.atm_search.cseh_17.geld_kompass;
 
-import com.atm_search.cseh_17.atm_search.Remote.GoogleAPIService;
-import com.atm_search.cseh_17.atm_search.Remote.RetrofitClient;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
+import com.atm_search.cseh_17.geld_kompass.Remote.RetrofitClient;
 
 /**
  * Created by cseh_17 on 25.03.2018.

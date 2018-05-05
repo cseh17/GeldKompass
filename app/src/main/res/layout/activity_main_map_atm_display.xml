@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.atm_search.cseh_17.atm_search.MainMapAtmDisplay">
+    tools:context="com.atm_search.cseh_17.geld_kompass.MainMapAtmDisplay">
 
 
     <android.support.design.widget.TabLayout

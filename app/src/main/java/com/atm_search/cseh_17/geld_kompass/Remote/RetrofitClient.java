@@ -1,4 +1,4 @@
-package com.atm_search.cseh_17.atm_search.Remote;
+package com.atm_search.cseh_17.geld_kompass.Remote;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

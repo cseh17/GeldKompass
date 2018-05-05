@@ -1,6 +1,6 @@
-package com.atm_search.cseh_17.atm_search.Remote;
+package com.atm_search.cseh_17.geld_kompass.Remote;
 
-import com.atm_search.cseh_17.atm_search.Model.MyAtms;
+import com.atm_search.cseh_17.geld_kompass.Model.MyAtms;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

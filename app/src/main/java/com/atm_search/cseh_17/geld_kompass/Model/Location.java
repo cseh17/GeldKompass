@@ -1,9 +1,10 @@
-package com.atm_search.cseh_17.atm_search.Model;
+package com.atm_search.cseh_17.geld_kompass.Model;
 
 /**
  * Created by cseh_17 on 25.03.2018.
  */
-public class Northeast
+
+public class Location
 {
     private String lng;
 

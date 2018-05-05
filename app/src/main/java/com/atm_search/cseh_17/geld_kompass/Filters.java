@@ -1,14 +1,15 @@
-package com.atm_search.cseh_17.atm_search;
+package com.atm_search.cseh_17.geld_kompass;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.atm_search.cseh_17.atm_search.Model.MyAtms;
-import com.atm_search.cseh_17.atm_search.Model.Results;
-import com.atm_search.cseh_17.atm_search.Remote.GoogleAPIService;
+import com.atm_search.cseh_17.geld_kompass.Model.MyAtms;
+import com.atm_search.cseh_17.geld_kompass.Model.Results;
+import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,9 +26,13 @@ import retrofit2.Response;
 
 public class Filters {
 
-    public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity) {
+    public static void nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
         data.clear();
+
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+
         Log.i("Filter ausgeführt", "now");
         Log.i("Longitude", ""+ longitude);
         Log.i("Latitude", ""+ latitude);
@@ -34,18 +40,18 @@ public class Filters {
         mService.getNearByPoi(url)
                 .enqueue(new Callback<MyAtms>() {
                     @Override
-                    public void onResponse(Call<MyAtms> call, Response<MyAtms> response) {
+                    public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
                         if (response.isSuccessful()){
 
-                            int zaehler = response.body().getResults().length;
+                            int zaehler = Objects.requireNonNull(response.body()).getResults().length;
 
                             if (zaehler > 10){
                                 zaehler = 10;
                             }
                             for (Integer i = 0; i < zaehler; i++){
 
-                                boolean toDisplay = true;
-                                Results googlePlace = response.body().getResults()[i];
+                                boolean toDisplay;
+                                Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
                                 RVRowInformation thisRow = new RVRowInformation();
 
                                 if (i == 0) {
@@ -59,14 +65,14 @@ public class Filters {
 
                                 String placeName = googlePlace.getName();
                                 toDisplay = BlackListFilter.isBlacklisted(placeName.toLowerCase());
-                                if (toDisplay == false) {
+                                if (!toDisplay) {
                                     if (zaehler < 20) {
                                         zaehler = zaehler + 1;
                                     }
                                 }
                                 String[] checkType = googlePlace.getTypes();
-                                for (int j = 0; j< checkType.length; j++) {
-                                    if (checkType[j].equals("insurance_agency")) {
+                                for (String aCheckType : checkType) {
+                                    if (aCheckType.equals("insurance_agency")) {
                                         toDisplay = false;
                                         if (zaehler < 20) {
                                             zaehler = zaehler + 1;
@@ -141,31 +147,31 @@ public class Filters {
 
                                 }
                             }
-                            if (data.isEmpty()){
-                                CustomAlertDialog alert = new CustomAlertDialog();
-                                alert.showDialog(mActivity, "No Results!");
-                            }
                         }
+                        if (data.isEmpty()) {
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(mActivity, "No Results!");
+                            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, url, mActivity, adapter);
+                        }
+                        adapter.notifyDataSetChanged();
+                        loadingProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onFailure(Call<MyAtms> call, Throwable t) {
+                    public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
                     }
                 });
-        if (data.isEmpty()){
-            CustomAlertDialog alert = new CustomAlertDialog();
-            alert.showDialog(mActivity, "No Results!");
-            return false;
-        } else {
-            return true;
-        }
     }
 
-    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity) {
+    public static void nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
+
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+
         Log.i("Filter ausgeführt", "now");
         Log.i("Longitude", ""+ longitude);
         Log.i("Latitude", ""+ latitude);
@@ -173,18 +179,17 @@ public class Filters {
         mService.getNearByPoi(url)
                 .enqueue(new Callback<MyAtms>() {
                     @Override
-                    public void onResponse(Call<MyAtms> call, Response<MyAtms> response) {
-                        if (response.isSuccessful()){
+                    public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
+                        if (response.isSuccessful()) {
+                            int zaehler = Objects.requireNonNull(response.body()).getResults().length;
 
-                            int zaehler = response.body().getResults().length;
-
-                            if (zaehler > 10){
+                            if (zaehler > 10) {
                                 zaehler = 10;
                             }
-                            for (Integer i = 0; i < zaehler; i++){
+                            for (Integer i = 0; i < zaehler; i++) {
 
-                                boolean toDisplay = true;
-                                Results googlePlace = response.body().getResults()[i];
+                                boolean toDisplay;
+                                Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
                                 RVRowInformation thisRow = new RVRowInformation();
 
                                 if (i == 0) {
@@ -198,14 +203,14 @@ public class Filters {
 
                                 String placeName = googlePlace.getName();
                                 toDisplay = BlackListFilter.isBlacklisted(placeName.toLowerCase());
-                                if (toDisplay == false) {
+                                if (!toDisplay) {
                                     if (zaehler < 20) {
                                         zaehler = zaehler + 1;
                                     }
                                 }
                                 String[] checkType = googlePlace.getTypes();
-                                for (int j = 0; j< checkType.length; j++) {
-                                    if (checkType[j].equals("insurance_agency")) {
+                                for (String aCheckType : checkType) {
+                                    if (aCheckType.equals("insurance_agency")) {
                                         toDisplay = false;
                                         if (zaehler < 20) {
                                             zaehler = zaehler + 1;
@@ -223,7 +228,6 @@ public class Filters {
                                 }
 
 
-
                                 if (!placeName.toLowerCase().contains("bbb")
                                         && !placeName.toLowerCase().contains("degussa")
                                         && !placeName.toLowerCase().contains("national")
@@ -233,13 +237,12 @@ public class Filters {
                                         && !placeName.toLowerCase().contains("südwest")
                                         && !placeName.toLowerCase().contains("targo")
                                         && !placeName.toLowerCase().contains("oldenburgische landesbank")
-                                        && !placeName.toLowerCase().contains("olb")){
+                                        && !placeName.toLowerCase().contains("olb")) {
                                     toDisplay = false;
                                     if (zaehler < 20) {
                                         zaehler = zaehler + 1;
                                     }
                                 }
-
 
 
                                 if (toDisplay) {
@@ -314,26 +317,29 @@ public class Filters {
                                 }
                             }
                         }
+                        if (data.isEmpty()) {
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(mActivity, "No Results!");
+                            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, url, mActivity, adapter);
+                        }
+                        adapter.notifyDataSetChanged();
+                        loadingProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onFailure(Call<MyAtms> call, Throwable t) {
+                    public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
                     }
                 });
-
-        if (data.isEmpty()){
-            CustomAlertDialog alert = new CustomAlertDialog();
-            alert.showDialog(mActivity, "No Results!");
-            return false;
-        } else {
-            return true;
-        }
     }
 
-    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity) {
+    public static void nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
         data.clear();
+
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+
         Log.i("Filter ausgeführt", "now");
         Log.i("Longitude", ""+ longitude);
         Log.i("Latitude", ""+ latitude);
@@ -341,18 +347,18 @@ public class Filters {
         mService.getNearByPoi(url)
                 .enqueue(new Callback<MyAtms>() {
                     @Override
-                    public void onResponse(Call<MyAtms> call, Response<MyAtms> response) {
-                        if (response.isSuccessful()){
+                    public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
+                        if (response.isSuccessful()) {
 
-                            int zaehler = response.body().getResults().length;
+                            int zaehler = Objects.requireNonNull(response.body()).getResults().length;
 
-                            if (zaehler > 10){
+                            if (zaehler > 10) {
                                 zaehler = 10;
                             }
-                            for (Integer i = 0; i < zaehler; i++){
+                            for (Integer i = 0; i < zaehler; i++) {
 
-                                boolean toDisplay = true;
-                                Results googlePlace = response.body().getResults()[i];
+                                boolean toDisplay;
+                                Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
                                 RVRowInformation thisRow = new RVRowInformation();
 
                                 if (i == 0) {
@@ -366,14 +372,14 @@ public class Filters {
 
                                 String placeName = googlePlace.getName();
                                 toDisplay = BlackListFilter.isBlacklisted(placeName.toLowerCase());
-                                if (toDisplay == false) {
+                                if (!toDisplay) {
                                     if (zaehler < 20) {
                                         zaehler = zaehler + 1;
                                     }
                                 }
                                 String[] checkType = googlePlace.getTypes();
-                                for (int j = 0; j< checkType.length; j++) {
-                                    if (checkType[j].equals("insurance_agency")) {
+                                for (String aCheckType : checkType) {
+                                    if (aCheckType.equals("insurance_agency")) {
                                         toDisplay = false;
                                         if (zaehler < 20) {
                                             zaehler = zaehler + 1;
@@ -391,14 +397,12 @@ public class Filters {
                                 }
 
 
-
-                                if (!placeName.toLowerCase().contains("sparkasse")){
+                                if (!placeName.toLowerCase().contains("sparkasse")) {
                                     toDisplay = false;
                                     if (zaehler < 20) {
                                         zaehler = zaehler + 1;
                                     }
                                 }
-
 
 
                                 if (toDisplay) {
@@ -409,7 +413,7 @@ public class Filters {
 
                                     LatLng latLng = new LatLng(lat, lng);
                                     markerOptions.position(latLng);
-                                    if (placeName.toLowerCase().contains("sparkasse")){
+                                    if (placeName.toLowerCase().contains("sparkasse")) {
                                         markerOptions.title(placeName);
                                         thisRow.iconId = images[11];
                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
@@ -421,30 +425,25 @@ public class Filters {
                                     // Add to ListView
                                     thisRow.rowTitle = markerOptions.getTitle();
                                     thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
-                                    //thisRow.rowSubtitle = new StringBuilder().append("umgefähre Entfernung: ").append(String.format(Locale.GERMAN, "%.0f", locationToAtmDistance)).append(" m").toString();
                                     data.add(thisRow);
                                     mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mContext));
 
                                 }
                             }
-                            if (data.isEmpty()){
-                                CustomAlertDialog alert = new CustomAlertDialog();
-                                alert.showDialog(mActivity, "No Results!");
-                            }
                         }
+                        if (data.isEmpty()) {
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(mActivity, "No Results!");
+                            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, url, mActivity, adapter);
+                        }
+                        adapter.notifyDataSetChanged();
+                        loadingProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onFailure(Call<MyAtms> call, Throwable t) {
+                    public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
                     }
                 });
-        if (data.isEmpty()){
-            CustomAlertDialog alert = new CustomAlertDialog();
-            alert.showDialog(mActivity, "No Results!");
-            return false;
-        } else {
-            return true;
-        }
     }
 }
