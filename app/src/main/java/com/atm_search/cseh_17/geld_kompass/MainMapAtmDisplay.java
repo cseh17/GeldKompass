@@ -37,6 +37,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -62,20 +63,16 @@ import retrofit2.Response;
 
 // Activity that displays a map showing the place at the device's current location
 public class MainMapAtmDisplay extends AppCompatActivity implements
-        OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener{
+        OnMapReadyCallback{
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private GoogleMap mMap;
-    private GoogleApiClient mGoogleApiClient;
     private double latitude, longitude;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
     private Marker mCurrentLocationMarker;
     SupportMapFragment mapFragment;
-    FusedLocationProviderClient mFusedLocationClient;
+    private FusedLocationProviderClient mFusedLocationClient;
     GoogleAPIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
     private RecyclerView recyclerView;
@@ -179,7 +176,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is no connection, show an alert dialog
                     CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(MainMapAtmDisplay.this, "No connection! Please connect to the internet and try again");
+                    dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 } else {
 
                     // if there is a connection, do job
@@ -202,7 +199,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is no connection, show an alert dialog
                     CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(MainMapAtmDisplay.this, "No connection! Please connect to the internet and try again");
+                    dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 } else {
 
                     // if there is a connection, do job
@@ -225,7 +222,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is no connection, show an alert dialog
                     CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(MainMapAtmDisplay.this, "No connection! Please connect to the internet and try again");
+                    dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 } else {
 
                     // if there is a connection, do job
@@ -248,7 +245,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mLocationRequest = new LocationRequest();
+        mLocationRequest = LocationRequest.create();
+
+        //Automatic location update set to 2 min.
         mLocationRequest.setInterval(120000);
         mLocationRequest.setFastestInterval(120000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -269,7 +268,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
                 // If permissions already granted
-                buildGoogleApiClient();
                 mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                 mMap.setMyLocationEnabled(true);
             } else {
@@ -289,37 +287,79 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mMap.setLatLngBoundsForCameraTarget(allowedBoundsGermany);
     }
 
-    private  synchronized void buildGoogleApiClient() {
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
-
     LocationCallback mLocationCallback = new LocationCallback() {
 
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
-                    Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                    setmLastLocation(location);
+                    if (getApplicationContext() != null){
+                        setmLastLocation(location);
 
-                    if (mCurrentLocationMarker != null) {
-                        mCurrentLocationMarker.remove();
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+
+                        LatLng latLng = new LatLng(latitude, longitude);
+
+                        try {
+                            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            if (addresses.isEmpty()){
+                                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_no_result));
+                            } else {
+                                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_done) + addresses.get(0).getLocality());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Check if the location is inside DE
+                        if (allowedBoundsGermany.contains(latLng)) {
+
+                            // Move Camera
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                            Log.i("Ausgeführt in: ", "onLocationChanged");
+
+                            // Check for connectivity
+                            ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                            // If there is a connection, do the search
+                            if(!CheckConnection.isConnected(cm)) {
+
+                                // if there is no connection, show an alert dialog
+                                CustomAlertDialog dialog = new CustomAlertDialog();
+                                dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                            } else {
+                                String browserKey = getResources().getString(R.string.browser_key);
+                                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
+
+                                //nearByBanks();
+                                //nearByAtms();
+                            }
+                        } else {
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
+                        }
+
+
+                        Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                        setmLastLocation(location);
+
+                        if (mCurrentLocationMarker != null) {
+                            mCurrentLocationMarker.remove();
+                        }
+
+                        // Place current location marker
+                        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                        //Move map camera
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
                     }
-
-                    // Place current location marker
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                    //Move map camera
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 }
             }
         };
 
-        private void checkLocationPermission() {
+    private void checkLocationPermission() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 // Check if the explanation should be showed
@@ -327,8 +367,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // Show an explanation to the user *ASYNCHRONUSLY*, don't block this thread waiting for the users response
                     new AlertDialog.Builder(this)
-                            .setTitle("Location Permissions needed")
-                            .setMessage("This app needs the Location Permisions, please accept to use location functionality")
+                            .setTitle(MainMapAtmDisplay.this.getString(R.string.location_permission_title_DE))
+                            .setMessage(MainMapAtmDisplay.this.getString(R.string.location_permission_body_DE))
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -343,9 +383,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
                 }
             }
-        }
+    }
 
-        public void onRequestPermissionsResult(int reqestCode, @NonNull String permissions[], @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int reqestCode, @NonNull String permissions[], @NonNull int[] grantResults){
 
             switch (reqestCode){
                 case MY_PERMISSIONS_REQUEST_LOCATION:{
@@ -357,106 +397,20 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
                             // Permissions granted, actiate the functionality that depends on the permission.
-                            Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show();
-                            if (mGoogleApiClient == null) {
-                                buildGoogleApiClient();
-                            }
+                            Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_granted_DE), Toast.LENGTH_LONG).show();
                             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                             mMap.setMyLocationEnabled(true);
                         }
                     } else {
 
                         // Permissions denied, disable the functionality that depends on the permission.
-                        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_denied_DE), Toast.LENGTH_LONG).show();
                         final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     }
                 }
             }
         }
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(120000);
-        mLocationRequest.setFastestInterval(120000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,this);
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-        setmLastLocation(location);
-        if (mCurrentLocationMarker != null) {
-            mCurrentLocationMarker.remove();
-        }
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-
-        LatLng latLng = new LatLng(latitude, longitude);
-
-        try {
-            Geocoder geocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses.isEmpty()){
-                Objects.requireNonNull(getSupportActionBar()).setSubtitle("Standort wird ermittlet");
-            } else {
-                Objects.requireNonNull(getSupportActionBar()).setSubtitle("In der Nähe von " + addresses.get(0).getLocality());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Check if the location is inside DE
-        if (allowedBoundsGermany.contains(latLng)) {
-
-            // Move Camera
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            Log.i("Ausgeführt in: ", "onLocationChanged");
-
-            // Check for connectivity
-            ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            // If there is a connection, do the search
-            if(!CheckConnection.isConnected(cm)) {
-
-                // if there is noconnection, show an alert dialog
-                CustomAlertDialog dialog = new CustomAlertDialog();
-                dialog.showDialog(this, "No connection! Please connect to the internet and try again");
-            } else {
-                String browserKey = getResources().getString(R.string.browser_key);
-                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
-
-                //nearByBanks();
-                //nearByAtms();
-            }
-        } else {
-            CustomAlertDialog alert = new CustomAlertDialog();
-            alert.showDialog(this, "This app only works inside the borders of Germany");
-        }
-
-        if (mGoogleApiClient != null){
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
-    }
 
     public void setmLastLocation(Location mLastLocation) {
         this.mLastLocation = mLastLocation;

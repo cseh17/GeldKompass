@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">GeldKompass</string>
     <string name="title_activity_main_map_atm_display">GeldKompass</string>
+    <string name="no_internet_alert_DE">Hier kommt die Überzetzung</string>
+    <string name="out_of_bounds_alert_DE">Hier kommt die Überzetzung</string>
+    <string name="no_result_alert_DE">Hier kommt die Überzetzung</string>
+    <string name="location_permission_title_DE">Hier kommt Titel</string>
+    <string name="location_permission_body_DE">Hier kommt das Body</string>
+    <string name="permission_granted_DE">Permission granted</string>
+    <string name="permission_denied_DE">Permission denied</string>
+    <string name="nav_bar_title_no_result">Standort wird ermittelt</string>
+    <string name="nav_bar_title_done">In der Nähe von </string>
 </resources>

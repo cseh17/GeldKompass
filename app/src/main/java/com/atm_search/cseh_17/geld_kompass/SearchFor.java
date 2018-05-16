@@ -145,6 +145,7 @@ public class SearchFor {
                                                             || (placeName.toLowerCase().contains("genossenschafts bank münchen"))
                                                             || (placeName.toLowerCase().contains("gls"))
                                                             || (placeName.toLowerCase().contains("unterlegäu"))
+                                                            || (placeName.toLowerCase().contains("kölner"))
                                                             || (placeName.toLowerCase().contains("ievo"))
                                                             || (placeName.toLowerCase().contains("liga"))
                                                             || (placeName.toLowerCase().contains("märki"))
