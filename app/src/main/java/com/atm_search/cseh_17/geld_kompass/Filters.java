@@ -150,7 +150,7 @@ public class Filters {
                         }
                         if (data.isEmpty()) {
                             CustomAlertDialog alert = new CustomAlertDialog();
-                            alert.showDialog(mActivity, "No Results!");
+                            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                             SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, url, mActivity, adapter);
                         }
                         adapter.notifyDataSetChanged();
@@ -319,7 +319,7 @@ public class Filters {
                         }
                         if (data.isEmpty()) {
                             CustomAlertDialog alert = new CustomAlertDialog();
-                            alert.showDialog(mActivity, "No Results!");
+                            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                             SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, url, mActivity, adapter);
                         }
                         adapter.notifyDataSetChanged();
@@ -433,7 +433,7 @@ public class Filters {
                         }
                         if (data.isEmpty()) {
                             CustomAlertDialog alert = new CustomAlertDialog();
-                            alert.showDialog(mActivity, "No Results!");
+                            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                             SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, url, mActivity, adapter);
                         }
                         adapter.notifyDataSetChanged();

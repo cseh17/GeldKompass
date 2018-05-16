@@ -179,7 +179,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is no connection, show an alert dialog
                     CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(MainMapAtmDisplay.this, "No connection! Please connect to the internet and try again");
+                    dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 } else {
 
                     // if there is a connection, do job
@@ -202,7 +202,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is no connection, show an alert dialog
                     CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(MainMapAtmDisplay.this, "No connection! Please connect to the internet and try again");
+                    dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 } else {
 
                     // if there is a connection, do job
@@ -225,7 +225,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is no connection, show an alert dialog
                     CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(MainMapAtmDisplay.this, "No connection! Please connect to the internet and try again");
+                    dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 } else {
 
                     // if there is a connection, do job
@@ -327,8 +327,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // Show an explanation to the user *ASYNCHRONUSLY*, don't block this thread waiting for the users response
                     new AlertDialog.Builder(this)
-                            .setTitle("Location Permissions needed")
-                            .setMessage("This app needs the Location Permisions, please accept to use location functionality")
+                            .setTitle(MainMapAtmDisplay.this.getString(R.string.location_permission_title_DE))
+                            .setMessage(MainMapAtmDisplay.this.getString(R.string.location_permission_body_DE))
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -357,7 +357,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
                             // Permissions granted, actiate the functionality that depends on the permission.
-                            Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_granted_DE), Toast.LENGTH_LONG).show();
                             if (mGoogleApiClient == null) {
                                 buildGoogleApiClient();
                             }
@@ -367,7 +367,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // Permissions denied, disable the functionality that depends on the permission.
-                        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_denied_DE), Toast.LENGTH_LONG).show();
                         final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     }
@@ -416,9 +416,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             Geocoder geocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.isEmpty()){
-                Objects.requireNonNull(getSupportActionBar()).setSubtitle("Standort wird ermittlet");
+                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_no_result));
             } else {
-                Objects.requireNonNull(getSupportActionBar()).setSubtitle("In der Nähe von " + addresses.get(0).getLocality());
+                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_done) + addresses.get(0).getLocality());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -439,7 +439,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                 // if there is noconnection, show an alert dialog
                 CustomAlertDialog dialog = new CustomAlertDialog();
-                dialog.showDialog(this, "No connection! Please connect to the internet and try again");
+                dialog.showDialog(this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
             } else {
                 String browserKey = getResources().getString(R.string.browser_key);
                 SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
@@ -450,7 +450,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             }
         } else {
             CustomAlertDialog alert = new CustomAlertDialog();
-            alert.showDialog(this, "This app only works inside the borders of Germany");
+            alert.showDialog(this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
         }
 
         if (mGoogleApiClient != null){
