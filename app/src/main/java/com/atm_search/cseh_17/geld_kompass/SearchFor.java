@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -24,6 +25,8 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 public class SearchFor {
 
@@ -263,6 +266,24 @@ public class SearchFor {
                             if (data.isEmpty()){
                                 CustomAlertDialog alert = new CustomAlertDialog();
                                 alert.showDialog(mActivity, "No Results!");
+                            } else {
+                                try{
+                                    CacheData.writeObject(mContext, mContext.getString(R.string.KEY), data);
+
+                                    // Retrieve the list from internal storage
+                                    LinkedList<RVRowInformation> cachedEntries = (LinkedList<RVRowInformation>) CacheData.readObject(mContext, mContext.getString(R.string.KEY));
+
+                                    // Display the items from the list retrieved.
+                                    for (RVRowInformation entry : cachedEntries) {
+                                        Log.d("From Cache: ", entry.rowTitle);
+                                    }
+
+
+                                } catch (IOException e){
+                                    Log.e(TAG, e.getMessage());
+                                } catch (ClassNotFoundException e) {
+                                    Log.e(TAG, e.getMessage());
+                                }
                             }
                         }
                         loadingProgressBar.setVisibility(View.GONE);
