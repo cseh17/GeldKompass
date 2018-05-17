@@ -27,6 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.content.ContentValues.TAG;
+import static java.lang.String.valueOf;
 
 public class SearchFor {
 
@@ -266,24 +267,28 @@ public class SearchFor {
                             if (data.isEmpty()){
                                 CustomAlertDialog alert = new CustomAlertDialog();
                                 alert.showDialog(mActivity, "No Results!");
-                            } else {
-                                try{
-                                    CacheData.writeObject(mContext, mContext.getString(R.string.KEY), data);
-
-                                    // Retrieve the list from internal storage
-                                    LinkedList<RVRowInformation> cachedEntries = (LinkedList<RVRowInformation>) CacheData.readObject(mContext, mContext.getString(R.string.KEY));
-
-                                    // Display the items from the list retrieved.
-                                    for (RVRowInformation entry : cachedEntries) {
-                                        Log.d("From Cache: ", entry.rowTitle);
-                                    }
 
 
-                                } catch (IOException e){
-                                    Log.e(TAG, e.getMessage());
-                                } catch (ClassNotFoundException e) {
-                                    Log.e(TAG, e.getMessage());
+
+
+                            } else try {
+                                CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_atms), data);
+                                long unixTime = System.currentTimeMillis() / 1000;
+                                CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_timestamp), unixTime);
+
+                                // Retrieve the list from internal storage
+                                LinkedList<RVRowInformation> cachedEntries = (LinkedList<RVRowInformation>) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_atms));
+                                long lastSaved = (long) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_timestamp));
+
+                                // Display the items from the list retrieved.
+                                Log.d("Last saved: ", valueOf(lastSaved));
+                                for (RVRowInformation entry : cachedEntries) {
+                                    Log.d("From Cache: ", entry.rowTitle);
                                 }
+
+
+                            } catch (IOException | ClassNotFoundException e) {
+                                Log.e(TAG, e.getMessage());
                             }
                         }
                         loadingProgressBar.setVisibility(View.GONE);

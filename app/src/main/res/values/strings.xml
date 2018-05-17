@@ -10,5 +10,6 @@
     <string name="permission_denied_DE">Permission denied</string>
     <string name="nav_bar_title_no_result">Standort wird ermittelt</string>
     <string name="nav_bar_title_done">In der Nähe von </string>
-    <string name="KEY">This is the key to save data to the cache.12345678900987654321</string>
+    <string name="KEY_for_atms">This is the key to save data to the cache.12345678900987654321</string>
+    <string name="KEY_for_timestamp">This is the key to save the timestamp of the lased cached data.123456789987654321</string>
 </resources>
