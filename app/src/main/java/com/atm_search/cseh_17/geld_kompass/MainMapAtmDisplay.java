@@ -352,7 +352,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                         //Move map camera
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
                     }
                 }
