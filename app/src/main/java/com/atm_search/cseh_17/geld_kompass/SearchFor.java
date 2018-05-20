@@ -34,13 +34,11 @@ public class SearchFor {
 
     protected static   LinkedList<AtmDataStructure> cachedEntries;
     protected static long lastSaved;
+    protected static double lat, lng;
+    protected static final LinkedList<AtmDataStructure> toCache = new LinkedList<>(Collections.<AtmDataStructure>emptyList());
 
     // Function to search and display Bank branches.
     public static void nearByBanks(final GoogleMap mMap, final LinkedList<RVRowInformation> data, GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity, final RVAdapter adapter) {
-
-        // Clear map & data set. Avoids duplicates on map & on list
-        mMap.clear();
-        data.clear();
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
@@ -51,142 +49,22 @@ public class SearchFor {
             cachedEntries = (LinkedList<AtmDataStructure>) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_atms));
             lastSaved = (long) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_timestamp));
 
+            // Retrieve latitude and longitude for distance calculation
+            lat = (double) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_latitude));
+            lng = (double) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_longitude));
+
         } catch (IOException | ClassNotFoundException e) {
-            Log.e(TAG, "No data found in cache");
+            Log.e("Cache error:", "No data found in cache");
         }
 
-        if (cachedEntries!=null && !cachedEntries.isEmpty() && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
+        if (cachedEntries==null || cachedEntries.isEmpty() || Distance.distance1(lat, latitude, lng, longitude, 0, 0) > 100 || ((System.currentTimeMillis() / 1000) - lastSaved) > 600) {
 
-            MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
+            // Clear map & data set. Avoids duplicates on map & on list
+            mMap.clear();
+            data.clear();
+            toCache.clear();
 
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
-
-            for (AtmDataStructure entry : cachedEntries) {
-
-                if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")){
-                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
-                } else {
-                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
-                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
-                    } else {
-                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")) {
-                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
-                        } else {
-                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("post")) {
-                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
-                            } else {
-                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("aachener"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("bopfing"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("brühl"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("donau"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("erfurter"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("federsee bank"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("frankenberger bank"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("geno"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("genossenschafts bank münchen"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("gls"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("unterlegäu"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("kölner"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("ievo"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("liga"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("rv"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar&kredit"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spreewald"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("vr"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("waldecker"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("team"))) {
-                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
-                                } else {
-                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
-                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
-                                    } else {
-                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")) {
-                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
-                                        } else {
-                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("psd")) {
-                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.psd_bank_logo_final));
-                                            } else {
-                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("santander")) {
-                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
-                                                } else {
-                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
-                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
-                                                    } else {
-                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("targo")) {
-                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
-                                                        } else {
-                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("apo")) {
-                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
-                                                            } else {
-                                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
-                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
-                                                                } else {
-                                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("lbbw") || entry.mMarkerOptionsTitle.toLowerCase().contains("wüttemb")) {
-                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lb_bw_logo_final));
-                                                                    } else {
-                                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("lbb") || entry.mMarkerOptionsTitle.toLowerCase().contains("landesbank berlin")) {
-                                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lbb_logo_final));
-                                                                        } else {
-                                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank") || entry.mMarkerOptionsTitle.toLowerCase().contains("olb")) {
-                                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.oldenburgische_landesbank_logo_final));
-                                                                            } else {
-                                                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")) {
-                                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.suedwestbank_logo_final));
-                                                                                } else {
-                                                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
-                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
-                                                                                    } else {
-                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-
-
-                // Add Marker to map
-                mMarkerOptions.title(entry.mMarkerOptionsTitle);
-                mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
-                mMap.addMarker(mMarkerOptions);
-
-                // Add to ListView
-                data.add(entry.currentAtm);
-                mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
-            }
-        } else {
-
-            Log.i("Executed", "now");
-            final LinkedList<AtmDataStructure> toCache = new LinkedList<>(Collections.<AtmDataStructure>emptyList());
+            Log.i("nearByBanks", "Request sent");
 
             mService.getNearByPoi(url)
                     .enqueue(new Callback<MyAtms>() {
@@ -208,7 +86,8 @@ public class SearchFor {
                                     if (i == 0) {
                                         Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
                                         if (locationToAtmDistance > 500) {
-                                            //Move map camera
+
+                                            // Move map camera
                                             LatLng latLng = new LatLng(latitude, longitude);
                                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
                                         } else {
@@ -226,7 +105,6 @@ public class SearchFor {
                                     }
                                     String[] checkType = googlePlace.getTypes();
                                     for (String aCheckType : checkType) {
-                                        //Log.d("TYPE", checkType[j]);
                                         if (aCheckType.equals("insurance_agency")) {
                                             toDisplay = false;
                                             if (zaehler < 20) {
@@ -237,8 +115,8 @@ public class SearchFor {
 
                                     // Calculates air distance between location & atm
                                     Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
-                                    Log.i("Zähler Bank ", i.toString());
-                                    Log.i("Distance to bank: ", locationToAtmDistance.toString());
+                                    //Log.i("Zähler Bank ", i.toString());
+                                    //Log.i("Distance to bank: ", locationToAtmDistance.toString());
                                     if (locationToAtmDistance > 1500) {
                                         toDisplay = false;
                                     }
@@ -407,6 +285,7 @@ public class SearchFor {
                                         }
 
                                         toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
+
                                         // Add Marker to map
                                         mMap.addMarker(markerOptions);
 
@@ -420,7 +299,7 @@ public class SearchFor {
                                     }
                                 }
 
-                                // Check if the result Object is empty
+                               /* // Check if the result Object is empty
                                 if (data.isEmpty()){
 
                                     // If empty show the user an alert
@@ -435,10 +314,15 @@ public class SearchFor {
                                     long unixTime = System.currentTimeMillis() / 1000;
                                     CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_timestamp), unixTime);
 
+                                    // Save the location where the data was chached
+                                    CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_latitude), latitude);
+                                    CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_longitude), longitude);
+
                                 } catch (IOException e) {
                                     Log.e(TAG, e.getMessage());
-                                }
+                                } */
                             }
+                            adapter.notifyDataSetChanged();
                             loadingProgressBar.setVisibility(View.GONE);
                         }
 
@@ -456,132 +340,342 @@ public class SearchFor {
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
+        cachedEntries.clear();
 
-        mService.getNearByPoi(url)
-                .enqueue(new Callback<MyAtms>() {
-                    @Override
-                    public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
-                        if (response.isSuccessful()) {
+        try {
 
-                            // Check if the response body is empty. If not, do all tasks. If empty, play alert Dialog with custom message.
-                            if (Objects.requireNonNull(response.body()).getResults().length != 0) {
+            // Retrieve the list from internal storage
+            cachedEntries = (LinkedList<AtmDataStructure>) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_atms));
+            lastSaved = (long) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_timestamp));
 
-                                int zaehler = Objects.requireNonNull(response.body()).getResults().length;
+            // Retrieve latitude and longitude for distance calculation
+            lat = (double) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_latitude));
+            lng = (double) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_longitude));
 
-                                if (zaehler > 10) {
-                                    zaehler = 10;
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("Cache error:", "No data found in cache");
+        }
+
+        if (cachedEntries!=null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 101 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
+
+            mMap.clear();
+            data.clear();
+
+            MarkerOptions mMarkerOptions = new MarkerOptions();
+            AtmDataStructure firstEntry = cachedEntries.getFirst();
+
+            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
+            if (locationToAtmDistance > 500) {
+                //Move map camera
+                LatLng latLng = new LatLng(latitude, longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+            } else {
+                LatLng latLng = new LatLng(latitude, longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            }
+
+            for (AtmDataStructure entry : cachedEntries) {
+
+                if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
+                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
+                } else {
+                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
+                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
+                    } else {
+                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")) {
+                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                        } else {
+                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("post")) {
+                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                            } else {
+                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("aachener"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("bopfing"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("brühl"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("donau"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("erfurter"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("federsee bank"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("frankenberger bank"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("geno"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("genossenschafts bank münchen"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("gls"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("unterlegäu"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("kölner"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("ievo"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("liga"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("rv"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar&kredit"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spreewald"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("vr"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("waldecker"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("team"))) {
+                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
+                                } else {
+                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
+                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                                    } else {
+                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")) {
+                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
+                                        } else {
+                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("psd")) {
+                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.psd_bank_logo_final));
+                                            } else {
+                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("santander")) {
+                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
+                                                } else {
+                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
+                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
+                                                    } else {
+                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("targo")) {
+                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
+                                                        } else {
+                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("apo")) {
+                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
+                                                            } else {
+                                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
+                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
+                                                                } else {
+                                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("lbbw") || entry.mMarkerOptionsTitle.toLowerCase().contains("wüttemb")) {
+                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lb_bw_logo_final));
+                                                                    } else {
+                                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("lbb") || entry.mMarkerOptionsTitle.toLowerCase().contains("landesbank berlin")) {
+                                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lbb_logo_final));
+                                                                        } else {
+                                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank") || entry.mMarkerOptionsTitle.toLowerCase().contains("olb")) {
+                                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.oldenburgische_landesbank_logo_final));
+                                                                            } else {
+                                                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")) {
+                                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.suedwestbank_logo_final));
+                                                                                } else {
+                                                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
+                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
+                                                                                    } else {
+                                                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")) {
+                                                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                                                                                        } else {
+                                                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("shell")) {
+                                                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                                                                            } else {
+                                                                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("ing")) {
+                                                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
+                                                                                                } else {
+                                                                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
+                                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
+                                                                                                    } else {
+                                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
+                            }
+                        }
+                    }
+                }
 
-                                for (int i = 0; i < zaehler; i++) {
 
-                                    boolean toDisplay = true;
-                                    Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
-                                    String[] checkType = googlePlace.getTypes();
-                                    RVRowInformation thisRow = new RVRowInformation();
+                // Add Marker to map
+                mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
+                mMap.addMarker(mMarkerOptions);
 
-                                    // Check for doublettes that are also displayed under the banks search
-                                    for (String aCheckType : checkType) {
-                                        if (aCheckType.equals("bank")) {
+                // Add to ListView
+                data.add(entry.currentAtm);
+                mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
+            }
+            adapter.notifyDataSetChanged();
+
+            // The function to display the data from the cache memory is to fast to display a loading bar. There for a fake one will be showed for 1,5-2 seconds.
+            loadingProgressBar.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingProgressBar.setVisibility(View.GONE);
+                }
+            }, 1500);
+        } else {
+
+            Log.i("nearByAtm", "Request sent");
+
+            mService.getNearByPoi(url)
+                    .enqueue(new Callback<MyAtms>() {
+                        @Override
+                        public void onResponse(@NonNull Call<MyAtms> call, @NonNull Response<MyAtms> response) {
+                            if (response.isSuccessful()) {
+
+                                // Check if the response body is empty. If not, do all tasks. If empty, play alert Dialog with custom message.
+                                if (Objects.requireNonNull(response.body()).getResults().length != 0 && !data.isEmpty()) {
+
+                                    int zaehler = Objects.requireNonNull(response.body()).getResults().length;
+
+                                    if (zaehler > 10) {
+                                        zaehler = 10;
+                                    }
+
+                                    for (int i = 0; i < zaehler; i++) {
+
+                                        boolean toDisplay = true;
+                                        Results googlePlace = Objects.requireNonNull(response.body()).getResults()[i];
+                                        String[] checkType = googlePlace.getTypes();
+                                        RVRowInformation thisRow = new RVRowInformation();
+
+                                        // Check for doublettes that are also displayed under the banks search
+                                        for (String aCheckType : checkType) {
+                                            if (aCheckType.equals("bank")) {
+                                                toDisplay = false;
+                                                if (zaehler < 20) {
+                                                    zaehler = zaehler + 1;
+                                                }
+                                            }
+                                        }
+
+                                        // Calculates air distance between location & atm
+                                        Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
+                                        //Log.i("Distance to ATM: ", locationToAtmDistance.toString());
+
+                                        // Check if distance is greater than 1500m, and hid all results that are farer than that.
+                                        if (locationToAtmDistance > 1500) {
                                             toDisplay = false;
                                             if (zaehler < 20) {
                                                 zaehler = zaehler + 1;
                                             }
                                         }
-                                    }
-
-                                    // Calculates air distance between location & atm
-                                    Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
-                                    Log.i("Distance to ATM: ", locationToAtmDistance.toString());
-
-                                    // Check if distance is greater than 1500m, and hid all results that are farer than that.
-                                    if (locationToAtmDistance > 1500) {
-                                        toDisplay = false;
-                                        if (zaehler < 20) {
-                                            zaehler = zaehler + 1;
-                                        }
-                                    }
 
 
-                                    String placeName = googlePlace.getName();
-                                    Log.i("ATM Name ", placeName);
-                                    if (!placeName.toLowerCase().contains("shell")
-                                            && !placeName.toLowerCase().contains("pax")
-                                            && !placeName.toLowerCase().contains("diba")
-                                            && !placeName.toLowerCase().contains("deutsche")) {
-                                        toDisplay = false;
-                                        if (zaehler < 20) {
-                                            zaehler = zaehler + 1;
-                                        }
-                                    }
-
-
-                                    if (toDisplay) {
-                                        MarkerOptions markerOptions = new MarkerOptions();
-
-                                        double lat = Double.parseDouble(googlePlace.getGeometry().getLocation().getLat());
-                                        double lng = Double.parseDouble(googlePlace.getGeometry().getLocation().getLng());
-
-                                        // Because of the collaboration between Shell and Postank, one can pick up cash from all Shell stations as it was a Postbank ATM
-                                        // Check if it is a Shell station, but display "Postbank" instead
-                                        if (placeName.toLowerCase().contains("shell")) {
-                                            placeName = "Postbank";
-                                        }
-                                        LatLng latLng = new LatLng(lat, lng);
-                                        markerOptions.position(latLng);
-                                        markerOptions.title(placeName);
-
-
-                                        if (placeName.toLowerCase().contains("deutsche")) {
-                                            markerOptions.title("Deutsche Bank");
-                                            thisRow.iconId = images[2];
-                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
-                                        } else {
-                                            if (placeName.toLowerCase().contains("shell")) {
-                                                markerOptions.title("Postbank");
-                                                thisRow.iconId = images[7];
-                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
-                                            } else {
-                                                if (placeName.toLowerCase().contains("ing")) {
-                                                    markerOptions.title("ING DiBa");
-                                                    thisRow.iconId = images[5];
-                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
-                                                } else {
-                                                    if (placeName.toLowerCase().contains("pax")) {
-                                                        markerOptions.title("Pax Bank");
-                                                        thisRow.iconId = images[6];
-                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
-                                                    } else {
-                                                        thisRow.iconId = images[3];
-                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
-                                                    }
-                                                }
+                                        String placeName = googlePlace.getName();
+                                        //Log.i("ATM Name ", placeName);
+                                        if (!placeName.toLowerCase().contains("shell")
+                                                && !placeName.toLowerCase().contains("pax")
+                                                && !placeName.toLowerCase().contains("diba")
+                                                && !placeName.toLowerCase().contains("deutsche")) {
+                                            toDisplay = false;
+                                            if (zaehler < 20) {
+                                                zaehler = zaehler + 1;
                                             }
                                         }
 
-                                        // Add Marker to map
-                                        mMap.addMarker(markerOptions);
-                                        thisRow.rowTitle = markerOptions.getTitle();
-                                        thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
-                                        data.add(thisRow);
-                                        Collections.sort(data, new CompareDistancesOnList());
+
+                                        if (toDisplay) {
+                                            MarkerOptions markerOptions = new MarkerOptions();
+                                            AtmDataStructure toCacheElement = new AtmDataStructure();
+                                            double lat = Double.parseDouble(googlePlace.getGeometry().getLocation().getLat());
+                                            double lng = Double.parseDouble(googlePlace.getGeometry().getLocation().getLng());
+
+                                            /*// Because of the collaboration between Shell and Postank, one can pick up cash from all Shell stations as it was a Postbank ATM
+                                            // Check if it is a Shell station, but display "Postbank" instead
+                                            if (placeName.toLowerCase().contains("shell")) {
+                                                placeName = "Postbank";
+                                            } */
+
+                                            toCacheElement.mMarkerOptionLat = lat;
+                                            toCacheElement.mMarkerOptionLng = lng;
+
+                                            LatLng latLng = new LatLng(lat, lng);
+                                            markerOptions.position(latLng);
+                                            markerOptions.title(placeName);
+
+
+                                            if (placeName.toLowerCase().contains("deutsche")) {
+                                                markerOptions.title("Deutsche Bank");
+                                                thisRow.iconId = images[2];
+                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                                            } else {
+                                                if (placeName.toLowerCase().contains("shell")) {
+                                                    markerOptions.title("Postbank");
+                                                    thisRow.iconId = images[7];
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                                } else {
+                                                    if (placeName.toLowerCase().contains("ing")) {
+                                                        markerOptions.title("ING DiBa");
+                                                        thisRow.iconId = images[5];
+                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
+                                                    } else {
+                                                        if (placeName.toLowerCase().contains("pax")) {
+                                                            markerOptions.title("Pax Bank");
+                                                            thisRow.iconId = images[6];
+                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
+                                                        } else {
+                                                            thisRow.iconId = images[3];
+                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
+
+                                            // Add Marker to map
+                                            mMap.addMarker(markerOptions);
+                                            thisRow.rowTitle = markerOptions.getTitle();
+                                            thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
+                                            toCacheElement.currentAtm = thisRow;
+
+                                            // In order to keep a logical display order, check if the distance to the atm is shorter than the last result from the bank search. If yes, add to list.
+                                            if (Double.parseDouble(data.getLast().rowSubtitle) > locationToAtmDistance) {
+                                                data.add(thisRow);
+                                                toCache.add(toCacheElement);
+                                                Collections.sort(data, new CompareDistancesOnList());
+                                            }
+                                        }
                                     }
+
+                                    // Check if the result Object is empty
+                                    if (data.isEmpty()){
+
+                                        // If empty show the user an alert
+                                        CustomAlertDialog alert = new CustomAlertDialog();
+                                        alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
+                                    } else try {
+
+                                        // If not empty try and cache the data for later usage
+                                        CacheData.writeAtmData(mContext, mContext.getString(R.string.KEY_for_atms), toCache);
+
+                                        // Also save the time the data was cached in UNIX timestamp format
+                                        long unixTime = System.currentTimeMillis() / 1000;
+                                        CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_timestamp), unixTime);
+
+                                        // Save the location where the data was chached
+                                        CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_latitude), latitude);
+                                        CacheData.writeObject(mContext, mContext.getString(R.string.KEY_for_longitude), longitude);
+
+                                    } catch (IOException e) {
+                                        Log.e(TAG, e.getMessage());
+                                    }
+
+                                } else {
+
+                                    // Handle if no results were found
+                                    loadingProgressBar.setVisibility(View.GONE);
+                                    CustomAlertDialog alert = new CustomAlertDialog();
+                                    alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                                 }
-                            } else {
-                                // Handle if no results were found
-                                loadingProgressBar.setVisibility(View.GONE);
-                                CustomAlertDialog alert = new CustomAlertDialog();
-                                alert.showDialog(mActivity, "No results");
                             }
+                            loadingProgressBar.setVisibility(View.GONE);
+                            adapter.notifyDataSetChanged();
                         }
-                        loadingProgressBar.setVisibility(View.GONE);
-                        adapter.notifyDataSetChanged();
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
+                        @Override
+                        public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+        }
     }
-
 }

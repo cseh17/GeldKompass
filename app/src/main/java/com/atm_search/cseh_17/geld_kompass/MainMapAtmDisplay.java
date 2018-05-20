@@ -181,7 +181,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is a connection, do job
                     String browserKey = getResources().getString(R.string.browser_key);
-                    Filters.nearByBanksFilteredCashGroup(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                    Filters.nearByBanksFilteredCashGroup(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this,MainMapAtmDisplay.this, adapter);
                 }
             }
         });
@@ -204,7 +204,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                     // if there is a connection, do job
                     String browserKey = getResources().getString(R.string.browser_key);
-                    Filters.nearByBanksFilteredCashPool(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                    Filters.nearByBanksFilteredCashPool(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                 }
             }
         });
@@ -328,12 +328,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 CustomAlertDialog dialog = new CustomAlertDialog();
                                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                             } else {
-                                String browserKey = getResources().getString(R.string.browser_key);
-                                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
-
-                                //nearByBanks();
-                                //nearByAtms();
+                                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
+                                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
                             }
                         } else {
                             CustomAlertDialog alert = new CustomAlertDialog();
@@ -349,7 +345,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         }
 
                         // Place current location marker
-                        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        //latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                         //Move map camera
                         //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));

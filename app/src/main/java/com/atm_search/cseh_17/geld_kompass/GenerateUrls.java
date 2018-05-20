@@ -8,7 +8,7 @@ public class GenerateUrls {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude).append("&rankby=distance").append("&keyword=").append("atm").append("&sensor=true").append("&key=").append(browserKey);
-        Log.i("getUrl", googlePlacesUrl.toString());
+        Log.i("Url generated: ", googlePlacesUrl.toString());
 
         return googlePlacesUrl.toString();
     }
@@ -17,7 +17,7 @@ public class GenerateUrls {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude).append("&rankby=distance").append("&type=").append(type).append("&sensor=true").append("&key=").append(browserKey);
-        Log.i("getUrl", googlePlacesUrl.toString());
+        Log.i("Url generated: ", googlePlacesUrl.toString());
 
         return googlePlacesUrl.toString();
     }

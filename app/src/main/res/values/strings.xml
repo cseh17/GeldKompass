@@ -1,15 +1,17 @@
 <resources>
     <string name="app_name">GeldKompass</string>
     <string name="title_activity_main_map_atm_display">GeldKompass</string>
-    <string name="no_internet_alert_DE">Hier kommt die Überzetzung</string>
-    <string name="out_of_bounds_alert_DE">Hier kommt die Überzetzung</string>
-    <string name="no_result_alert_DE">Hier kommt die Überzetzung</string>
-    <string name="location_permission_title_DE">Hier kommt Titel</string>
+    <string name="no_internet_alert_DE">Kein Internetverbindung! Überprüfe deine Verbindung und versuche es erneut.</string>
+    <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
+    <string name="no_result_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="location_permission_title_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort deines Gerätes.</string>
     <string name="location_permission_body_DE">Hier kommt das Body</string>
-    <string name="permission_granted_DE">Permission granted</string>
-    <string name="permission_denied_DE">Permission denied</string>
+    <string name="permission_granted_DE">Erlaubnis erteilt</string>
+    <string name="permission_denied_DE">Erlaubnis verweigert</string>
     <string name="nav_bar_title_no_result">Standort wird ermittelt</string>
-    <string name="nav_bar_title_done">In der Nähe von </string>
+    <string name="nav_bar_title_done">In der Nähe von: </string>
     <string name="KEY_for_atms">This is the key to save data to the cache.12345678900987654321</string>
     <string name="KEY_for_timestamp">This is the key to save the timestamp of the lased cached data.123456789987654321</string>
+    <string name="KEY_for_latitude">This is the key to save the latitude.123456789</string>
+    <string name="KEY_for_longitude">This is the key to save the longitude. 123456789</string>
 </resources>
