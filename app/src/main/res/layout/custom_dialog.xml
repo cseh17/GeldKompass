@@ -13,15 +13,27 @@
         android:scaleType="fitCenter" />
 
     <ImageView
+        android:id="@+id/custom_alert_logo2"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:id="@+id/custom_alert_logo2"
-        android:gravity="center"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="@color/colorSecondary"
-        android:src="@drawable/dialog_image"
-        android:scaleType="fitCenter" />
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_dialog_image" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="X"
+        android:textColor="@color/white"
+        android:textSize="60dp" />
 
     <TextView
         android:layout_width="wrap_content"

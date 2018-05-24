@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorPrimaryLight</item>
     </style>
 
+    <!-- Splash Screen. -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="android:windowBackground">@drawable/splash_screen_png_v2</item>
+
+    </style>
+
 </resources>

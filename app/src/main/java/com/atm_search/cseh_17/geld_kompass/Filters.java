@@ -3,6 +3,7 @@ package com.atm_search.cseh_17.geld_kompass;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -32,7 +33,7 @@ public class Filters {
     protected static long lastSaved;
     protected static double lat, lng;
 
-    public static void nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
         data.clear();
 
@@ -113,8 +114,10 @@ public class Filters {
         if (data.isEmpty()) {
             CustomAlertDialog alert = new CustomAlertDialog();
             alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
+
             SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
             SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            return false;
         } else {
 
             adapter.notifyDataSetChanged();
@@ -124,6 +127,7 @@ public class Filters {
                     loadingProgressBar.setVisibility(View.GONE);
                 }
             }, 1500);
+            return true;
         }
     }
 
@@ -253,7 +257,7 @@ public class Filters {
                     }*/
 
 
-    public static void nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -363,6 +367,7 @@ public class Filters {
                 alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                 SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
                 SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                return false;
             } else {
 
                 adapter.notifyDataSetChanged();
@@ -372,10 +377,11 @@ public class Filters {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
                 }, 1500);
+                return true;
             }
         }
 
-    public static void nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -446,6 +452,7 @@ public class Filters {
                 alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                 SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
                 SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                return false;
             } else {
 
                 adapter.notifyDataSetChanged();
@@ -455,6 +462,7 @@ public class Filters {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
                 }, 1500);
+                return true;
             }
         }
 }
