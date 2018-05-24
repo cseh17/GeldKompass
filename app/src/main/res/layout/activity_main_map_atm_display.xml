@@ -117,6 +117,19 @@
             app:elevation="6dp"
             app:pressedTranslationZ="12dp"/>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/filterVolksbankButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="208dp"
+            android:scaleType="center"
+            app:backgroundTint="@color/white"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"/>
+
     </fragment>
 
 </RelativeLayout>
