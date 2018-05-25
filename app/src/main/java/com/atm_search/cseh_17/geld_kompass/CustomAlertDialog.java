@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.os.Handler;
 
 public class CustomAlertDialog {
     public void showDialog(Activity activity, String msg){
@@ -27,6 +28,14 @@ public class CustomAlertDialog {
 
             dialog.show();
 
-        }
+            // Create a Handler that closes the dialog after 1 minute, if user did not close it manually
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 60000);
+    }
 }
 
