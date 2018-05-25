@@ -26,6 +26,7 @@
         android:src="@drawable/ic_dialog_image" />
 
     <TextView
+        android:id="@+id/custom_alert_logo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

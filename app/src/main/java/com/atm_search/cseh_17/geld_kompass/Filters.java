@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.atm_search.cseh_17.geld_kompass.Model.MyAtms;
 import com.atm_search.cseh_17.geld_kompass.Model.Results;
@@ -113,7 +114,7 @@ public class Filters {
 
         if (data.isEmpty()) {
             CustomAlertDialog alert = new CustomAlertDialog();
-            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
+            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_group_DE));
 
             SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
             SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
@@ -364,7 +365,7 @@ public class Filters {
 
             if (data.isEmpty()) {
                 CustomAlertDialog alert = new CustomAlertDialog();
-                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
+                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_pool_DE));
                 SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
                 SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
                 return false;
@@ -449,7 +450,7 @@ public class Filters {
 
             if (data.isEmpty()) {
                 CustomAlertDialog alert = new CustomAlertDialog();
-                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
+                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_sparkasse_DE));
                 SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
                 SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
                 return false;
@@ -465,4 +466,113 @@ public class Filters {
                 return true;
             }
         }
+
+    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
+
+        mMap.clear();
+        data.clear();
+
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+
+        try {
+
+            // Retrieve the list from internal storage
+            cachedEntries = (LinkedList<AtmDataStructure>) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_atms));
+            lastSaved = (long) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_timestamp));
+
+            // Retrieve latitude and longitude for distance calculation
+            lat = (double) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_latitude));
+            lng = (double) CacheData.readObject(mContext, mContext.getString(R.string.KEY_for_longitude));
+
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("Cache error:", "No data found in cache");
+        }
+
+        if (cachedEntries != null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 101 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
+
+            Log.i("Volksbank filter", "deployed");
+            MarkerOptions mMarkerOptions = new MarkerOptions();
+            AtmDataStructure firstEntry = cachedEntries.getFirst();
+
+            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
+            if (locationToAtmDistance > 500) {
+
+                //Move map camera
+                LatLng latLng = new LatLng(latitude, longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+            } else {
+                LatLng latLng = new LatLng(latitude, longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            }
+
+            boolean toDisplay;
+            for (AtmDataStructure entry : cachedEntries) {
+                toDisplay = true;
+
+                if (!entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("aachener"))
+                        && (!entry.mMarkerOptionsTitle.contains("bopfing"))
+                        && (!entry.mMarkerOptionsTitle.contains("brühl"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("donau"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("erfurter"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("federsee bank"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("frankenberger bank"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("geno"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("genossenschafts bank münchen"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("gls"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("unterlegäu"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("kölner"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("ievo"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("liga"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("rv"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spaar&kredit"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spreewald"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("vr"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("waldecker"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("team"))) {
+                    toDisplay = false;
+                }
+                if (toDisplay) {
+
+                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
+
+                    // Add Marker to map
+                    mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                    mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
+                    mMap.addMarker(mMarkerOptions);
+
+                    // Add to ListView
+                    data.add(entry.currentAtm);
+                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
+                }
+            }
+        }
+
+
+        if (data.isEmpty()) {
+            CustomAlertDialog alert = new CustomAlertDialog();
+            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_volksbank_DE));
+            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            return false;
+        } else {
+
+            adapter.notifyDataSetChanged();
+            loadingProgressBar.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingProgressBar.setVisibility(View.GONE);
+                }
+            }, 1500);
+            return true;
+        }
+    }
+
+
 }
