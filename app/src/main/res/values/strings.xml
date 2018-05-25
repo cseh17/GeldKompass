@@ -3,6 +3,7 @@
     <string name="title_activity_main_map_atm_display">GeldKompass</string>
     <string name="no_internet_alert_DE">Kein Internetverbindung! Überprüfe deine Verbindung und versuche es erneut.</string>
     <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
+    <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuche es später erneut.</string>
 
     <string name="no_result_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in diesem Gebiet. Es tut uns Leid!</string>
@@ -10,8 +11,8 @@
     <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in diesem Gebiet. Es tut uns Leid!</string>
 
-    <string name="location_permission_title_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort deines Gerätes.</string>
-    <string name="location_permission_body_DE">Hier kommt das Body</string>
+    <string name="location_permission_title_DE">Achtung</string>
+    <string name="location_permission_body_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort deines Gerätes</string>
     <string name="permission_granted_DE">Erlaubnis erteilt</string>
     <string name="permission_denied_DE">Erlaubnis verweigert</string>
     <string name="nav_bar_title_no_result">Standort wird ermittelt</string>

@@ -333,6 +333,10 @@ public class SearchFor {
                         @Override
                         public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
+                            Log.e("OnFailure", "Something went wrong. No API response");
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(mActivity, mActivity.getString(R.string.on_failure_alert_DE));
+
                         }
                     });
         }
@@ -343,8 +347,9 @@ public class SearchFor {
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
-        cachedEntries.clear();
-
+        if (cachedEntries !=null) {
+            cachedEntries.clear();
+        }
         try {
 
             // Retrieve the list from internal storage
@@ -359,16 +364,18 @@ public class SearchFor {
             Log.e("Cache error:", "No data found in cache");
         }
 
-        if (cachedEntries!=null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 101 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
+        if (cachedEntries!=null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 151 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
 
             mMap.clear();
             data.clear();
 
+            Log.i("SearchFor", "cached data is used");
             MarkerOptions mMarkerOptions = new MarkerOptions();
             AtmDataStructure firstEntry = cachedEntries.getFirst();
 
             Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
             if (locationToAtmDistance > 500) {
+
                 //Move map camera
                 LatLng latLng = new LatLng(latitude, longitude);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
@@ -677,6 +684,9 @@ public class SearchFor {
                         @Override
                         public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
+                            Log.e("OnFailure", "Something went wrong. No API response");
+                            CustomAlertDialog alert = new CustomAlertDialog();
+                            alert.showDialog(mActivity, mActivity.getString(R.string.on_failure_alert_DE));
                         }
                     });
         }

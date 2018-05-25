@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "1063259531521",
+    "firebase_url": "https://proven-script-198917.firebaseio.com",
+    "project_id": "proven-script-198917",
+    "storage_bucket": "proven-script-198917.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063259531521:android:7d5b63093d82d2a0",
+        "android_client_info": {
+          "package_name": "de.atm_search.cseh_17.geld_kompass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1063259531521-32nr3v2bj952ct6sput79ej4j6qoc0i7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.atm_search.cseh_17.geld_kompass",
+            "certificate_hash": "35fabcc25be9197ab6578025cedd46f46a8f20b1"
+          }
+        },
+        {
+          "client_id": "1063259531521-i96jil4erurs4bq2rfkmq13uvhvnmc43.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1063259531521-i96jil4erurs4bq2rfkmq13uvhvnmc43.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-v0SlXlWQe5tlg5ETjN2Jx8lZrDQlJew"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063259531521-i96jil4erurs4bq2rfkmq13uvhvnmc43.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
