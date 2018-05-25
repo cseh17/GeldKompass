@@ -1,6 +1,7 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -199,6 +200,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
                         // if there is a connection, do job
@@ -253,6 +256,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
                         // if there is a connection, do job
@@ -306,6 +311,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
                         // if there is a connection, do job
@@ -359,6 +366,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
                         // if there is a connection, do job
@@ -410,6 +419,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 // if there is no connection, show an alert dialog
                 CustomAlertDialog dialog = new CustomAlertDialog();
                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                loadingProgressBar.setVisibility(View.GONE);
             }
         }
         mGeldKompassApp.stopActivityTransitionTimer();
@@ -506,6 +517,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 // if there is no connection, show an alert dialog
                                 CustomAlertDialog dialog = new CustomAlertDialog();
                                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
+                                final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                                loadingProgressBar.setVisibility(View.GONE);
                             } else {
                                 cashGroupIsSelected = false;
                                 cashPoolIsSelected = false;
@@ -519,6 +532,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         } else {
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
+
                         }
 
 
