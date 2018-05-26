@@ -7,4 +7,4 @@
 /build
 /captures
 .externalNativeBuild
-/values/google_maps_api.xml
+/.values/google_maps_api.xml
