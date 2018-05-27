@@ -2,15 +2,10 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.atm_search.cseh_17.geld_kompass.Model.MyAtms;
-import com.atm_search.cseh_17.geld_kompass.Model.Results;
 import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,22 +14,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.atm_search.cseh_17.geld_kompass.BitmapDescriptorFromVector.bitmapDescriptorFromVector;
 
 public class Filters {
 
-    protected static LinkedList<AtmDataStructure> cachedEntries;
-    protected static long lastSaved;
-    protected static double lat, lng;
+    private static LinkedList<AtmDataStructure> cachedEntries;
+    private static long lastSaved;
+    private static double lat, lng;
 
     public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
@@ -78,14 +66,12 @@ public class Filters {
 
             boolean toDisplay;
             for (AtmDataStructure entry : cachedEntries) {
-                toDisplay = true;
 
-                if (!entry.mMarkerOptionsTitle.toLowerCase().contains("commerz")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("post")) {
-                    toDisplay = false;
-                }
+                toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("commerz")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("post");
+
                 if (toDisplay) {
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
@@ -306,20 +292,17 @@ public class Filters {
 
             boolean toDisplay;
             for (AtmDataStructure entry : cachedEntries) {
-                toDisplay = true;
 
-                if (!entry.mMarkerOptionsTitle.toLowerCase().contains("bbb")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("national")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("pax")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("santan")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("targo")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank")
-                        && !entry.mMarkerOptionsTitle.toLowerCase().contains("olb")) {
-                    toDisplay = false;
-                }
+                toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("bbb")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("national")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("pax")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("santan")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("targo")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("olb");
 
                 if (toDisplay) {
 
@@ -390,7 +373,7 @@ public class Filters {
             }
         }
 
-    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -433,11 +416,9 @@ public class Filters {
 
             boolean toDisplay;
             for (AtmDataStructure entry : cachedEntries) {
-                toDisplay = true;
 
-                if (!entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
-                    toDisplay = false;
-                }
+                toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse");
+
                 if (toDisplay) {
 
 
@@ -478,7 +459,7 @@ public class Filters {
             }
         }
 
-    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final String url, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -522,36 +503,34 @@ public class Filters {
 
             boolean toDisplay;
             for (AtmDataStructure entry : cachedEntries) {
-                toDisplay = true;
 
-                if (!entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("aachener"))
-                        && (!entry.mMarkerOptionsTitle.contains("bopfing"))
-                        && (!entry.mMarkerOptionsTitle.contains("brühl"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("donau"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("erfurter"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("federsee bank"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("frankenberger bank"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("geno"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("genossenschafts bank münchen"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("gls"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("unterlegäu"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("kölner"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("ievo"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("liga"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("rv bank"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spaar&kredit"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spreewald"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("vr"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("waldecker"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("team"))) {
-                    toDisplay = false;
-                }
+                toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("aachener"))
+                        || (entry.mMarkerOptionsTitle.contains("bopfing"))
+                        || (entry.mMarkerOptionsTitle.contains("brühl"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("donau"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("erfurter"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("federsee bank"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("frankenberger bank"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("geno"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("genossenschafts bank münchen"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("gls"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("unterlegäu"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("kölner"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("ievo"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("liga"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("rv bank"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar&kredit"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("spreewald"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("vr"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("waldecker"))
+                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("team"));
+
                 if (toDisplay) {
 
                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));

@@ -9,8 +9,8 @@ import android.support.v4.content.ContextCompat;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
-public class BitmapDescriptorFromVector {
-    protected static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId){
+class BitmapDescriptorFromVector {
+    static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId){
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap mBitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

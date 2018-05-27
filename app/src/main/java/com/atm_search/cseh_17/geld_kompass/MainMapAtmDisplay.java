@@ -1,7 +1,6 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -24,14 +23,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -51,8 +47,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 // Activity that displays a map showing the place at the device's current location
@@ -63,7 +57,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private GoogleMap mMap;
     private double latitude, longitude;
     private LocationRequest mLocationRequest;
-    private Location mLastLocation;
     private Marker mCurrentLocationMarker;
     SupportMapFragment mapFragment;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -117,6 +110,12 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         break;
                     case 1:
                         recyclerView.setVisibility(View.VISIBLE);
+
+                        // When ListView is selected, check if the data Object is empty, and if true, show alert.
+                        if (adapter.getItemCount() == 0) {
+                            CustomAlertDialog dialog = new CustomAlertDialog();
+                            dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_result_alert_list_DE));
+                        }
                         break;
 
                 }
@@ -317,8 +316,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        String browserKey = getResources().getString(R.string.browser_key);
-                        boolean returnValue = Filters.nearByBanksFilteredSparkasse(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredSparkasse(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -372,8 +370,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        String browserKey = getResources().getString(R.string.browser_key);
-                        boolean returnValue = Filters.nearByBanksFilteredVolksbank(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredVolksbank(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -629,7 +626,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             }
         }
 
-    public void setmLastLocation(Location mLastLocation) {
-        this.mLastLocation = mLastLocation;
+    public void setmLastLocation(Location Location) {
+        Location mLastLocation1 = Location ;
     }
 }

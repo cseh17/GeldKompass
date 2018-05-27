@@ -6,10 +6,11 @@
     <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuche es später erneut.</string>
 
     <string name="no_result_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
-    <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in diesem Gebiet. Es tut uns Leid!</string>
-    <string name="no_result_alert_cash_pool_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat des CashPools in diesem Gebiet. Es tut uns Leid!</string>
-    <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in diesem Gebiet. Es tut uns Leid!</string>
-    <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="no_result_alert_list_DE">Keine Ergebnisse! Die von dich eingestellte Suche liefert keine Ergebnisse. Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in einem Umkreis von 1500 m. Es tut uns Leid!</string>
+    <string name="no_result_alert_cash_pool_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat des CashPools in einem Umkreis von 1500 m. Es tut uns Leid!</string>
+    <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in einem Umkreis von 1500 m. Es tut uns Leid!</string>
+    <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in einem Umkreis von 1500 m. Es tut uns Leid!</string>
 
     <string name="location_permission_title_DE">Achtung</string>
     <string name="location_permission_body_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort deines Gerätes</string>

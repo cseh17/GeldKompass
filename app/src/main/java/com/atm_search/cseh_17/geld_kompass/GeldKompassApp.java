@@ -10,7 +10,6 @@ public class GeldKompassApp extends Application {
     private Timer mActivityTransitionTimer;
     private TimerTask mActivityTransitionTimerTask;
     public  boolean wasInBackground;
-    private final long MAX_ACTIVITY_TRANSITION_TIME_MS = 1500;
 
 
     public void startActivityTransitionTimer() {
@@ -22,6 +21,7 @@ public class GeldKompassApp extends Application {
             }
         };
 
+        long MAX_ACTIVITY_TRANSITION_TIME_MS = 1500;
         this.mActivityTransitionTimer.schedule(mActivityTransitionTimerTask, MAX_ACTIVITY_TRANSITION_TIME_MS);
     }
 

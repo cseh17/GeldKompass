@@ -15,7 +15,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     private LayoutInflater inflater;
     List<RVRowInformation> data;
 
-    public RVAdapter(Context context, List<RVRowInformation> data){
+    RVAdapter(Context context, List<RVRowInformation> data){
 
         inflater = LayoutInflater.from(context);
         this.data = data;
@@ -26,9 +26,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = inflater.inflate(R.layout.cutsom_rv_row, parent, false);
-        MyViewHolder holder = new MyViewHolder(view);
 
-        return holder;
+        return new MyViewHolder(view);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         RVRowInformation current = data.get(position);
 
         holder.icon.setImageResource(current.iconId);
-        String rowSubtitle = new StringBuilder().append("umgefähre Entfernung: ").append(current.rowSubtitle).append(" m").toString();
+        String rowSubtitle = "umgefähre Entfernung: " + current.rowSubtitle + " m";
         holder.title.setText(current.rowTitle);
         holder.subtitle.setText(rowSubtitle);
 

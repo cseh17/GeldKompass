@@ -15,7 +15,7 @@ public final class CacheData {
 
     public static void writeAtmData(Context mContext, String key, LinkedList<AtmDataStructure> mObject) throws IOException {
 
-        FileOutputStream fos = mContext.openFileOutput(key, mContext.MODE_PRIVATE);
+        FileOutputStream fos = mContext.openFileOutput(key, Context.MODE_PRIVATE);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(mObject);
         oos.close();
@@ -24,7 +24,7 @@ public final class CacheData {
 
     public static void writeObject(Context mContext, String key, Object mObject) throws IOException {
 
-        FileOutputStream fos = mContext.openFileOutput(key, mContext.MODE_PRIVATE);
+        FileOutputStream fos = mContext.openFileOutput(key, Context.MODE_PRIVATE);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(mObject);
         oos.close();
@@ -35,7 +35,6 @@ public final class CacheData {
 
         FileInputStream fis = mContext.openFileInput(key);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        Object mObject = ois.readObject();
-        return mObject;
+        return ois.readObject();
     }
 }
