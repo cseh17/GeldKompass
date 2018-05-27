@@ -31,10 +31,10 @@ import static com.atm_search.cseh_17.geld_kompass.BitmapDescriptorFromVector.bit
 
 public class SearchFor {
 
-    protected static   LinkedList<AtmDataStructure> cachedEntries;
-    protected static long lastSaved;
-    protected static double lat, lng;
-    protected static final LinkedList<AtmDataStructure> toCache = new LinkedList<>(Collections.<AtmDataStructure>emptyList());
+    private static   LinkedList<AtmDataStructure> cachedEntries;
+    private static long lastSaved;
+    private static double lat, lng;
+    private static final LinkedList<AtmDataStructure> toCache = new LinkedList<>(Collections.<AtmDataStructure>emptyList());
 
     // Function to search and display Bank branches.
     public static void nearByBanks(final GoogleMap mMap, final LinkedList<RVRowInformation> data, GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity, final RVAdapter adapter) {
@@ -150,7 +150,7 @@ public class SearchFor {
                                         markerOptions.position(latLng);
                                         if (placeName.toLowerCase().contains("commerzbank")){
                                             markerOptions.title("Commerzbank");
-                                            thisRow.iconId = images[1];
+                                            thisRow.iconId = R.drawable.ic_new_commerzbank_map_marker;
                                             markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                                         } else {
                                             if (placeName.toLowerCase().contains("sparkasse")) {
@@ -264,7 +264,7 @@ public class SearchFor {
                                                                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                                                                             } else {
                                                                                                                 markerOptions.title(placeName);
-                                                                                                                thisRow.iconId = images[3];
+                                                                                                                thisRow.iconId = R.drawable.ic_new_general_map_marker3;
                                                                                                                 markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                                                                             }
                                                                                                         }
