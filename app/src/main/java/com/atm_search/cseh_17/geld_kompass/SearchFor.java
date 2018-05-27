@@ -2,9 +2,7 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -21,7 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -30,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.content.ContentValues.TAG;
-import static java.lang.String.valueOf;
+import static com.atm_search.cseh_17.geld_kompass.BitmapDescriptorFromVector.bitmapDescriptorFromVector;
 
 public class SearchFor {
 
@@ -66,6 +63,7 @@ public class SearchFor {
             mMap.clear();
             data.clear();
             toCache.clear();
+            adapter.notifyDataSetChanged();
 
             Log.i("nearByBanks", "Request sent");
 
@@ -153,7 +151,7 @@ public class SearchFor {
                                         if (placeName.toLowerCase().contains("commerzbank")){
                                             markerOptions.title("Commerzbank");
                                             thisRow.iconId = images[1];
-                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
+                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                                         } else {
                                             if (placeName.toLowerCase().contains("sparkasse")) {
                                                 markerOptions.title(placeName);
@@ -267,7 +265,7 @@ public class SearchFor {
                                                                                                             } else {
                                                                                                                 markerOptions.title(placeName);
                                                                                                                 thisRow.iconId = images[3];
-                                                                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
+                                                                                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                                                                             }
                                                                                                         }
                                                                                                     }
@@ -336,11 +334,13 @@ public class SearchFor {
                             Log.e("OnFailure", "Something went wrong. No API response");
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(mActivity, mActivity.getString(R.string.on_failure_alert_DE));
-
                         }
                     });
         }
     }
+
+
+
 
     // Function to search and display atms
     public static void nearByAtms(final GoogleMap mMap, final LinkedList<RVRowInformation> data, GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity, final RVAdapter adapter) {
@@ -368,13 +368,14 @@ public class SearchFor {
 
             mMap.clear();
             data.clear();
+            adapter.notifyDataSetChanged();
 
             Log.i("SearchFor", "cached data is used");
             MarkerOptions mMarkerOptions = new MarkerOptions();
             AtmDataStructure firstEntry = cachedEntries.getFirst();
 
             Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
+            if (locationToAtmDistance > 400) {
 
                 //Move map camera
                 LatLng latLng = new LatLng(latitude, longitude);
@@ -387,7 +388,7 @@ public class SearchFor {
             for (AtmDataStructure entry : cachedEntries) {
 
                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
-                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
+                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                 } else {
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
                         mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
@@ -477,7 +478,7 @@ public class SearchFor {
                                                                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
                                                                                                         mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                                                                     } else {
-                                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
+                                                                                                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                                                                     }
                                                                                                 }
                                                                                             }
@@ -509,9 +510,11 @@ public class SearchFor {
 
                 // Add to ListView
                 data.add(entry.currentAtm);
+                adapter.notifyDataSetChanged();
                 mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
             }
-            adapter.notifyDataSetChanged();
+
+            // adapter.notifyDataSetChanged();
 
             // The function to display the data from the cache memory is to fast to display a loading bar. There for a fake one will be showed for 1,5-2 seconds.
             loadingProgressBar.postDelayed(new Runnable() {
@@ -520,6 +523,7 @@ public class SearchFor {
                     loadingProgressBar.setVisibility(View.GONE);
                 }
             }, 1500);
+
         } else {
 
             Log.i("nearByAtm", "Request sent");
@@ -558,9 +562,8 @@ public class SearchFor {
 
                                         // Calculates air distance between location & atm
                                         Double locationToAtmDistance = Distance.distance1(Double.parseDouble(googlePlace.getGeometry().getLocation().getLat()), latitude, Double.parseDouble(googlePlace.getGeometry().getLocation().getLng()), longitude, 0, 0);
-                                        //Log.i("Distance to ATM: ", locationToAtmDistance.toString());
 
-                                        // Check if distance is greater than 1500m, and hid all results that are farer than that.
+                                        // Check if distance is greater than 1500m, and hide all results that are farer than that.
                                         if (locationToAtmDistance > 1500) {
                                             toDisplay = false;
                                             if (zaehler < 20) {
@@ -570,9 +573,8 @@ public class SearchFor {
 
 
                                         String placeName = googlePlace.getName();
-                                        //Log.i("ATM Name ", placeName);
-                                        if (!placeName.toLowerCase().contains("shell")
-                                                && !placeName.toLowerCase().contains("pax")
+
+                                        if (!placeName.toLowerCase().contains("pax")
                                                 && !placeName.toLowerCase().contains("diba")
                                                 && !placeName.toLowerCase().contains("deutsche")) {
                                             toDisplay = false;
@@ -588,12 +590,6 @@ public class SearchFor {
                                             double lat = Double.parseDouble(googlePlace.getGeometry().getLocation().getLat());
                                             double lng = Double.parseDouble(googlePlace.getGeometry().getLocation().getLng());
 
-                                            /*// Because of the collaboration between Shell and Postank, one can pick up cash from all Shell stations as it was a Postbank ATM
-                                            // Check if it is a Shell station, but display "Postbank" instead
-                                            if (placeName.toLowerCase().contains("shell")) {
-                                                placeName = "Postbank";
-                                            } */
-
                                             toCacheElement.mMarkerOptionLat = lat;
                                             toCacheElement.mMarkerOptionLng = lng;
 
@@ -607,41 +603,40 @@ public class SearchFor {
                                                 thisRow.iconId = images[2];
                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
                                             } else {
-                                                if (placeName.toLowerCase().contains("shell")) {
-                                                    markerOptions.title("Postbank");
-                                                    thisRow.iconId = images[7];
-                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                                if (placeName.toLowerCase().contains("ing")) {
+                                                    markerOptions.title("ING DiBa");
+                                                    thisRow.iconId = images[5];
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
                                                 } else {
-                                                    if (placeName.toLowerCase().contains("ing")) {
-                                                        markerOptions.title("ING DiBa");
-                                                        thisRow.iconId = images[5];
-                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
+                                                    if (placeName.toLowerCase().contains("pax")) {
+                                                        markerOptions.title("Pax Bank");
+                                                        thisRow.iconId = images[6];
+                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                     } else {
-                                                        if (placeName.toLowerCase().contains("pax")) {
-                                                            markerOptions.title("Pax Bank");
-                                                            thisRow.iconId = images[6];
-                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
-                                                        } else {
-                                                            thisRow.iconId = images[3];
-                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
-                                                        }
+                                                        thisRow.iconId = images[3];
+                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3 ));
                                                     }
                                                 }
                                             }
 
                                             toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
 
-                                            // Add Marker to map
-                                            mMap.addMarker(markerOptions);
-                                            thisRow.rowTitle = markerOptions.getTitle();
-                                            thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
-                                            toCacheElement.currentAtm = thisRow;
 
                                             // In order to keep a logical display order, check if the distance to the atm is shorter than the last result from the bank search. If yes, add to list.
                                             if (Double.parseDouble(data.getLast().rowSubtitle) > locationToAtmDistance) {
+
+                                                // Add Marker to map
+                                                mMap.addMarker(markerOptions);
+                                                thisRow.rowTitle = markerOptions.getTitle();
+                                                thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", locationToAtmDistance);
+                                                toCacheElement.currentAtm = thisRow;
+
                                                 data.add(thisRow);
                                                 toCache.add(toCacheElement);
-                                                Collections.sort(data, new CompareDistancesOnList());
+                                                Collections.sort(data, new CompareDistancesOnDisplayList());
+                                                Collections.sort(toCache, new CompareDistanceOnCacheList());
+
+
                                             }
                                         }
                                     }
@@ -684,9 +679,6 @@ public class SearchFor {
                         @Override
                         public void onFailure(@NonNull Call<MyAtms> call, @NonNull Throwable t) {
 
-                            Log.e("OnFailure", "Something went wrong. No API response");
-                            CustomAlertDialog alert = new CustomAlertDialog();
-                            alert.showDialog(mActivity, mActivity.getString(R.string.on_failure_alert_DE));
                         }
                     });
         }

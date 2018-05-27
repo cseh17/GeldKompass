@@ -113,16 +113,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        recyclerView.setVisibility(View.GONE);
                         Objects.requireNonNull(mapFragment.getView()).setVisibility(View.VISIBLE);
-                        //Log.i("Ausgeführt in: ", "map-tab");
-                        //if (mMap != null){
-                        //nearByAtms("atm");
-                        //nearByBanks();
-                        //}
                         break;
                     case 1:
-                        Objects.requireNonNull(mapFragment.getView()).setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         break;
 
@@ -132,6 +125,15 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+                switch (tab.getPosition()){
+                    case 0:
+                        Objects.requireNonNull(mapFragment.getView()).setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        recyclerView.setVisibility(View.GONE);
+                        break;
+
+                }
 
             }
 
@@ -156,7 +158,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 onMapReady(mMap);
-
             }
         });
 
@@ -416,11 +417,29 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             // If there is a connection, do the search
             if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
-                // if there is no connection, show an alert dialog
+                // If there is no connection, show an alert dialog
                 CustomAlertDialog dialog = new CustomAlertDialog();
                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
                 loadingProgressBar.setVisibility(View.GONE);
+            } else {
+
+                // Check for Android(SDK) version.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                        // If permissions already granted
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                        mMap.setMyLocationEnabled(true);
+                    } else {
+
+                        //Request permissions
+                        checkLocationPermission();
+                    }
+                } else {
+                    mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    mMap.setMyLocationEnabled(true);
+                }
             }
         }
         mGeldKompassApp.stopActivityTransitionTimer();
@@ -431,7 +450,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
         mLocationRequest = LocationRequest.create();
 
-        //Automatic location update set to 2 min.
+        // Automatic location update set to 2 min.
         mLocationRequest.setInterval(120000);
         mLocationRequest.setFastestInterval(120000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -479,6 +498,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 final FloatingActionButton floatingCashGroupFilterButton = findViewById(R.id.filterCashGroupButton);
                 final FloatingActionButton floatingCashPoolFilterButton = findViewById(R.id.filterCashPoolButton);
                 final FloatingActionButton floatingSparkasseFilterButton = findViewById(R.id.filterSparkasseButton);
+                final FloatingActionButton floatingVolksbankFilterButton = findViewById(R.id.filterVolksbankButton);
 
                 for (Location location : locationResult.getLocations()) {
                     if (getApplicationContext() != null){
@@ -523,18 +543,20 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 cashGroupIsSelected = false;
                                 cashPoolIsSelected = false;
                                 sparkasseIsSelected = false;
+                                volksbankIsSelected = false;
                                 floatingCashGroupFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
                                 floatingCashPoolFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
                                 floatingSparkasseFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
+                                floatingVolksbankFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
                                 SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
                                 SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
                             }
                         } else {
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
-
+                            final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                            loadingProgressBar.setVisibility(View.VISIBLE);
                         }
-
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                         setmLastLocation(location);

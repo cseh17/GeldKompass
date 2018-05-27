@@ -28,6 +28,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.atm_search.cseh_17.geld_kompass.BitmapDescriptorFromVector.bitmapDescriptorFromVector;
+
 public class Filters {
 
     protected static LinkedList<AtmDataStructure> cachedEntries;
@@ -37,6 +39,9 @@ public class Filters {
     public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
         data.clear();
+        if (cachedEntries !=null) {
+            cachedEntries.clear();
+        }
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
@@ -84,7 +89,7 @@ public class Filters {
                 if (toDisplay) {
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
-                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.commerzbank_logo_final));
+                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                     } else {
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")) {
                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
@@ -262,6 +267,9 @@ public class Filters {
 
         mMap.clear();
         data.clear();
+        if (cachedEntries !=null) {
+            cachedEntries.clear();
+        }
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
@@ -339,7 +347,7 @@ public class Filters {
                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
                                                         mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                     } else {
-                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.generic_logo_final));
+                                                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3 ));
                                                     }
                                                 }
                                             }
@@ -386,6 +394,9 @@ public class Filters {
 
         mMap.clear();
         data.clear();
+        if (cachedEntries !=null) {
+            cachedEntries.clear();
+        }
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
@@ -471,6 +482,9 @@ public class Filters {
 
         mMap.clear();
         data.clear();
+        if (cachedEntries !=null) {
+            cachedEntries.clear();
+        }
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
@@ -528,7 +542,7 @@ public class Filters {
                         && (!entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
                         && (!entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
                         && (!entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
-                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("rv"))
+                        && (!entry.mMarkerOptionsTitle.toLowerCase().contains("rv bank"))
                         && (!entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
                         && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
                         && (!entry.mMarkerOptionsTitle.toLowerCase().contains("spaar&kredit"))

@@ -56,6 +56,7 @@ public class BlackListFilter {
                 && !placeName.toLowerCase().contains("irani")
                 && !placeName.toLowerCase().contains("ffs")
                 && !placeName.toLowerCase().contains("fidor")
+                && !placeName.toLowerCase().contains("fortis")
                 && !placeName.toLowerCase().contains("fondbank")
                 && !placeName.toLowerCase().contains("fintech")
                 && !placeName.toLowerCase().contains("fonds")
@@ -81,6 +82,15 @@ public class BlackListFilter {
                 && !placeName.toLowerCase().contains("tradegate")
                 && !placeName.toLowerCase().contains("varengold")
                 && !placeName.toLowerCase().contains("weber")
-                && !placeName.toLowerCase().contains("wirecard");
+                && !placeName.toLowerCase().contains("wirecard")
+                && !placeName.toLowerCase().contains("dsl")
+                && !placeName.toLowerCase().contains("kt bank")
+                && !placeName.toLowerCase().contains("attijari")
+                && !placeName.toLowerCase().contains("bankgesellschaft")
+                && !placeName.toLowerCase().contains("garanti")
+                && !placeName.toLowerCase().contains("international")
+                && !placeName.toLowerCase().contains("bank of")
+                && !placeName.toLowerCase().contains("mizuho")
+                && !placeName.toLowerCase().contains("dhb");
     }
 }

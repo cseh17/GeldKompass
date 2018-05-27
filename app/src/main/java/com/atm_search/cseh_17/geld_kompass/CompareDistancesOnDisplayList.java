@@ -2,7 +2,7 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import java.util.Comparator;
 
-public class CompareDistancesOnList implements Comparator<RVRowInformation> {
+public class CompareDistancesOnDisplayList implements Comparator<RVRowInformation> {
 
     @Override
     public int compare(RVRowInformation rvri1, RVRowInformation rvri2) {
