@@ -1,8 +1,12 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Address;
@@ -16,16 +20,22 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -72,7 +82,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
 
 
         // Set the filter buttons isSelected variables to false
@@ -419,27 +428,31 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
                 loadingProgressBar.setVisibility(View.GONE);
-            } else {
-
-                // Check for Android(SDK) version.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                        // If permissions already granted
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                        mMap.setMyLocationEnabled(true);
-                    } else {
-
-                        //Request permissions
-                        checkLocationPermission();
-                    }
-                } else {
-                    mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                    mMap.setMyLocationEnabled(true);
-                }
             }
         }
         mGeldKompassApp.stopActivityTransitionTimer();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_actions, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        switch (item.getItemId()){
+                case R.id.info_button:
+                   Intent appInfoIntent = new Intent(this, AppInfoActivity.class);
+
+                   this.startActivity(appInfoIntent);
+
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onMapReady(GoogleMap googleMap) {

@@ -13,6 +13,33 @@
                       <PersistentState>
                         <option name="children">
                           <map>
+                            <entry key="actionbar">
+                              <value>
+                                <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_info_outline_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="outputName" value="ic_info_button" />
+                                      <entry key="theme" value="HOLO_DARK" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
                             <entry key="launcher">
                               <value>
                                 <PersistentState>
@@ -23,7 +50,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="62" />
+                                                <entry key="scalingPercent" value="105" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -35,7 +62,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="65" />
+                                                <entry key="scalingPercent" value="70" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -45,6 +72,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
+                                      <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="ffffff" />
                                       <entry key="backgroundImage" value="D:\image2vector-2-2.svg" />
                                       <entry key="backgroundLayerName" value="ic_geld_kompass_background" />
                                       <entry key="foregroundImage" value="D:\image2vector-2-2.svg" />
@@ -52,6 +81,7 @@
                                       <entry key="legacyIconShape" value="NONE" />
                                       <entry key="outputName" value="ic_geld_kompass_icons" />
                                       <entry key="previewDensity" value="XXHIGH" />
+                                      <entry key="showSafeZone" value="false" />
                                       <entry key="webIconShape" value="NONE" />
                                     </map>
                                   </option>
@@ -69,6 +99,11 @@
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>

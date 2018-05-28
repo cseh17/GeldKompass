@@ -3,7 +3,7 @@ apply plugin: 'io.fabric'
 
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId 'de.atm_search.cseh_17.geld_kompass'
         minSdkVersion 22
@@ -27,12 +27,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-places:15.0.1'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
     implementation 'com.google.firebase:firebase-perf:16.0.0'
