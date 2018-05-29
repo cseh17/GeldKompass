@@ -8,6 +8,7 @@ public class AtmDataStructure implements Serializable {
 
     RVRowInformation currentAtm;
     String mMarkerOptionsTitle;
+    String mMarkerOptionSnippet;
     double mMarkerOptionLat;
     double mMarkerOptionLng;
 }

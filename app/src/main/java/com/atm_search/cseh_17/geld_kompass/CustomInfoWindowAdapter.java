@@ -3,6 +3,7 @@ package com.atm_search.cseh_17.geld_kompass;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final View mWindow;
 
+
     @SuppressLint("InflateParams")
     CustomInfoWindowAdapter(Context mContext) {
         mWindow = LayoutInflater.from(mContext).inflate(R.layout.custom_info_window, null);
@@ -22,13 +24,19 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private void addWindowTitle(Marker marker, View view){
         String title = marker.getTitle();
         TextView tvTitle = view.findViewById(R.id.ciw_title);
-
         tvTitle.setText(title);
+    }
+
+    private void addWindowSnippet(Marker marker, View view){
+        String subtitle = marker.getSnippet();
+        TextView tvSubtitle = view.findViewById(R.id.ciw_subtitle);
+        tvSubtitle.setText(subtitle);
     }
 
     private String getTitle(Marker marker){
        return marker.getTitle();
     }
+
 
     @Override
     public View getInfoWindow(Marker marker) {
@@ -39,6 +47,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker) {
         addWindowTitle(marker, mWindow);
+        addWindowSnippet(marker, mWindow);
         ImageView image = mWindow.findViewById(R.id.ciw_logo);
         if (getTitle(marker).toLowerCase().contains("sparkasse")){
             image.setImageResource(R.drawable.detail_logo_sparkasse);

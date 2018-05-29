@@ -92,6 +92,7 @@ public class Filters {
 
                     // Add Marker to map
                     mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                    mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
                     mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
                     mMap.addMarker(mMarkerOptions);
 
@@ -343,6 +344,7 @@ public class Filters {
 
                         // Add Marker to map
                         mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                        mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
                         mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
                         mMap.addMarker(mMarkerOptions);
 
@@ -429,6 +431,7 @@ public class Filters {
 
                         // Add Marker to map
                         mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                        mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
                         mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
                         mMap.addMarker(mMarkerOptions);
 
@@ -537,6 +540,7 @@ public class Filters {
 
                     // Add Marker to map
                     mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                    mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
                     mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
                     mMap.addMarker(mMarkerOptions);
 

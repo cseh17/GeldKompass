@@ -150,21 +150,25 @@ public class SearchFor {
                                         markerOptions.position(latLng);
                                         if (placeName.toLowerCase().contains("commerzbank")){
                                             markerOptions.title("Commerzbank");
+                                            markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                             thisRow.iconId = R.drawable.ic_new_commerzbank_map_marker;
                                             markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                                         } else {
                                             if (placeName.toLowerCase().contains("sparkasse")) {
                                                 markerOptions.title(placeName);
+                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                 thisRow.iconId = images[11];
                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
                                             } else {
                                                 if (placeName.toLowerCase().contains("deutsche")) {
                                                     markerOptions.title("Deutsche Bank");
+                                                    markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                     thisRow.iconId = images[2];
                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
                                                 } else {
                                                     if (placeName.toLowerCase().contains("post")) {
                                                         markerOptions.title("Postbank");
+                                                        markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                         thisRow.iconId = images[7];
                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
                                                     } else {
@@ -195,75 +199,90 @@ public class SearchFor {
                                                                 || (placeName.toLowerCase().contains("waldecker"))
                                                                 || (placeName.toLowerCase().contains("team"))) {
                                                             markerOptions.title("Volksbank Gruppe");
+                                                            markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                             thisRow.iconId = images[13];
                                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
                                                         } else {
                                                             if (placeName.toLowerCase().contains("bb")) {
                                                                 markerOptions.title("BBBank");
+                                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                 thisRow.iconId = images[0];
                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
                                                             } else {
                                                                 if (placeName.toLowerCase().contains("hypo")) {
                                                                     markerOptions.title("HypoVereinsbank");
+                                                                    markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                     thisRow.iconId = images[4];
                                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
                                                                 } else {
                                                                     if (placeName.toLowerCase().contains("psd")) {
                                                                         markerOptions.title("PSD Bank");
+                                                                        markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                         thisRow.iconId = images[8];
                                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.psd_bank_logo_final));
                                                                     } else {
                                                                         if (placeName.toLowerCase().contains("santander")) {
                                                                             markerOptions.title("Santander");
+                                                                            markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                             thisRow.iconId = images[9];
                                                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
                                                                         } else {
                                                                             if (placeName.toLowerCase().contains("sparda")) {
                                                                                 markerOptions.title("Sparda-Bank");
+                                                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                 thisRow.iconId = images[10];
                                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
                                                                             } else {
                                                                                 if (placeName.toLowerCase().contains("targo")) {
                                                                                     markerOptions.title("TargoBank");
+                                                                                    markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                     thisRow.iconId = images[12];
                                                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
                                                                                 } else {
                                                                                     if (placeName.toLowerCase().contains("apo")) {
                                                                                         markerOptions.title("Deutsche Apotheker und Ärzte Bank");
+                                                                                        markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                         thisRow.iconId = images[14];
                                                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
                                                                                     } else {
                                                                                         if (placeName.toLowerCase().contains("degussa")) {
                                                                                             markerOptions.title("Degussa Bank");
+                                                                                            markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                             thisRow.iconId = images[15];
                                                                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
                                                                                         } else {
                                                                                             if (placeName.toLowerCase().contains("lbbw") || placeName.toLowerCase().contains("wüttemb")) {
                                                                                                 markerOptions.title("LBBW");
+                                                                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                                 thisRow.iconId = images[16];
                                                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lb_bw_logo_final));
                                                                                             } else {
                                                                                                 if (placeName.toLowerCase().contains("lbb") || placeName.toLowerCase().contains("landesbank berlin")) {
                                                                                                     markerOptions.title("Landesbank Berlin");
+                                                                                                    markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                                     thisRow.iconId = images[17];
                                                                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lbb_logo_final));
                                                                                                 } else {
                                                                                                     if (placeName.toLowerCase().contains("oldenburgische landesbank") || placeName.toLowerCase().contains("olb")) {
                                                                                                         markerOptions.title("Oldenburgische Landesbank");
+                                                                                                        markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                                         thisRow.iconId = images[18];
                                                                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.oldenburgische_landesbank_logo_final));
                                                                                                     } else {
                                                                                                         if (placeName.toLowerCase().contains("südwest")) {
                                                                                                             markerOptions.title("Südwestbank");
+                                                                                                            markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                                             thisRow.iconId = images[19];
                                                                                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.suedwestbank_logo_final));
                                                                                                         } else {
                                                                                                             if (placeName.toLowerCase().contains("pax")) {
                                                                                                                 markerOptions.title("Pax-Bank");
+                                                                                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                                                 thisRow.iconId = images[6];
                                                                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                                                                             } else {
                                                                                                                 markerOptions.title(placeName);
+                                                                                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                                                 thisRow.iconId = R.drawable.ic_new_general_map_marker3;
                                                                                                                 markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                                                                             }
@@ -286,6 +305,7 @@ public class SearchFor {
                                         }
 
                                         toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
+                                        toCacheElement.mMarkerOptionSnippet = markerOptions.getSnippet();
 
                                         // Add Marker to map
                                         mMap.addMarker(markerOptions);
@@ -505,6 +525,7 @@ public class SearchFor {
 
                 // Add Marker to map
                 mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
                 mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
                 mMap.addMarker(mMarkerOptions);
 
@@ -600,16 +621,19 @@ public class SearchFor {
 
                                             if (placeName.toLowerCase().contains("deutsche")) {
                                                 markerOptions.title("Deutsche Bank");
+                                                markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                 thisRow.iconId = images[2];
                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
                                             } else {
                                                 if (placeName.toLowerCase().contains("ing")) {
                                                     markerOptions.title("ING DiBa");
+                                                    markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                     thisRow.iconId = images[5];
                                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
                                                 } else {
                                                     if (placeName.toLowerCase().contains("pax")) {
                                                         markerOptions.title("Pax Bank");
+                                                        markerOptions.snippet(AddressDecoder.getCompleteAddress(mContext, lat, lng));
                                                         thisRow.iconId = images[6];
                                                         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                     } else {
@@ -620,6 +644,7 @@ public class SearchFor {
                                             }
 
                                             toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
+                                            toCacheElement.mMarkerOptionSnippet = markerOptions.getSnippet();
 
 
                                             // In order to keep a logical display order, check if the distance to the atm is shorter than the last result from the bank search. If yes, add to list.
