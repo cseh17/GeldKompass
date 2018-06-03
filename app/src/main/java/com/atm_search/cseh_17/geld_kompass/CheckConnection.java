@@ -1,6 +1,6 @@
 package com.atm_search.cseh_17.geld_kompass;
 
-import android.content.Context;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;

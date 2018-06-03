@@ -6,6 +6,6 @@
         android:id="@+id/info_button"
         android:icon="@drawable/ic_info_button"
         android:title="info_button"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 </menu>
