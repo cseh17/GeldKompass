@@ -1,9 +1,6 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,13 +12,12 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,9 +31,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
+import com.atm_search.cseh_17.geld_kompass.Remote.APIService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -70,7 +65,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private Marker mCurrentLocationMarker;
     SupportMapFragment mapFragment;
     private FusedLocationProviderClient mFusedLocationClient;
-    GoogleAPIService mService;
+    APIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
     private RecyclerView recyclerView;
     LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
@@ -187,8 +182,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     sparkasseIsSelected = false;
                     volksbankIsSelected = false;
                     floatingCashGroupFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
-                    SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey) , MainMapAtmDisplay.this, adapter);
+                    //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey) , MainMapAtmDisplay.this, adapter);
+                    //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
                     cashGroupIsSelected = true;
                     cashPoolIsSelected = false;
@@ -243,8 +240,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     sparkasseIsSelected = false;
                     volksbankIsSelected = false;
                     floatingCashPoolFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
-                    SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey) , MainMapAtmDisplay.this, adapter);
+                    //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey) , MainMapAtmDisplay.this, adapter);
+                    //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = true;
@@ -299,8 +298,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     sparkasseIsSelected = false;
                     volksbankIsSelected = false;
                     floatingSparkasseFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
-                    SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
+                    //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
+                    //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = false;
@@ -353,8 +354,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     sparkasseIsSelected = false;
                     volksbankIsSelected = false;
                     floatingVolksbankFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
-                    SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
+                    //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
+                    //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = false;
@@ -558,8 +561,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 floatingCashPoolFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
                                 floatingSparkasseFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
                                 floatingVolksbankFilterButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
-                                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
-                                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
+                                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
+                                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
+                                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+
                             }
                         } else {
                             CustomAlertDialog alert = new CustomAlertDialog();

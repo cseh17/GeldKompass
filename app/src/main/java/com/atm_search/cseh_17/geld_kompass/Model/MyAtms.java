@@ -4,7 +4,7 @@ package com.atm_search.cseh_17.geld_kompass.Model;
  * Created by cseh_17 on 25.03.2018.
  */
 
-public class MyAtms {
+public class  MyAtms {
     private String next_page_token;
 
     private Results[] results;

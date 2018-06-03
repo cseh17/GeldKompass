@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
+import com.atm_search.cseh_17.geld_kompass.Remote.APIService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -24,7 +24,7 @@ public class Filters {
     private static long lastSaved;
     private static double lat, lng;
 
-    public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
         data.clear();
         if (cachedEntries !=null) {
@@ -108,8 +108,10 @@ public class Filters {
             CustomAlertDialog alert = new CustomAlertDialog();
             alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_group_DE));
 
-            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-            SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
             return false;
         } else {
 
@@ -250,7 +252,7 @@ public class Filters {
                     }*/
 
 
-    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -359,8 +361,10 @@ public class Filters {
             if (data.isEmpty()) {
                 CustomAlertDialog alert = new CustomAlertDialog();
                 alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_pool_DE));
-                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
                 return false;
             } else {
 
@@ -375,7 +379,7 @@ public class Filters {
             }
         }
 
-    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -446,8 +450,10 @@ public class Filters {
             if (data.isEmpty()) {
                 CustomAlertDialog alert = new CustomAlertDialog();
                 alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_sparkasse_DE));
-                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
                 return false;
             } else {
 
@@ -462,7 +468,7 @@ public class Filters {
             }
         }
 
-    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -552,11 +558,15 @@ public class Filters {
         }
 
 
+
+
         if (data.isEmpty()) {
             CustomAlertDialog alert = new CustomAlertDialog();
             alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_volksbank_DE));
-            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-            SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
             return false;
         } else {
 
