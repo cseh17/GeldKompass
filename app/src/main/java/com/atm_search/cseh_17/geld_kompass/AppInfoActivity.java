@@ -10,6 +10,5 @@ public class AppInfoActivity extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_info_screen);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 }
