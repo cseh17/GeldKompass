@@ -12,7 +12,6 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -176,7 +175,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                 if (cashGroupIsSelected) {
 
-                    String browserKey = getResources().getString(R.string.browser_key);
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = false;
                     sparkasseIsSelected = false;
@@ -234,7 +232,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                 if (cashPoolIsSelected) {
 
-                    String browserKey = getResources().getString(R.string.browser_key);
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = false;
                     sparkasseIsSelected = false;
@@ -292,7 +289,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                 if (sparkasseIsSelected) {
 
-                    String browserKey = getResources().getString(R.string.browser_key);
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = false;
                     sparkasseIsSelected = false;
@@ -348,7 +344,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                 if (volksbankIsSelected) {
 
-                    String browserKey = getResources().getString(R.string.browser_key);
                     cashGroupIsSelected = false;
                     cashPoolIsSelected = false;
                     sparkasseIsSelected = false;

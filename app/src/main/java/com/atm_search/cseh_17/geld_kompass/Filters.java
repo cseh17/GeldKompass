@@ -52,19 +52,10 @@ public class Filters {
 
             Log.i("CashGroup filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
+            //AtmDataStructure firstEntry = cachedEntries.getFirst();
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("commerz")
@@ -73,6 +64,20 @@ public class Filters {
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("post");
 
                 if (toDisplay) {
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
@@ -121,7 +126,7 @@ public class Filters {
                 public void run() {
                     loadingProgressBar.setVisibility(View.GONE);
                 }
-            }, 1500);
+            }, 1000);
             return true;
         }
     }
@@ -281,19 +286,9 @@ public class Filters {
 
             Log.i("CashPool filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("bbb")
@@ -308,6 +303,20 @@ public class Filters {
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("olb");
 
                 if (toDisplay) {
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
 
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
@@ -374,7 +383,7 @@ public class Filters {
                     public void run() {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
-                }, 1500);
+                }, 1000);
                 return true;
             }
         }
@@ -408,24 +417,29 @@ public class Filters {
 
             Log.i("Sparkasse filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse");
 
                 if (toDisplay) {
+
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
 
 
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
@@ -463,7 +477,7 @@ public class Filters {
                     public void run() {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
-                }, 1500);
+                }, 1000);
                 return true;
             }
         }
@@ -497,20 +511,9 @@ public class Filters {
 
             Log.i("Volksbank filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
@@ -542,6 +545,21 @@ public class Filters {
 
                 if (toDisplay) {
 
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
+
                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
 
                     // Add Marker to map
@@ -556,9 +574,6 @@ public class Filters {
                 }
             }
         }
-
-
-
 
         if (data.isEmpty()) {
             CustomAlertDialog alert = new CustomAlertDialog();
@@ -576,10 +591,9 @@ public class Filters {
                 public void run() {
                     loadingProgressBar.setVisibility(View.GONE);
                 }
-            }, 1500);
+            }, 1000);
             return true;
         }
     }
-
 
 }
