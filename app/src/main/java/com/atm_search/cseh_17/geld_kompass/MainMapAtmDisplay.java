@@ -431,6 +431,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
                 final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
                 loadingProgressBar.setVisibility(View.GONE);
+            } else {
+                if (mMap != null){
+                    onMapReady(mMap);
+                }
             }
         }
         mGeldKompassApp.stopActivityTransitionTimer();
