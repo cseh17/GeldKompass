@@ -104,9 +104,20 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        item.setChecked(true);
-                        mDraweLayout.closeDrawers();
-                        return true;
+
+                        switch (item.getItemId()) {
+                            case R.id.about:
+                                item.setChecked(true);
+                                Intent appInfoIntent = new Intent(MainMapAtmDisplay.this, AppInfoActivity.class);
+                                MainMapAtmDisplay.this.startActivity(appInfoIntent);
+                                item.setChecked(false);
+                                mDraweLayout.closeDrawers();
+                                return true;
+                            default:
+                                item.setChecked(true);
+                                mDraweLayout.closeDrawers();
+                                return true;
+                        }
                     }
                 }
         );
@@ -462,22 +473,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_actions, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
         switch (item.getItemId()){
-            case R.id.info_button:
-                Intent appInfoIntent = new Intent(this, AppInfoActivity.class);
-
-                this.startActivity(appInfoIntent);
-
-                return true;
             case android.R.id.home:
                 mDraweLayout.openDrawer(GravityCompat.START);
                 return true;
