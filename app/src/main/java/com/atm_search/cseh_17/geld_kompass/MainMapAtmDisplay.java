@@ -428,7 +428,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 loadingProgressBar.setVisibility(View.GONE);
             } else {
                 if (mMap != null){
-                    onMapReady(mMap);
+                    //onMapReady(mMap);
                 }
             }
         }

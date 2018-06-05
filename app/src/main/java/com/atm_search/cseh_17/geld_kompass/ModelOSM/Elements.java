@@ -12,6 +12,10 @@ public class Elements
 
     private String lat;
 
+    private double distance;
+
+    private boolean isValid;
+
     public Tags getTags ()
     {
         return tags;
@@ -61,6 +65,14 @@ public class Elements
     {
         this.lat = lat;
     }
+
+    public double getDistance() {return distance;}
+
+    public void setDistance(double distance) {this.distance = distance;}
+
+    public boolean getIsValid() {return isValid;}
+
+    public  void setIsValid(boolean isValid) { this.isValid = isValid;}
 
     @Override
     public String toString()

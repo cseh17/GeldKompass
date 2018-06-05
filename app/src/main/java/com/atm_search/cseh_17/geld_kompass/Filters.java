@@ -59,7 +59,7 @@ public class Filters {
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("commerz")
-                        || entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche bank")
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("post");
 
