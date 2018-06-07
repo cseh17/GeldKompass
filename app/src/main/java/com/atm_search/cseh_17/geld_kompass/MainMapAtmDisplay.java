@@ -12,6 +12,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -51,6 +52,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import static android.content.ContentValues.TAG;
 
 
 // Activity that displays a map showing the place at the device's current location
@@ -404,6 +407,25 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
 
         ((GeldKompassApp)this.getApplication()).startActivityTransitionTimer();
+        try {
+
+            // If not empty try and cache the data for later usage
+            CacheData.writeAtmData(this, this.getString(R.string.KEY_for_atms), null);
+
+            // Also save the time the data was cached in UNIX timestamp format
+            long unixTime = System.currentTimeMillis() / 1000;
+            CacheData.writeObject(this, this.getString(R.string.KEY_for_timestamp), unixTime);
+
+            // Save the location where the data was chached
+            CacheData.writeObject(this, this.getString(R.string.KEY_for_latitude), latitude);
+            CacheData.writeObject(this, this.getString(R.string.KEY_for_longitude), longitude);
+
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        Log.i("onPause", "cache deleted");
+
     }
 
     public void onResume(){
@@ -427,8 +449,16 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
                 loadingProgressBar.setVisibility(View.GONE);
             } else {
-                if (mMap != null){
-                    //onMapReady(mMap);
+                 if (mMap != null){
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            onMapReady(mMap);
+                            Log.i("onResume", "reload map");
+                        }
+                    },1500);
+
                 }
             }
         }
@@ -570,7 +600,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
                             final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
-                            loadingProgressBar.setVisibility(View.VISIBLE);
+                            loadingProgressBar.setVisibility(View.GONE);
                         }
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());

@@ -713,24 +713,17 @@ public class SearchFor {
     }
 
 
-    private static BoundingBox calculateBoundingBox(double latitude, double longitude){
+    private static LatLngBounds getBoundingBox(double latitude, double longitude){
 
-        double distanceFromCenterToCorner = 1500 * Math.sqrt(2.0);
         LatLng center = new LatLng(latitude, longitude);
 
-        LatLng southwestCorner = SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 255.0);
-        LatLng northestCorenr = SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        LatLngBounds boundingBox = new LatLngBounds.Builder().
+                include(SphericalUtil.computeOffset(center, 1500, 0)).
+                include(SphericalUtil.computeOffset(center, 1500, 90)).
+                include(SphericalUtil.computeOffset(center, 1500, 180)).
+                include(SphericalUtil.computeOffset(center,1500, 270)).build();
 
-        LatLngBounds bounds = new LatLngBounds(southwestCorner, northestCorenr);
-
-        BoundingBox mBoundingBox = new BoundingBox();
-        mBoundingBox.latMin = bounds.southwest.latitude;
-        mBoundingBox.lngMin = bounds.southwest.longitude;
-        mBoundingBox.latMax = bounds.northeast.latitude;
-        mBoundingBox.lngMax = bounds.northeast.longitude;
-
-        return mBoundingBox;
-
+        return boundingBox;
     }
 
 
@@ -764,9 +757,9 @@ public class SearchFor {
 
             Log.i("osmNearByBanks", "Request sent");
 
-            final BoundingBox coordinates = calculateBoundingBox(latitude, longitude);
+            final LatLngBounds coordinates = getBoundingBox(latitude, longitude);
 
-            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node[amenity=bank](" + coordinates.latMin + "," + coordinates.lngMin + "," + coordinates.latMax + "," + coordinates.lngMax + ");way[amenity=bank](" + coordinates.latMin + "," + coordinates.lngMin + "," + coordinates.latMax + "," + coordinates.lngMax + ");relation[amenity=bank](" + coordinates.latMin + "," + coordinates.lngMin + "," + coordinates.latMax + "," + coordinates.lngMax + "););out%20body;%3E;out%20skel%20qt;";
+            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
 
             Log.i("Gnerated URL", url);
 
@@ -775,6 +768,11 @@ public class SearchFor {
                         @Override
                         public void onResponse(@NonNull Call<MyOsmAtms> call, @NonNull Response<MyOsmAtms> response) {
                             if (response.isSuccessful()) {
+
+                                // Clear data and map, to avoid duplicates
+                                data.clear();
+                                mMap.clear();
+                                adapter.notifyDataSetChanged();
 
                                 // Create new list, calculate distance to each point, and add them to the list to be sorted.
                                 LinkedList<Elements> editedResponse = new LinkedList<>();
@@ -843,6 +841,7 @@ public class SearchFor {
                                     counter = editedResponse.size();
                                 }
 
+                                boolean isFirst = true;
                                 for (int i = 0; i < counter; i++) {
 
                                     Elements item = editedResponse.get(i);
@@ -851,7 +850,8 @@ public class SearchFor {
                                         String placeName = item.getTags().getName();
                                         RVRowInformation thisRow = new RVRowInformation();
                                         // Check if the first element is closer than 400 or further, and adjust the map zoom accordingly
-                                        if (i == 0) {
+                                        if (isFirst) {
+                                            isFirst = false;
                                             if (item.getDistance() > 400) {
 
                                                 // Move map camera
@@ -933,7 +933,7 @@ public class SearchFor {
                                                                 || (placeName.toLowerCase().contains("liga"))
                                                                 || (placeName.toLowerCase().contains("märki"))
                                                                 || (placeName.toLowerCase().contains("münchener bank"))
-                                                                || (placeName.toLowerCase().contains("reiffeisen"))
+                                                                || (placeName.toLowerCase().contains("raiffeisen"))
                                                                 || (placeName.toLowerCase().contains("rv"))
                                                                 || (placeName.toLowerCase().contains("darlehenkasse"))
                                                                 || (placeName.toLowerCase().contains("spaar & kredit"))
@@ -1158,7 +1158,7 @@ public class SearchFor {
                                         || (entry.mMarkerOptionsTitle.toLowerCase().contains("liga"))
                                         || (entry.mMarkerOptionsTitle.toLowerCase().contains("märki"))
                                         || (entry.mMarkerOptionsTitle.toLowerCase().contains("münchener bank"))
-                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("reiffeisen"))
+                                        || (entry.mMarkerOptionsTitle.toLowerCase().contains("raiffeisen"))
                                         || (entry.mMarkerOptionsTitle.toLowerCase().contains("rv bank"))
                                         || (entry.mMarkerOptionsTitle.toLowerCase().contains("darlehenkasse"))
                                         || (entry.mMarkerOptionsTitle.toLowerCase().contains("spaar & kredit"))
@@ -1271,9 +1271,9 @@ public class SearchFor {
 
             Log.i("osmNearByAtm", "Request sent");
 
-            BoundingBox coordinates = calculateBoundingBox(latitude, longitude);
+            LatLngBounds coordinates = getBoundingBox(latitude, longitude);
 
-            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node[amenity=atm](" + coordinates.latMin + "," + coordinates.lngMin + "," + coordinates.latMax + "," + coordinates.lngMax + ");way[amenity=atm](" + coordinates.latMin + "," + coordinates.lngMin + "," + coordinates.latMax + "," + coordinates.lngMax + ");relation[amenity=atm](" + coordinates.latMin + "," + coordinates.lngMin + "," + coordinates.latMax + "," + coordinates.lngMax + "););out%20body;%3E;out%20skel%20qt;";
+            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
 
             Log.i("Gnerated URL", url);
 
@@ -1284,14 +1284,14 @@ public class SearchFor {
                             if (response.isSuccessful()) {
 
                                 // Check if the response body is empty. If not, do all tasks. If empty, play alert Dialog with custom message.
-                                if (Objects.requireNonNull(response.body()).getElements().length != 0 && !data.isEmpty()) {
+                                if (Objects.requireNonNull(response.body()).getElements().length != 0) {
 
                                     // Create new list, calculate distance to each point, and add them to the list to be sorted.
                                     LinkedList<Elements> editedResponse = new LinkedList<>();
 
-                                    for(Elements item : Objects.requireNonNull(response.body()).getElements()) {
+                                    for (Elements item : Objects.requireNonNull(response.body()).getElements()) {
 
-                                        if (item.getTags() != null){
+                                        if (item.getTags() != null) {
                                             editedResponse.add(item);
                                         }
                                     }
@@ -1338,7 +1338,7 @@ public class SearchFor {
                                                         && !placeName.toLowerCase().contains("liga")
                                                         && !placeName.toLowerCase().contains("märki")
                                                         && !placeName.toLowerCase().contains("münchener bank")
-                                                        && !placeName.toLowerCase().contains("reiffeisen")
+                                                        && !placeName.toLowerCase().contains("raiffeisen")
                                                         && !placeName.toLowerCase().contains("rv bank")
                                                         && !placeName.toLowerCase().contains("darlehenkasse")
                                                         && !placeName.toLowerCase().contains("spaar & kredit")
@@ -1369,13 +1369,27 @@ public class SearchFor {
                                         counter = editedResponse.size();
                                     }
 
-                                    for (int i = 0; i < counter; i++ ) {
+                                    boolean isFirst = true;
+                                    for (int i = 0; i < counter; i++) {
 
                                         Elements item = editedResponse.get(i);
 
                                         if (item.getIsValid()) {
 
                                             RVRowInformation thisRow = new RVRowInformation();
+                                            // Check if the first element is closer than 400 or further, and adjust the map zoom accordingly
+                                            if (isFirst) {
+                                                isFirst = false;
+                                                if (item.getDistance() > 400) {
+
+                                                    // Move map camera
+                                                    LatLng latLng = new LatLng(latitude, longitude);
+                                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                                                } else {
+                                                    LatLng latLng = new LatLng(latitude, longitude);
+                                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                                                }
+                                            }
 
                                             double lat = 0;
                                             double lng = 0;
@@ -1455,7 +1469,7 @@ public class SearchFor {
                                                                         || (placeName.toLowerCase().contains("liga"))
                                                                         || (placeName.toLowerCase().contains("märki"))
                                                                         || (placeName.toLowerCase().contains("münchener bank"))
-                                                                        || (placeName.toLowerCase().contains("reiffeisen"))
+                                                                        || (placeName.toLowerCase().contains("raiffeisen"))
                                                                         || (placeName.toLowerCase().contains("rv bank"))
                                                                         || (placeName.toLowerCase().contains("darlehenkasse"))
                                                                         || (placeName.toLowerCase().contains("spaar & kredit"))
@@ -1497,8 +1511,21 @@ public class SearchFor {
 
 
                                             // In order to keep a logical display order, check if the distance to the atm is shorter than the last result from the bank search. If yes, add to list.
-                                            if (Double.parseDouble(data.getLast().rowSubtitle) > item.getDistance()) {
+                                            if (!data.isEmpty()) {
+                                                if (Double.parseDouble(data.getLast().rowSubtitle) > item.getDistance()) {
 
+                                                    // Add Marker to map
+                                                    mMap.addMarker(markerOptions);
+                                                    thisRow.rowTitle = markerOptions.getTitle();
+                                                    thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", item.getDistance());
+                                                    toCacheElement.currentAtm = thisRow;
+
+                                                    data.add(thisRow);
+                                                    toCache.add(toCacheElement);
+                                                    Collections.sort(data, new CompareDistancesOnDisplayList());
+                                                    Collections.sort(toCache, new CompareDistanceOnCacheList());
+                                                }
+                                            } else {
                                                 // Add Marker to map
                                                 mMap.addMarker(markerOptions);
                                                 thisRow.rowTitle = markerOptions.getTitle();
@@ -1511,19 +1538,25 @@ public class SearchFor {
                                                 Collections.sort(toCache, new CompareDistanceOnCacheList());
                                             }
                                         } else {
-                                            if (counter < editedResponse.size() - 1){
+                                            if (counter < editedResponse.size() - 1) {
                                                 counter++;
                                             }
                                         }
                                     }
+                                } else {
 
-                                    // Check if the result Object is empty
                                     if (data.isEmpty()) {
 
-                                        // If empty show the user an alert
+                                        // Handle if no results were found
+                                        loadingProgressBar.setVisibility(View.GONE);
                                         CustomAlertDialog alert = new CustomAlertDialog();
                                         alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
-                                    } else try {
+                                    }
+                                }
+
+                                // Check if the result Object is empty
+                                if (!data.isEmpty()) {
+                                    try {
 
                                         // If not empty try and cache the data for later usage
                                         CacheData.writeAtmData(mContext, mContext.getString(R.string.KEY_for_atms), toCache);
@@ -1539,17 +1572,12 @@ public class SearchFor {
                                     } catch (IOException e) {
                                         Log.e(TAG, e.getMessage());
                                     }
-                            } else {
-
-                                // Handle if no results were found
-                                loadingProgressBar.setVisibility(View.GONE);
-                                CustomAlertDialog alert = new CustomAlertDialog();
-                                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
+                                }
                             }
+
+                            loadingProgressBar.setVisibility(View.GONE);
+                            adapter.notifyDataSetChanged();
                         }
-                        loadingProgressBar.setVisibility(View.GONE);
-                        adapter.notifyDataSetChanged();
-                    }
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
