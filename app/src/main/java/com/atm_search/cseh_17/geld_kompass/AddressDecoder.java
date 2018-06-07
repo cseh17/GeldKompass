@@ -4,22 +4,32 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 public class AddressDecoder {
-    protected static String getCompleteAddress(Context mContext, double latitude, double longitude){
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+
+    public static LatLng getLocationFromAddress(Context mContext, String mAddress){
+
+        Geocoder coder = new Geocoder(mContext);
+        List<Address> address;
+        LatLng coordinates = null;
+
         try{
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null) {
-                strAdd = addresses.get(0).getThoroughfare() + " " + addresses.get(0).getFeatureName() + "\n" + addresses.get(0).getPostalCode() + " " + addresses.get(0).getLocality();
+
+            address = coder.getFromLocationName(mAddress, 5);
+            if (address == null){
+                return null;
             }
-        } catch (Exception e){
+
+            Address location = address.get(0);
+            coordinates = new LatLng(location.getLatitude(), location.getLongitude());
+        } catch (IOException e){
             e.printStackTrace();
         }
-        return strAdd;
-    }
 
+        return coordinates;
+    }
 }

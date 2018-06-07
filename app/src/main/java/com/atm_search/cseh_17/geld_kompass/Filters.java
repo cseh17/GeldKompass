@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.atm_search.cseh_17.geld_kompass.Remote.GoogleAPIService;
+import com.atm_search.cseh_17.geld_kompass.Remote.APIService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -24,7 +24,7 @@ public class Filters {
     private static long lastSaved;
     private static double lat, lng;
 
-    public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
         mMap.clear();
         data.clear();
         if (cachedEntries !=null) {
@@ -52,27 +52,32 @@ public class Filters {
 
             Log.i("CashGroup filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
+            //AtmDataStructure firstEntry = cachedEntries.getFirst();
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("commerz")
-                        || entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche bank")
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("post");
 
                 if (toDisplay) {
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
@@ -108,8 +113,10 @@ public class Filters {
             CustomAlertDialog alert = new CustomAlertDialog();
             alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_group_DE));
 
-            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-            SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
             return false;
         } else {
 
@@ -119,7 +126,7 @@ public class Filters {
                 public void run() {
                     loadingProgressBar.setVisibility(View.GONE);
                 }
-            }, 1500);
+            }, 1000);
             return true;
         }
     }
@@ -250,7 +257,7 @@ public class Filters {
                     }*/
 
 
-    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -279,19 +286,9 @@ public class Filters {
 
             Log.i("CashPool filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("bbb")
@@ -306,6 +303,20 @@ public class Filters {
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("olb");
 
                 if (toDisplay) {
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
 
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
@@ -359,8 +370,10 @@ public class Filters {
             if (data.isEmpty()) {
                 CustomAlertDialog alert = new CustomAlertDialog();
                 alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_pool_DE));
-                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
                 return false;
             } else {
 
@@ -370,12 +383,12 @@ public class Filters {
                     public void run() {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
-                }, 1500);
+                }, 1000);
                 return true;
             }
         }
 
-    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -404,24 +417,29 @@ public class Filters {
 
             Log.i("Sparkasse filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse");
 
                 if (toDisplay) {
+
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
 
 
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
@@ -446,8 +464,10 @@ public class Filters {
             if (data.isEmpty()) {
                 CustomAlertDialog alert = new CustomAlertDialog();
                 alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_sparkasse_DE));
-                SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
                 return false;
             } else {
 
@@ -457,12 +477,12 @@ public class Filters {
                     public void run() {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
-                }, 1500);
+                }, 1000);
                 return true;
             }
         }
 
-    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final GoogleAPIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -491,20 +511,9 @@ public class Filters {
 
             Log.i("Volksbank filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            AtmDataStructure firstEntry = cachedEntries.getFirst();
-
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
-            if (locationToAtmDistance > 500) {
-
-                //Move map camera
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            } else {
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
 
             boolean toDisplay;
+            boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("volks")
@@ -536,6 +545,21 @@ public class Filters {
 
                 if (toDisplay) {
 
+                    if (isFirst){
+                        Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
+                        if (locationToAtmDistance > 400) {
+
+                            //Move map camera
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                        } else {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        }
+
+                    }
+                    isFirst = false;
+
                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
 
                     // Add Marker to map
@@ -551,12 +575,13 @@ public class Filters {
             }
         }
 
-
         if (data.isEmpty()) {
             CustomAlertDialog alert = new CustomAlertDialog();
             alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_volksbank_DE));
-            SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-            SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
             return false;
         } else {
 
@@ -566,10 +591,9 @@ public class Filters {
                 public void run() {
                     loadingProgressBar.setVisibility(View.GONE);
                 }
-            }, 1500);
+            }, 1000);
             return true;
         }
     }
-
 
 }

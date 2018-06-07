@@ -25,7 +25,7 @@
     <string name="KEY_for_latitude">This is the key to save the latitude.123456789</string>
     <string name="KEY_for_longitude">This is the key to save the longitude. 123456789</string>
     
-    <string name="App_Version">1.0 - beta</string>
+    <string name="App_Version">2.0 - beta</string>
     <string name="copyright">© 2018 Kriszitan Cseh </string>
 
     <string name="mi_report_missing">Report mising atm</string>
