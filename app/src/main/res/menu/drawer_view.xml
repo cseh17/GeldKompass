@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/report_missing"
+            android:icon="@drawable/ic_report_missing"
+            android:title="@string/mi_report_missing"/>
+
+        <item
+            android:id="@+id/datenschutz"
+            android:icon="@drawable/ic_datenschutz"
+            android:title="@string/mi_datenschutz"/>
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info_button"
+            android:title="@string/mi_about"/>
+
+    </group>
+
+</menu>

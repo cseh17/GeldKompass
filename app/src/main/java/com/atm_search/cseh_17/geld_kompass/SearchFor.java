@@ -394,6 +394,7 @@ public class SearchFor {
             adapter.notifyDataSetChanged();
 
             Log.i("SearchFor", "cached data is used");
+            Log.i("Miri", "ich liebe dich");
             MarkerOptions mMarkerOptions = new MarkerOptions();
             AtmDataStructure firstEntry = cachedEntries.getFirst();
 

@@ -16,14 +16,19 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,6 +75,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     APIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
     private RecyclerView recyclerView;
+    private DrawerLayout mDraweLayout;
     LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
     int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.generic_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final, R.drawable.apotheker_und_aerztebank_logo_final, R.drawable.degussa_bank_logo_final, R.drawable.lb_bw_logo_final, R.drawable.lbb_logo_final,R.drawable.oldenburgische_landesbank_logo_final, R.drawable.suedwestbank_logo_final};
     RVAdapter adapter;
@@ -88,6 +94,44 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
         // Retrieve the content view that renders the map
         setContentView(R.layout.activity_main_map_atm_display);
+
+        // Set the Drawer Layout (menu)
+
+        mDraweLayout = findViewById(R.id.drawer_layout);
+
+        // Implement menu functionality and click listeners
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        switch (item.getItemId()) {
+                            case R.id.about:
+                                item.setChecked(true);
+                                Intent appInfoIntent = new Intent(MainMapAtmDisplay.this, AppInfoActivity.class);
+                                MainMapAtmDisplay.this.startActivity(appInfoIntent);
+                                item.setChecked(false);
+                                mDraweLayout.closeDrawers();
+                                return true;
+                            default:
+                                item.setChecked(true);
+                                mDraweLayout.closeDrawers();
+                                return true;
+                        }
+                    }
+                }
+        );
+
+        // Set toolbar
+
+        android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
 
         // Initialise RecyclerView
         recyclerView = findViewById(R.id.rv_list_items);
@@ -466,22 +510,12 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_actions, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
         switch (item.getItemId()){
-                case R.id.info_button:
-                   Intent appInfoIntent = new Intent(this, AppInfoActivity.class);
-
-                   this.startActivity(appInfoIntent);
-
-                    return true;
+            case android.R.id.home:
+                mDraweLayout.openDrawer(GravityCompat.START);
+                return true;
                 default:
                     return super.onOptionsItemSelected(item);
         }
@@ -675,6 +709,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
 
     public void setmLastLocation(Location Location) {
-        Location mLastLocation1 = Location ;
+        Location mLastLocation1 = Location;
     }
 }

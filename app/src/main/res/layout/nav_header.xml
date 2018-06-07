@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="92dp"
+    android:background="?attr/colorPrimary"
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:gravity="bottom">
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/app_logo4_final"
+        android:id="@+id/menu_header_logo"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Geldkompass"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_toRightOf="@+id/menu_header_logo"
+        android:paddingStart="11dp"
+        android:paddingTop="8dp"/>
+
+</RelativeLayout>
