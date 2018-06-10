@@ -25,8 +25,11 @@ public class Filters {
     private static double lat, lng;
 
     public static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+
+        // Clear data and map in order to avoid doubles on list.
         mMap.clear();
         data.clear();
+        adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -52,7 +55,6 @@ public class Filters {
 
             Log.i("CashGroup filter", "deployed");
             MarkerOptions mMarkerOptions = new MarkerOptions();
-            //AtmDataStructure firstEntry = cachedEntries.getFirst();
 
             boolean toDisplay;
             boolean isFirst = true;
@@ -65,6 +67,8 @@ public class Filters {
 
                 if (toDisplay) {
                     if (isFirst){
+
+                        isFirst = false;
                         Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
                         if (locationToAtmDistance > 400) {
 
@@ -77,7 +81,7 @@ public class Filters {
                         }
 
                     }
-                    isFirst = false;
+
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("commerzbank")) {
                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
@@ -106,6 +110,7 @@ public class Filters {
                     mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
                 }
             }
+            adapter.notifyDataSetChanged();
         }
 
 
@@ -120,7 +125,6 @@ public class Filters {
             return false;
         } else {
 
-            adapter.notifyDataSetChanged();
             loadingProgressBar.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -261,6 +265,7 @@ public class Filters {
 
         mMap.clear();
         data.clear();
+        adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -289,6 +294,7 @@ public class Filters {
 
             boolean toDisplay;
             boolean isFirst = true;
+
             for (AtmDataStructure entry : cachedEntries) {
 
                 toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("bbb")
@@ -303,7 +309,10 @@ public class Filters {
                         || entry.mMarkerOptionsTitle.toLowerCase().contains("olb");
 
                 if (toDisplay) {
+
                     if (isFirst){
+
+                        isFirst = false;
                         Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
                         if (locationToAtmDistance > 400) {
 
@@ -311,39 +320,38 @@ public class Filters {
                             LatLng latLng = new LatLng(latitude, longitude);
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
                         } else {
+
                             LatLng latLng = new LatLng(latitude, longitude);
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                         }
 
                     }
-                    isFirst = false;
 
-                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
-                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
+                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                    } else {
+                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("santander")) {
+                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
                         } else {
-                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("santander")) {
-                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
+                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
+                                mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                             } else {
-                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
-                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
+                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("targo")) {
+                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
                                 } else {
-                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("targo")) {
-                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
+                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
+                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
                                     } else {
-                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
-                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
+                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank") || entry.mMarkerOptionsTitle.toLowerCase().contains("olb")) {
+                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.oldenburgische_landesbank_logo_final));
                                         } else {
-                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank") || entry.mMarkerOptionsTitle.toLowerCase().contains("olb")) {
-                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.oldenburgische_landesbank_logo_final));
+                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")) {
+                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.suedwestbank_logo_final));
                                             } else {
-                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")) {
-                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.suedwestbank_logo_final));
+                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
+                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                 } else {
-                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
-                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
-                                                    } else {
-                                                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3 ));
-                                                    }
+                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3 ));
                                                 }
                                             }
                                         }
@@ -351,47 +359,50 @@ public class Filters {
                                 }
                             }
                         }
-
-
-                        // Add Marker to map
-                        mMarkerOptions.title(entry.mMarkerOptionsTitle);
-                        mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
-                        mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
-                        mMap.addMarker(mMarkerOptions);
-
-                        // Add to ListView
-                        data.add(entry.currentAtm);
-                        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
                     }
+
+
+                    // Add Marker to map
+                    mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                    mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
+                    mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
+                    mMap.addMarker(mMarkerOptions);
+
+                    // Add to ListView
+                    data.add(entry.currentAtm);
+                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
                 }
             }
+            adapter.notifyDataSetChanged();
+        }
 
+        if (data.isEmpty()) {
 
-            if (data.isEmpty()) {
-                CustomAlertDialog alert = new CustomAlertDialog();
-                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_pool_DE));
-                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
-                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
-                return false;
-            } else {
+            CustomAlertDialog alert = new CustomAlertDialog();
+            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_pool_DE));
+            //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            return false;
+        } else {
 
-                adapter.notifyDataSetChanged();
-                loadingProgressBar.postDelayed(new Runnable() {
+            loadingProgressBar.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         loadingProgressBar.setVisibility(View.GONE);
                     }
                 }, 1000);
                 return true;
-            }
         }
+    }
 
     public static boolean nearByBanksFilteredSparkasse(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
+        adapter.notifyDataSetChanged();
+
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -427,6 +438,8 @@ public class Filters {
                 if (toDisplay) {
 
                     if (isFirst){
+
+                        isFirst = false;
                         Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
                         if (locationToAtmDistance > 400) {
 
@@ -439,39 +452,36 @@ public class Filters {
                         }
 
                     }
-                    isFirst = false;
 
-
-                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
-                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
-                        }
-
-
-                        // Add Marker to map
-                        mMarkerOptions.title(entry.mMarkerOptionsTitle);
-                        mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
-                        mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
-                        mMap.addMarker(mMarkerOptions);
-
-                        // Add to ListView
-                        data.add(entry.currentAtm);
-                        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
+                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
+                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
                     }
+
+
+                    // Add Marker to map
+                    mMarkerOptions.title(entry.mMarkerOptionsTitle);
+                    mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
+                    mMarkerOptions.position(new LatLng(entry.mMarkerOptionLat, entry.mMarkerOptionLng));
+                    mMap.addMarker(mMarkerOptions);
+
+                    // Add to ListView
+                    data.add(entry.currentAtm);
+                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
                 }
             }
+            adapter.notifyDataSetChanged();
+        }
 
+        if (data.isEmpty()) {
+            CustomAlertDialog alert = new CustomAlertDialog();
+            alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_sparkasse_DE));
+            //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
+            //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
+            return false;
+        } else {
 
-            if (data.isEmpty()) {
-                CustomAlertDialog alert = new CustomAlertDialog();
-                alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_sparkasse_DE));
-                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlBank(latitude, longitude, "bank", mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
-                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, mContext, GenerateUrls.getUrlAtm(latitude, longitude, mContext.getResources().getString(R.string.browser_key)), mActivity, adapter);
-                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data);
-                return false;
-            } else {
-
-                adapter.notifyDataSetChanged();
                 loadingProgressBar.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -479,13 +489,14 @@ public class Filters {
                     }
                 }, 1000);
                 return true;
-            }
         }
+    }
 
     public static boolean nearByBanksFilteredVolksbank(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
+        adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -546,6 +557,8 @@ public class Filters {
                 if (toDisplay) {
 
                     if (isFirst){
+
+                        isFirst = false;
                         Double locationToAtmDistance = Distance.distance1(entry.mMarkerOptionLat, latitude, entry.mMarkerOptionLng, longitude, 0, 0);
                         if (locationToAtmDistance > 400) {
 
@@ -558,7 +571,6 @@ public class Filters {
                         }
 
                     }
-                    isFirst = false;
 
                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
 
@@ -573,6 +585,7 @@ public class Filters {
                     mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
                 }
             }
+            adapter.notifyDataSetChanged();
         }
 
         if (data.isEmpty()) {
@@ -585,7 +598,6 @@ public class Filters {
             return false;
         } else {
 
-            adapter.notifyDataSetChanged();
             loadingProgressBar.postDelayed(new Runnable() {
                 @Override
                 public void run() {

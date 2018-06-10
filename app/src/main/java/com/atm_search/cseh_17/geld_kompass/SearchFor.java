@@ -3,6 +3,7 @@ package com.atm_search.cseh_17.geld_kompass;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -37,7 +38,7 @@ import static com.atm_search.cseh_17.geld_kompass.BitmapDescriptorFromVector.bit
 
 public class SearchFor {
 
-    private static   LinkedList<AtmDataStructure> cachedEntries;
+    private static LinkedList<AtmDataStructure> cachedEntries;
     private static long lastSaved;
     private static double lat, lng;
     private static final LinkedList<AtmDataStructure> toCache = new LinkedList<>(Collections.<AtmDataStructure>emptyList());
@@ -732,7 +733,13 @@ public class SearchFor {
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
+        final FloatingActionButton searchButton = mActivity.findViewById(R.id.myLocationButton);
+        searchButton.setClickable(false);
 
+        // Clear data and maps to avoid duplicates on map & list
+        mMap.clear();
+        data.clear();
+        adapter.notifyDataSetChanged();
 
         try {
 
@@ -748,20 +755,16 @@ public class SearchFor {
             Log.e("Cache error:", "No data found in cache");
         }
 
-        if (cachedEntries==null || cachedEntries.isEmpty() || Distance.distance1(lat, latitude, lng, longitude, 0, 0) > 100 || ((System.currentTimeMillis() / 1000) - lastSaved) > 600) {
+        if (cachedEntries == null || cachedEntries.isEmpty() || Distance.distance1(lat, latitude, lng, longitude, 0, 0) > 100 || ((System.currentTimeMillis() / 1000) - lastSaved) > 600) {
 
-            // Clear map & data set. Avoids duplicates on map & on list
-            mMap.clear();
-            data.clear();
+            // Clear toCache to avoid duplicates in cashed data
             toCache.clear();
-            adapter.notifyDataSetChanged();
 
             Log.i("osmNearByBanks", "Request sent");
 
             final LatLngBounds coordinates = getBoundingBox(latitude, longitude);
 
-            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
-
+            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
             Log.i("Gnerated URL", url);
 
             mService.getNearByBank(url)
@@ -770,16 +773,10 @@ public class SearchFor {
                         public void onResponse(@NonNull Call<MyOsmAtms> call, @NonNull Response<MyOsmAtms> response) {
                             if (response.isSuccessful()) {
 
-                                // Clear data and map, to avoid duplicates
-                                data.clear();
-                                mMap.clear();
-                                adapter.notifyDataSetChanged();
-
                                 // Create new list, calculate distance to each point, and add them to the list to be sorted.
                                 LinkedList<Elements> editedResponse = new LinkedList<>();
 
                                 for(Elements item : Objects.requireNonNull(response.body()).getElements()) {
-
                                     if (item.getTags() != null){
                                         editedResponse.add(item);
                                     }
@@ -788,7 +785,6 @@ public class SearchFor {
                                 for(Elements item : editedResponse) {
 
                                     item.setIsValid(true);
-
                                     if (item.getLat() == null && item.getTags().getName() != null && item.getTags().getAddrStreet() != null && item.getTags().getAddrHousenumber() != null && item.getTags().getAddrPostcode() != null && item.getTags().getAddrCity() != null) {
 
                                         String houseNumber;
@@ -832,10 +828,13 @@ public class SearchFor {
                                     }
                                 }
 
+                                // Sort the edited response list by distance from actual location
                                 Collections.sort(editedResponse, new CompareDistanceOnEditedList());
 
                                 // Iterate over the checked List and do other jobs
                                 int counter;
+
+                                // In order to display only the first 10 results, check if the list contains more items, if yes, set counter manually to 10
                                 if (editedResponse.size() > 10) {
                                     counter = 10;
                                 } else {
@@ -846,10 +845,10 @@ public class SearchFor {
                                 for (int i = 0; i < counter; i++) {
 
                                     Elements item = editedResponse.get(i);
-
                                     if (item.getIsValid()) {
                                         String placeName = item.getTags().getName();
                                         RVRowInformation thisRow = new RVRowInformation();
+
                                         // Check if the first element is closer than 400 or further, and adjust the map zoom accordingly
                                         if (isFirst) {
                                             isFirst = false;
@@ -976,7 +975,7 @@ public class SearchFor {
                                                                                 markerOptions.title("Sparda-Bank");
                                                                                 markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                                                                 thisRow.iconId = images[10];
-                                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
+                                                                                markerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                                                                             } else {
                                                                                 if (placeName.toLowerCase().contains("targo")) {
                                                                                     markerOptions.title("TargoBank");
@@ -1090,6 +1089,8 @@ public class SearchFor {
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
+        final FloatingActionButton searchButton = mActivity.findViewById(R.id.myLocationButton);
+
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -1107,7 +1108,7 @@ public class SearchFor {
             Log.e("Cache error:", "No data found in cache");
         }
 
-        if (cachedEntries!=null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 151 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
+        if (cachedEntries != null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 151 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
 
             mMap.clear();
             data.clear();
@@ -1183,7 +1184,7 @@ public class SearchFor {
                                                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
                                                 } else {
                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
-                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
+                                                        mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                                                     } else {
                                                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("targo")) {
                                                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
@@ -1254,28 +1255,25 @@ public class SearchFor {
 
                 // Add to ListView
                 data.add(entry.currentAtm);
-                adapter.notifyDataSetChanged();
                 mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mActivity));
             }
 
-            // adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
 
-            // The function to display the data from the cache memory is to fast to display a loading bar. There for a fake one will be showed for 1,5-2 seconds.
+            // The function to display the data from the cache memory is to fast to display a loading bar. There for a fake one will be showed for 1-1,5 seconds.
             loadingProgressBar.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     loadingProgressBar.setVisibility(View.GONE);
+                    searchButton.setClickable(true);
                 }
             }, 1000);
 
         } else {
 
             Log.i("osmNearByAtm", "Request sent");
-
             LatLngBounds coordinates = getBoundingBox(latitude, longitude);
-
-            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
-
+            String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
             Log.i("Gnerated URL", url);
 
             mService.getNearByAtm(url)
@@ -1300,7 +1298,6 @@ public class SearchFor {
                                     for (Elements item : editedResponse) {
 
                                         item.setIsValid(true);
-
                                         if (item.getLat() == null && item.getTags().getOperator() != null && item.getTags().getAddrStreet() != null && item.getTags().getAddrHousenumber() != null && item.getTags().getAddrPostcode() != null && item.getTags().getAddrCity() != null) {
 
                                             String address = item.getTags().getAddrStreet() + " " + item.getTags().getAddrHousenumber() + " " + item.getTags().getAddrPostcode() + " " + item.getTags().getAddrCity();
@@ -1315,11 +1312,15 @@ public class SearchFor {
                                         }
 
                                         if (item.getDistance() == 0) {
+
                                             item.setIsValid(false);
                                         } else {
+
                                             if (item.getTags().getOperator() == null) {
+
                                                 item.setIsValid(false);
                                             } else {
+
                                                 String placeName = item.getTags().getOperator();
 
                                                 if (!placeName.toLowerCase().contains("pax")
@@ -1365,8 +1366,10 @@ public class SearchFor {
                                     // Iterate over the checked List and do other jobs
                                     int counter;
                                     if (editedResponse.size() > 10) {
+
                                         counter = 10;
                                     } else {
+
                                         counter = editedResponse.size();
                                     }
 
@@ -1374,12 +1377,13 @@ public class SearchFor {
                                     for (int i = 0; i < counter; i++) {
 
                                         Elements item = editedResponse.get(i);
-
                                         if (item.getIsValid()) {
 
                                             RVRowInformation thisRow = new RVRowInformation();
+
                                             // Check if the first element is closer than 400 or further, and adjust the map zoom accordingly
                                             if (isFirst) {
+
                                                 isFirst = false;
                                                 if (item.getDistance() > 400) {
 
@@ -1488,7 +1492,7 @@ public class SearchFor {
                                                                         markerOptions.title("Sparda-Bank");
                                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                                                         thisRow.iconId = images[10];
-                                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparda_bank_logo_final));
+                                                                        markerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                                                                     } else {
                                                                         if (placeName.toLowerCase().contains("commerzbank")) {
                                                                             markerOptions.title("Commerzbank");
@@ -1513,20 +1517,7 @@ public class SearchFor {
 
                                             // In order to keep a logical display order, check if the distance to the atm is shorter than the last result from the bank search. If yes, add to list.
                                             if (!data.isEmpty()) {
-                                                if (Double.parseDouble(data.getLast().rowSubtitle) > item.getDistance()) {
 
-                                                    // Add Marker to map
-                                                    mMap.addMarker(markerOptions);
-                                                    thisRow.rowTitle = markerOptions.getTitle();
-                                                    thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", item.getDistance());
-                                                    toCacheElement.currentAtm = thisRow;
-
-                                                    data.add(thisRow);
-                                                    toCache.add(toCacheElement);
-                                                    Collections.sort(data, new CompareDistancesOnDisplayList());
-                                                    Collections.sort(toCache, new CompareDistanceOnCacheList());
-                                                }
-                                            } else {
                                                 // Add Marker to map
                                                 mMap.addMarker(markerOptions);
                                                 thisRow.rowTitle = markerOptions.getTitle();
@@ -1539,17 +1530,21 @@ public class SearchFor {
                                                 Collections.sort(toCache, new CompareDistanceOnCacheList());
                                             }
                                         } else {
+
                                             if (counter < editedResponse.size() - 1) {
                                                 counter++;
                                             }
                                         }
                                     }
+
+                                    adapter.notifyDataSetChanged();
                                 } else {
 
                                     if (data.isEmpty()) {
 
                                         // Handle if no results were found
                                         loadingProgressBar.setVisibility(View.GONE);
+                                        searchButton.setClickable(true);
                                         CustomAlertDialog alert = new CustomAlertDialog();
                                         alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                                     }
@@ -1577,7 +1572,7 @@ public class SearchFor {
                             }
 
                             loadingProgressBar.setVisibility(View.GONE);
-                            adapter.notifyDataSetChanged();
+                            searchButton.setClickable(true);
                         }
 
                     @Override

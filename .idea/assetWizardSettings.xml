@@ -125,11 +125,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="192" />
-                            <entry key="outputName" value="ic_splash_screen_v15" />
+                            <entry key="height" value="501" />
+                            <entry key="outputName" value="ic_new_sparda_bank_marker5" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\cseh_17\Desktop\splash_screen_v15.svg" />
-                            <entry key="width" value="108" />
+                            <entry key="sourceFile" value="D:\new_sparda_bank_marker5.svg" />
+                            <entry key="width" value="376" />
                           </map>
                         </option>
                       </PersistentState>
