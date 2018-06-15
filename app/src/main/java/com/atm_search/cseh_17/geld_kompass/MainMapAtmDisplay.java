@@ -72,7 +72,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     APIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
     private RecyclerView recyclerView;
-    private DrawerLayout mDraweLayout;
+    private DrawerLayout mDrawerLayout;
     LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
     int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.generic_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final, R.drawable.apotheker_und_aerztebank_logo_final, R.drawable.degussa_bank_logo_final, R.drawable.lb_bw_logo_final, R.drawable.lbb_logo_final,R.drawable.oldenburgische_landesbank_logo_final, R.drawable.suedwestbank_logo_final};
     RVAdapter adapter;
@@ -88,16 +88,15 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         cashGroupIsSelected = false;
         cashPoolIsSelected = false;
         sparkasseIsSelected = false;
+        volksbankIsSelected = false;
 
         // Retrieve the content view that renders the map
         setContentView(R.layout.activity_main_map_atm_display);
 
         // Set the Drawer Layout (menu)
-
-        mDraweLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         // Implement menu functionality and click listeners
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -109,12 +108,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 item.setChecked(true);
                                 Intent appInfoIntent = new Intent(MainMapAtmDisplay.this, AppInfoActivity.class);
                                 MainMapAtmDisplay.this.startActivity(appInfoIntent);
-                                item.setChecked(false);
-                                mDraweLayout.closeDrawers();
-                                return true;
+                                mDrawerLayout.closeDrawers();
                             default:
-                                item.setChecked(true);
-                                mDraweLayout.closeDrawers();
+                                mDrawerLayout.closeDrawers();
                                 return true;
                         }
                     }
@@ -122,7 +118,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         );
 
         // Set toolbar
-
         android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -472,6 +467,14 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     public void onResume(){
         super.onResume();
 
+        // Get the navigation view
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Iterate trough all the menu items of the navigationView drawer, and set them as unchecked
+        for (int i = 0; i < navigationView.getMenu().size(); i++){
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+
         // Check if app returned from background
         GeldKompassApp mGeldKompassApp = (GeldKompassApp)this.getApplication();
         if (mGeldKompassApp.wasInBackground) {
@@ -511,7 +514,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
         switch (item.getItemId()){
             case android.R.id.home:
-                mDraweLayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);
@@ -598,8 +601,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         if (allowedBoundsGermany.contains(latLng)) {
 
                             // Move Camera
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                            Log.i("Ausgeführt in: ", "onLocationChanged");
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
 
                             // Check for connectivity
                             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
