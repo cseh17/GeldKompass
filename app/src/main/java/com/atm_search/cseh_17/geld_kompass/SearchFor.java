@@ -734,7 +734,15 @@ public class SearchFor {
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         final FloatingActionButton searchButton = mActivity.findViewById(R.id.myLocationButton);
+        final FloatingActionButton cashGroupFilterButton = mActivity.findViewById(R.id.filterCashGroupButton);
+        final FloatingActionButton cashPoolFilterButton = mActivity.findViewById(R.id.filterCashPoolButton);
+        final FloatingActionButton sparkasseFilterButton = mActivity.findViewById(R.id.filterSparkasseButton);
+        final FloatingActionButton volksbankFilterButton = mActivity.findViewById(R.id.filterVolksbankButton);
         searchButton.setClickable(false);
+        cashGroupFilterButton.setClickable(false);
+        cashPoolFilterButton.setClickable(false);
+        sparkasseFilterButton.setClickable(false);
+        volksbankFilterButton.setClickable(false);
 
         // Clear data and maps to avoid duplicates on map & list
         mMap.clear();
@@ -797,7 +805,7 @@ public class SearchFor {
                                         String address = item.getTags().getAddrStreet() + " " + houseNumber + " " + item.getTags().getAddrPostcode() + " " + item.getTags().getAddrCity();
                                         Log.i("Address", address);
                                         LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
-                                        item.setDistance(Distance.distance1(Objects.requireNonNull(addressCoordinates).latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                        item.setDistance(Distance.distance1(Objects.requireNonNull(addressCoordinates).latitude, latitude, Objects.requireNonNull(addressCoordinates).longitude, longitude, 0, 0));
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
 
@@ -950,7 +958,7 @@ public class SearchFor {
                                                             if (placeName.toLowerCase().contains("bb")) {
                                                                 markerOptions.title("BBBank");
                                                                 markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                thisRow.iconId = images[0];
+                                                                thisRow.iconId = R.drawable.ic_new_bbbank_marker;
                                                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
                                                             } else {
                                                                 if (placeName.toLowerCase().contains("hypo")) {
@@ -968,13 +976,13 @@ public class SearchFor {
                                                                         if (placeName.toLowerCase().contains("santander")) {
                                                                             markerOptions.title("Santander");
                                                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                            thisRow.iconId = images[9];
+                                                                            thisRow.iconId = R.drawable.ic_new_santander_marker;
                                                                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
                                                                         } else {
                                                                             if (placeName.toLowerCase().contains("sparda")) {
                                                                                 markerOptions.title("Sparda-Bank");
                                                                                 markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                                thisRow.iconId = images[10];
+                                                                                thisRow.iconId = R.drawable.ic_new_sparda_bank_marker5;
                                                                                 markerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                                                                             } else {
                                                                                 if (placeName.toLowerCase().contains("targo")) {
@@ -1090,6 +1098,10 @@ public class SearchFor {
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         final FloatingActionButton searchButton = mActivity.findViewById(R.id.myLocationButton);
+        final FloatingActionButton cashGroupFilterButton = mActivity.findViewById(R.id.filterCashGroupButton);
+        final FloatingActionButton cashPoolFilterButton = mActivity.findViewById(R.id.filterCashPoolButton);
+        final FloatingActionButton sparkasseFilterButton = mActivity.findViewById(R.id.filterSparkasseButton);
+        final FloatingActionButton volksbankFilterButton = mActivity.findViewById(R.id.filterVolksbankButton);
 
         if (cachedEntries !=null) {
             cachedEntries.clear();
@@ -1172,7 +1184,7 @@ public class SearchFor {
                                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
                                 } else {
                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
-                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_bbbank_marker));
                                     } else {
                                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")) {
                                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
@@ -1181,7 +1193,7 @@ public class SearchFor {
                                                 mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.psd_bank_logo_final));
                                             } else {
                                                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("santander")) {
-                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
+                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_santander_marker));
                                                 } else {
                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
                                                         mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
@@ -1210,21 +1222,13 @@ public class SearchFor {
                                                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
                                                                                         mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                                                     } else {
-                                                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")) {
-                                                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                                                                                        if (entry.mMarkerOptionsTitle.toLowerCase().contains("ing")) {
+                                                                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
                                                                                         } else {
-                                                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("shell")) {
-                                                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
+                                                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
                                                                                             } else {
-                                                                                                if (entry.mMarkerOptionsTitle.toLowerCase().contains("ing")) {
-                                                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
-                                                                                                } else {
-                                                                                                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
-                                                                                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
-                                                                                                    } else {
-                                                                                                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
-                                                                                                    }
-                                                                                                }
+                                                                                                mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                                                             }
                                                                                         }
                                                                                     }
@@ -1246,7 +1250,6 @@ public class SearchFor {
                     }
                 }
 
-
                 // Add Marker to map
                 mMarkerOptions.title(entry.mMarkerOptionsTitle);
                 mMarkerOptions.snippet(entry.mMarkerOptionSnippet);
@@ -1266,6 +1269,10 @@ public class SearchFor {
                 public void run() {
                     loadingProgressBar.setVisibility(View.GONE);
                     searchButton.setClickable(true);
+                    cashGroupFilterButton.setClickable(true);
+                    cashPoolFilterButton.setClickable(true);
+                    sparkasseFilterButton.setClickable(true);
+                    volksbankFilterButton.setClickable(true);
                 }
             }, 1000);
 
@@ -1491,7 +1498,7 @@ public class SearchFor {
                                                                     if (placeName.toLowerCase().contains("sparda")) {
                                                                         markerOptions.title("Sparda-Bank");
                                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                        thisRow.iconId = images[10];
+                                                                        thisRow.iconId = R.drawable.ic_new_sparda_bank_marker5;
                                                                         markerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                                                                     } else {
                                                                         if (placeName.toLowerCase().contains("commerzbank")) {
@@ -1545,6 +1552,10 @@ public class SearchFor {
                                         // Handle if no results were found
                                         loadingProgressBar.setVisibility(View.GONE);
                                         searchButton.setClickable(true);
+                                        cashGroupFilterButton.setClickable(true);
+                                        cashPoolFilterButton.setClickable(true);
+                                        sparkasseFilterButton.setClickable(true);
+                                        volksbankFilterButton.setClickable(true);
                                         CustomAlertDialog alert = new CustomAlertDialog();
                                         alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
                                     }
@@ -1573,6 +1584,10 @@ public class SearchFor {
 
                             loadingProgressBar.setVisibility(View.GONE);
                             searchButton.setClickable(true);
+                            cashGroupFilterButton.setClickable(true);
+                            cashPoolFilterButton.setClickable(true);
+                            sparkasseFilterButton.setClickable(true);
+                            volksbankFilterButton.setClickable(true);
                         }
 
                     @Override

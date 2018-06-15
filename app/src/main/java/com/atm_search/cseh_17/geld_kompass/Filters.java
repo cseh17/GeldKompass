@@ -328,10 +328,10 @@ public class Filters {
                     }
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
-                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_bbbank_marker));
                     } else {
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("santander")) {
-                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
+                            mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_santander_marker));
                         } else {
                             if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparda")) {
                                 mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
