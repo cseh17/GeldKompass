@@ -31,4 +31,34 @@
     <string name="mi_report_missing">Report mising atm</string>
     <string name="mi_about">About</string>
     <string name="mi_datenschutz">Datenschutz</string>
+
+    <string name="report_title">Welcome to the reporting page of the app. Here you can report us: missing, misplaced or duplicated atms. In order to speed up the process, an automatic "erfasssung" of your location will pe "ausgeführt" and a report sent to us. This is important to allow us a fast as possible proccesing of your request. Thank you for your help!</string>
+
+    <string-array name="report_spinner_problem">
+        <item>Missing atm</item>
+        <item>Duplicated atm</item>
+        <item>Misplaced atm</item>
+    </string-array>
+
+    <string-array name="report_spinner_banks">
+        <item>Sparkasse</item>
+        <item>Volksbank Gruppe</item>
+        <item>Deutsche Bank</item>
+        <item>Commerzbank</item>
+        <item>Postbank</item>
+        <item>Sparda-Bank</item>
+        <item>BBBank</item>
+        <item>TargoBank</item>
+        <item>PSD Bank</item>
+        <item>Santander</item>
+        <item>HypoVereinsbank</item>
+        <item>Apotheker und Ärztebank</item>
+        <item>Degussa Bank</item>
+        <item>LLBW</item>
+        <item>Landesbank Berlin</item>
+        <item>Oldenburgische Landesbank</item>
+        <item>Südwestbank</item>
+        <item>ING DiBa</item>
+        <item>Pax-Bank</item>
+    </string-array>
 </resources>

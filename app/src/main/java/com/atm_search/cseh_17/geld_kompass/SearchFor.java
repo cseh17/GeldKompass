@@ -46,7 +46,7 @@ public class SearchFor {
     // Function to search and display Bank branches on Google (Places API)
     public static void nearByBanks(final GoogleMap mMap, final LinkedList<RVRowInformation> data, APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity, final RVAdapter adapter) {
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
 
@@ -214,7 +214,7 @@ public class SearchFor {
                                                                 markerOptions.title("BBBank");
                                                                 markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                                                 thisRow.iconId = images[0];
-                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                                                                //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
                                                             } else {
                                                                 if (placeName.toLowerCase().contains("hypo")) {
                                                                     markerOptions.title("HypoVereinsbank");
@@ -369,7 +369,7 @@ public class SearchFor {
     // Function to search and display atms on Google (Places API)
     public static void nearByAtms(final GoogleMap mMap, final LinkedList<RVRowInformation> data, APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, String url, final Activity mActivity, final RVAdapter adapter) {
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         if (cachedEntries !=null) {
             cachedEntries.clear();
@@ -453,7 +453,7 @@ public class SearchFor {
                                     mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
                                 } else {
                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("bb")) {
-                                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                                        //mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
                                     } else {
                                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")) {
                                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
@@ -731,7 +731,7 @@ public class SearchFor {
 
     public static void osmNearByBanks(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final int[] images, final RVAdapter adapter, final LinkedList<RVRowInformation> data){
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         final FloatingActionButton searchButton = mActivity.findViewById(R.id.myLocationButton);
         final FloatingActionButton cashGroupFilterButton = mActivity.findViewById(R.id.filterCashGroupButton);
@@ -959,7 +959,7 @@ public class SearchFor {
                                                                 markerOptions.title("BBBank");
                                                                 markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                                                 thisRow.iconId = R.drawable.ic_new_bbbank_marker;
-                                                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bbbank_logo_final));
+                                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_bbbank_marker));
                                                             } else {
                                                                 if (placeName.toLowerCase().contains("hypo")) {
                                                                     markerOptions.title("HypoVereinsbank");
@@ -1095,7 +1095,7 @@ public class SearchFor {
 
     private static void osmNearByAtms(APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final int[] images, final RVAdapter adapter, final LinkedList<RVRowInformation> data) {
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
         final FloatingActionButton searchButton = mActivity.findViewById(R.id.myLocationButton);
         final FloatingActionButton cashGroupFilterButton = mActivity.findViewById(R.id.filterCashGroupButton);
@@ -1225,11 +1225,7 @@ public class SearchFor {
                                                                                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("ing")) {
                                                                                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ing_logo_final));
                                                                                         } else {
-                                                                                            if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
-                                                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
-                                                                                            } else {
                                                                                                 mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
-                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }

@@ -45,6 +45,9 @@
         <activity
             android:name=".AppInfoActivity"
             android:parentActivityName=".MainMapAtmDisplay"/>
+        <activity
+            android:name=".ReportFormActivity"
+            android:parentActivityName=".MainMapAtmDisplay"/>
 
     </application>
 

@@ -34,7 +34,7 @@ public class Filters {
             cachedEntries.clear();
         }
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
         try {
@@ -270,7 +270,7 @@ public class Filters {
             cachedEntries.clear();
         }
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
         try {
@@ -407,7 +407,7 @@ public class Filters {
             cachedEntries.clear();
         }
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
         try {
@@ -501,7 +501,7 @@ public class Filters {
             cachedEntries.clear();
         }
 
-        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.progresLoader);
+        final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
 
         try {

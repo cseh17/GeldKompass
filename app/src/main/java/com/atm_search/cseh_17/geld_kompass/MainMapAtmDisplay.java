@@ -64,7 +64,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private GoogleMap mMap;
-    private double latitude, longitude;
+    private static double latitude, longitude;
     private LocationRequest mLocationRequest;
     private Marker mCurrentLocationMarker;
     SupportMapFragment mapFragment;
@@ -74,7 +74,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
-    int[] images = {R.drawable.bbbank_logo_final, R.drawable.commerzbank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.generic_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final, R.drawable.apotheker_und_aerztebank_logo_final, R.drawable.degussa_bank_logo_final, R.drawable.lb_bw_logo_final, R.drawable.lbb_logo_final,R.drawable.oldenburgische_landesbank_logo_final, R.drawable.suedwestbank_logo_final};
+    int[] images = {R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final, R.drawable.apotheker_und_aerztebank_logo_final, R.drawable.degussa_bank_logo_final, R.drawable.lb_bw_logo_final, R.drawable.lbb_logo_final,R.drawable.oldenburgische_landesbank_logo_final, R.drawable.suedwestbank_logo_final};
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
 
@@ -109,6 +109,13 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 Intent appInfoIntent = new Intent(MainMapAtmDisplay.this, AppInfoActivity.class);
                                 MainMapAtmDisplay.this.startActivity(appInfoIntent);
                                 mDrawerLayout.closeDrawers();
+
+                            case R.id.report_missing:
+                                item.setChecked(true);
+                                Intent reportMissingIntent = new Intent(MainMapAtmDisplay.this, ReportFormActivity.class);
+                                MainMapAtmDisplay.this.startActivity(reportMissingIntent);
+                                mDrawerLayout.closeDrawers();
+
                             default:
                                 mDrawerLayout.closeDrawers();
                                 return true;
@@ -243,7 +250,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
-                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
@@ -300,7 +307,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
-                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
@@ -356,7 +363,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
-                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
@@ -411,7 +418,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
-                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                        final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     } else {
 
@@ -490,7 +497,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 // If there is no connection, show an alert dialog
                 CustomAlertDialog dialog = new CustomAlertDialog();
                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
-                final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                 loadingProgressBar.setVisibility(View.GONE);
             } else {
                  if (mMap != null){
@@ -612,7 +619,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 // if there is no connection, show an alert dialog
                                 CustomAlertDialog dialog = new CustomAlertDialog();
                                 dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.no_internet_alert_DE));
-                                final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                                final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                                 loadingProgressBar.setVisibility(View.GONE);
                             } else {
                                 cashGroupIsSelected = false;
@@ -632,7 +639,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         } else {
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
-                            final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.progresLoader);
+                            final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                             loadingProgressBar.setVisibility(View.GONE);
                         }
 
@@ -700,7 +707,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                         // Permissions denied, disable the functionality that depends on the permission.
                         Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_denied_DE), Toast.LENGTH_LONG).show();
-                        final ProgressBar loadingProgressBar = findViewById(R.id.progresLoader);
+                        final ProgressBar loadingProgressBar = findViewById(R.id.main_progresLoader);
                         loadingProgressBar.setVisibility(View.GONE);
                     }
                 }
@@ -710,4 +717,14 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     public void setmLastLocation(Location Location) {
         Location mLastLocation1 = Location;
     }
+
+    public static LatLng getLocation(){
+
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        if (latLng != null) {
+            return latLng;
+        } else return null;
+    }
+
 }

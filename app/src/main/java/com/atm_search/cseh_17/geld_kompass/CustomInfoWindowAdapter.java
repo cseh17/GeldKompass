@@ -52,12 +52,12 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             image.setImageResource(R.drawable.detail_logo_sparkasse);
         } else {
             if (getTitle(marker).toLowerCase().contains("deutsche") | getTitle(marker).toLowerCase().contains("commerz") | getTitle(marker).toLowerCase().contains("post") | getTitle(marker).toLowerCase().contains("hypo") | getTitle(marker).toLowerCase().contains("dresdener")){
-                image.setImageResource(R.drawable.detail_logo_cash_group);
+                image.setImageResource(R.drawable.ic_cw_cash_group);
             } else {
                 if (getTitle(marker).toLowerCase().contains("bbb") | getTitle(marker).toLowerCase().contains("pax") | getTitle(marker).toLowerCase().contains("santander") | getTitle(marker).toLowerCase().contains("sparda") | getTitle(marker).toLowerCase().contains("targo") | getTitle(marker).toLowerCase().contains("degussa") | getTitle(marker).toLowerCase().contains("südwest") | getTitle(marker).toLowerCase().contains("national") | getTitle(marker).toLowerCase().contains("olb") | getTitle(marker).toLowerCase().contains("oldenburgische")){
-                    image.setImageResource(R.drawable.detail_logo_cash_pool);
+                    image.setImageResource(R.drawable.ic_cw_cash_pool);
                 } else {
-                    image.setImageResource(R.drawable.detail_logos_generic);
+                    image.setImageResource(R.drawable.ic_cw_generic5);
                 }
             }
         }

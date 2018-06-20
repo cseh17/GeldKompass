@@ -52,14 +52,16 @@
         android:gravity="center_horizontal" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_width="104dp"
+        android:layout_height="31.56dp"
         android:id="@+id/custom_dialog_btn_dialog"
         android:gravity="center_vertical|center_horizontal"
         android:layout_below="@+id/custom_alert_text_dialog"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/dialog_ok_button"
+        android:background="@drawable/ic_dialog_button3"
         android:layout_centerHorizontal="true"
-        android:textColor="#ffffffff" />
+        android:textColor="#ffffffff"
+        android:text="OK"
+        android:textSize="22sp"/>
 
 </RelativeLayout>
