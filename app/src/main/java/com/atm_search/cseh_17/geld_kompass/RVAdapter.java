@@ -1,6 +1,7 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     }
 
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = inflater.inflate(R.layout.cutsom_rv_row, parent, false);
 
@@ -31,7 +33,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         RVRowInformation current = data.get(position);
 

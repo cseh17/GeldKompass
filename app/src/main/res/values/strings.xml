@@ -25,19 +25,27 @@
     <string name="KEY_for_latitude">This is the key to save the latitude.123456789</string>
     <string name="KEY_for_longitude">This is the key to save the longitude. 123456789</string>
     
-    <string name="App_Version">4.0 - beta</string>
+    <string name="App_Version">4.1 - beta</string>
     <string name="copyright">© 2018 Kriszitan Cseh</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
     <string name="mi_about">Info</string>
     <string name="mi_datenschutz">Datenschutz</string>
 
-    <string name="report_title">Welcome to the reporting page of the app. Here you can report us: missing, misplaced or duplicated atms. In order to speed up the process, an automatic "erfasssung" of your location will pe "ausgeführt" and a report sent to us. This is important to allow us a fast as possible proccesing of your request. Thank you for your help!</string>
+    <string name="report_title">
+        Hier können Sie uns mitteilen: Fehlende, Fehlplatzierte oder doppelt angezeigte Bankautomaten.
+        Um den Prozess zu beschleunigen wird eine automatische Erfassung ihres Standortes analysiert und an uns gesendet.--
+        Es handelt sich um die Koordinaten Ihres Gerätes, welche genutzt werden, um Ihre Anfrage zu bearbeiten und den Bankautomaten zu bestimmen, von welchem Sie uns berichten. Die Daten sind anonymisiert.
+        Vielen Dank für Ihre Mithilfe</string>
+
+    <string name="report_permission_dialog_body">Die Folgende Funktion benötigt Ihr Einverständnis, uns Ihren Standort mitzuteilen.
+        Der gesamte Prozess ist automatisiert und KEINE DATEN werden gespeichert.
+        Falls Sie nicht zustimmen, wählen Sie "Nein". Sie werden die App wie gewohnt weiternutzen können.</string>
 
     <string-array name="report_spinner_problem">
-        <item>Missing atm</item>
-        <item>Duplicated atm</item>
-        <item>Misplaced atm</item>
+        <item>Ein fehlender Bankautomat</item>
+        <item>Ein Fehlplatzierter Bankautomat</item>
+        <item>Ein doppelt angezeigter Bankautomat</item>
     </string-array>
 
     <string-array name="report_spinner_banks">
@@ -62,4 +70,8 @@
         <item>Pax-Bank</item>
         <item>andere</item>
     </string-array>
+
+    <string name="question1">Was möchten Sie uns mitteilen?</string>
+    <string name="question2">Gehört der Bankautomat, von dem Sie berichten möchten, zu einer der folgenden Bankinstitute? (Falls nicht, wählen Sie "andere" am Ende der Liste)</string>
+
 </resources>

@@ -722,13 +722,11 @@ public class SearchFor {
 
         LatLng center = new LatLng(latitude, longitude);
 
-        LatLngBounds boundingBox = new LatLngBounds.Builder().
+        return new LatLngBounds.Builder().
                 include(SphericalUtil.computeOffset(center, 1500, 0)).
                 include(SphericalUtil.computeOffset(center, 1500, 90)).
                 include(SphericalUtil.computeOffset(center, 1500, 180)).
                 include(SphericalUtil.computeOffset(center,1500, 270)).build();
-
-        return boundingBox;
     }
 
     @AddTrace(name = "osmNearByBanks")

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -15,7 +13,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.perf.metrics.Trace;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -34,7 +31,6 @@ public class NetworkTraffic extends AsyncTask<String, String, String> {
     @SuppressLint("StaticFieldLeak")
     private ProgressBar loadingProgressBar;
     private static String resCode;
-    FirebaseAnalytics mFirebaseAnalytics;
 
     NetworkTraffic(Activity activity, Spinner question1, Spinner question2, ProgressBar loadingProgressBar){
 

@@ -1,7 +1,6 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -20,6 +19,8 @@ import android.widget.Spinner;
 
 import com.google.firebase.perf.metrics.AddTrace;
 
+import java.util.Objects;
+
 
 public class ReportFormFragment extends android.support.v4.app.Fragment{
 
@@ -32,7 +33,7 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
         View view = inflater.inflate(R.layout.report_form, container, false);
 
         final Spinner question1 = view.findViewById(R.id.question1_spinner);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(getContext(), R.array.report_spinner_problem, android.R.layout.simple_spinner_item );
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()), R.array.report_spinner_problem, android.R.layout.simple_spinner_item );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         question1.setAdapter(adapter);
 
@@ -45,14 +46,14 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressBar loadingProgressBar = getActivity().findViewById(R.id.rf_progressLoader);
+                final ProgressBar loadingProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.rf_progressLoader);
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 new NetworkTraffic(getActivity(), question1, question2, loadingProgressBar).execute();
             }
         });
 
         CustomWarningDialog dialog = new CustomWarningDialog();
-        dialog.showDialog(getActivity(),getActivity().getString(R.string.report_title));
+        dialog.showDialog(getActivity(), Objects.requireNonNull(getActivity()).getString(R.string.report_permission_dialog_body));
 
         return view;
     }

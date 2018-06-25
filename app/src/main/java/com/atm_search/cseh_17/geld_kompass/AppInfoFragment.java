@@ -17,7 +17,6 @@ public class AppInfoFragment extends Fragment {
     @Override
     @AddTrace(name = "AppInfoFragment-onCreateView")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.about_info_screen, container, false);
-        return view;
+        return inflater.inflate(R.layout.about_info_screen, container, false);
     }
 }
