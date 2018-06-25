@@ -7,8 +7,13 @@ import android.location.Geocoder;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.firebase.perf.metrics.AddTrace;
+
 public class CoordinatesDecoder {
+
+    @AddTrace(name = "CoordinateDecoder-getCompleteAdress")
     protected static String getCompleteAddress(Context mContext, double latitude, double longitude){
+
         String strAdd = "";
         Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
         try{

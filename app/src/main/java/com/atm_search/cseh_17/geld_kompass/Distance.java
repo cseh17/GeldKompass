@@ -1,11 +1,11 @@
 package com.atm_search.cseh_17.geld_kompass;
 
-
 /**
  * Created by cseh_17 on 29.03.2018.
  */
 
 public class Distance {
+
     public static double distance1(double lat1, double lat2, double lon1,
                                   double lon2, double el1, double el2) {
 

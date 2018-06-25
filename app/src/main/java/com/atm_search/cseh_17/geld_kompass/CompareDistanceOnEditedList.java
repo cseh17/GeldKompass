@@ -8,6 +8,7 @@ public class CompareDistanceOnEditedList implements Comparator<Elements>{
 
     @Override
     public int compare(Elements atmdas1, Elements atmdas2) {
+
         Double comp1, comp2;
         comp1 = atmdas1.getDistance();
         comp2 = atmdas2.getDistance();

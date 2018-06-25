@@ -14,7 +14,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final View mWindow;
 
-
     @SuppressLint("InflateParams")
     CustomInfoWindowAdapter(Context mContext) {
         mWindow = LayoutInflater.from(mContext).inflate(R.layout.custom_info_window, null);
@@ -35,7 +34,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private String getTitle(Marker marker){
        return marker.getTitle();
     }
-
 
     @Override
     public View getInfoWindow(Marker marker) {

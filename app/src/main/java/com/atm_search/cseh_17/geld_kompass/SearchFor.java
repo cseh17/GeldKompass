@@ -19,6 +19,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.maps.android.SphericalUtil;
 
 
@@ -728,7 +731,7 @@ public class SearchFor {
         return boundingBox;
     }
 
-
+    @AddTrace(name = "osmNearByBanks")
     public static void osmNearByBanks(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final int[] images, final RVAdapter adapter, final LinkedList<RVRowInformation> data){
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
@@ -977,7 +980,7 @@ public class SearchFor {
                                                                             markerOptions.title("Santander");
                                                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                                                             thisRow.iconId = R.drawable.ic_new_santander_marker;
-                                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.santander_logo_final));
+                                                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_santander_marker));
                                                                         } else {
                                                                             if (placeName.toLowerCase().contains("sparda")) {
                                                                                 markerOptions.title("Sparda-Bank");
@@ -1085,7 +1088,9 @@ public class SearchFor {
 
                         @Override
                         public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
-
+                            Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmNearByBanks-fails");
+                            myTrace.start();
+                            myTrace.incrementMetric("osmNearByBanks_load_data_miss", 1);
                         }
                     });
         } else {
@@ -1093,6 +1098,7 @@ public class SearchFor {
         }
     }
 
+    @AddTrace(name = "osmNearByAtms")
     private static void osmNearByAtms(APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final int[] images, final RVAdapter adapter, final LinkedList<RVRowInformation> data) {
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
@@ -1106,6 +1112,9 @@ public class SearchFor {
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
+
+        Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor_cache");
+        myTrace.start();
         try {
 
             // Retrieve the list from internal storage
@@ -1119,6 +1128,13 @@ public class SearchFor {
         } catch (IOException | ClassNotFoundException e) {
             Log.e("Cache error:", "No data found in cache");
         }
+
+        if (cachedEntries != null && !cachedEntries.isEmpty()){
+            myTrace.incrementMetric("SearchFor_cache_hit", 1);
+        } else {
+            myTrace.incrementMetric("SearchFor_cache_miss", 1);
+        }
+        myTrace.stop();
 
         if (cachedEntries != null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 151 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
 
@@ -1503,7 +1519,7 @@ public class SearchFor {
                                                                             thisRow.iconId = R.drawable.ic_new_commerzbank_map_marker;
                                                                             markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                                                                         } else {
-                                                                            thisRow.iconId = images[3];
+                                                                            thisRow.iconId = R.drawable.ic_new_general_map_marker3;
                                                                             markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                                         }
                                                                     }
@@ -1557,6 +1573,8 @@ public class SearchFor {
                                     }
                                 }
 
+                                Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor_save_cache");
+                                myTrace.start();
                                 // Check if the result Object is empty
                                 if (!data.isEmpty()) {
                                     try {
@@ -1574,6 +1592,8 @@ public class SearchFor {
 
                                     } catch (IOException e) {
                                         Log.e(TAG, e.getMessage());
+                                        myTrace.incrementMetric("SearchFor_cache_save_miss", 1);
+                                        myTrace.stop();
                                     }
                                 }
                             }
@@ -1588,6 +1608,10 @@ public class SearchFor {
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmNearByAtms-fails");
+                        myTrace.start();
+                        myTrace.incrementMetric("osmNearByAtms_load_data_miss", 1);
+
                             }
                     });
         }

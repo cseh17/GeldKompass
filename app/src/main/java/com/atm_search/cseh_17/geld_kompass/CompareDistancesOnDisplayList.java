@@ -6,6 +6,7 @@ public class CompareDistancesOnDisplayList implements Comparator<RVRowInformatio
 
     @Override
     public int compare(RVRowInformation rvri1, RVRowInformation rvri2) {
+
         Double comp1, comp2;
         comp1 = Double.parseDouble(rvri1.rowSubtitle);
         comp2 = Double.parseDouble(rvri2.rowSubtitle);

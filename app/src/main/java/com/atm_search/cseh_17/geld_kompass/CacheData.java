@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 
 public final class CacheData {
+
     private CacheData() {
     }
 

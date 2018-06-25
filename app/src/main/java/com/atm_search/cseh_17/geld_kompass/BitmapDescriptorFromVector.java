@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import java.util.Objects;
 
 class BitmapDescriptorFromVector {
+
     static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId){
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, Objects.requireNonNull(vectorDrawable).getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());

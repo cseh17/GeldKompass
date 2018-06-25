@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/report_form">
+    android:id="@+id/report_form"
+    android:background="@android:color/white">
 
 
     <TextView
@@ -62,7 +63,7 @@
         android:focusable="false"/>
 
     <ProgressBar
-        android:id="@+id/rf_progresLoader"
+        android:id="@+id/rf_progressLoader"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:indeterminate="true"
         android:layout_width="100dp"

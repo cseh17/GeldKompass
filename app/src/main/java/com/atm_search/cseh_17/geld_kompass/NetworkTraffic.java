@@ -4,12 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.metrics.Trace;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -21,13 +27,14 @@ import okhttp3.Response;
 
 public class NetworkTraffic extends AsyncTask<String, String, String> {
 
-    WeakReference<Activity> mWeakActivity;
+    private WeakReference<Activity> mWeakActivity;
 
     @SuppressLint("StaticFieldLeak")
     private Spinner question1, question2;
     @SuppressLint("StaticFieldLeak")
     private ProgressBar loadingProgressBar;
     private static String resCode;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     NetworkTraffic(Activity activity, Spinner question1, Spinner question2, ProgressBar loadingProgressBar){
 
@@ -37,6 +44,7 @@ public class NetworkTraffic extends AsyncTask<String, String, String> {
         this.loadingProgressBar = loadingProgressBar;
     }
 
+    @AddTrace(name = "NetworkTraffic-doInBackground")
     @Override
     protected String doInBackground(String... strings) {
 
@@ -71,12 +79,19 @@ public class NetworkTraffic extends AsyncTask<String, String, String> {
 
         loadingProgressBar.setVisibility(View.GONE);
         Activity activity = mWeakActivity.get();
+
+        Trace myTrace = FirebasePerformance.getInstance().newTrace("GoogleFormResponse");
+        myTrace.start();
+
         if (activity != null) {
             if (resCode.equals("200")){
                 Toast.makeText(activity, "Report sent succesfully", Toast.LENGTH_LONG).show();
+                myTrace.incrementMetric(resCode,1);
             } else {
                 Toast.makeText(activity, "Server error. Please try again later", Toast.LENGTH_LONG).show();
+                myTrace.incrementMetric(resCode,1);
             }
+            myTrace.stop();
             Intent appMainIntent = new Intent(activity, MainMapAtmDisplay.class);
             activity.startActivity(appMainIntent);
         }

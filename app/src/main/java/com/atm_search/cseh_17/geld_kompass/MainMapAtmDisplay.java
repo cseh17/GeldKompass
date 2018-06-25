@@ -3,7 +3,6 @@ package com.atm_search.cseh_17.geld_kompass;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Address;
@@ -19,6 +18,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -47,6 +48,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -68,6 +73,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private Marker mCurrentLocationMarker;
     SupportMapFragment mapFragment;
+    AppInfoFragment appInfoFragment;
+    static ReportFormFragment reportFragment;
     private FusedLocationProviderClient mFusedLocationClient;
     APIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
@@ -77,12 +84,16 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     int[] images = {R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final, R.drawable.apotheker_und_aerztebank_logo_final, R.drawable.degussa_bank_logo_final, R.drawable.lb_bw_logo_final, R.drawable.lbb_logo_final,R.drawable.oldenburgische_landesbank_logo_final, R.drawable.suedwestbank_logo_final};
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
+    @AddTrace(name = "MainOnCreate")
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+        // Obtain the FirebaseAnalytics instance
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Set the filter buttons isSelected variables to false
         cashGroupIsSelected = false;
@@ -103,23 +114,41 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                        // Create FragmentManager & initialize AüüInfoFragment & ReportFormFragment
+                        FragmentManager fm = getSupportFragmentManager();
+                        appInfoFragment = new AppInfoFragment();
+                        reportFragment = new ReportFormFragment();
+
                         switch (item.getItemId()) {
-                            case R.id.about:
-                                item.setChecked(true);
-                                Intent appInfoIntent = new Intent(MainMapAtmDisplay.this, AppInfoActivity.class);
-                                MainMapAtmDisplay.this.startActivity(appInfoIntent);
-                                mDrawerLayout.closeDrawers();
 
                             case R.id.report_missing:
+                                Bundle params = new Bundle();
+                                params.putString("menuItem", "report_missing");
+                                mFirebaseAnalytics.logEvent("MenuItemPressed", params);
+                                FragmentTransaction ft;
+                                ft = fm.beginTransaction();
+                                ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
                                 item.setChecked(true);
-                                Intent reportMissingIntent = new Intent(MainMapAtmDisplay.this, ReportFormActivity.class);
-                                MainMapAtmDisplay.this.startActivity(reportMissingIntent);
                                 mDrawerLayout.closeDrawers();
+                                break;
+
+                            case R.id.about:
+                                params = new Bundle();
+                                params.putString("menuItem", "about");
+                                mFirebaseAnalytics.logEvent("MenuItemPressed", params);
+                                item.setChecked(true);
+                                ft = fm.beginTransaction();
+                                ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                mDrawerLayout.closeDrawers();
+                                break;
 
                             default:
                                 mDrawerLayout.closeDrawers();
                                 return true;
                         }
+                        return true;
                     }
                 }
         );
@@ -131,7 +160,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-
         // Initialise RecyclerView
         recyclerView = findViewById(R.id.rv_list_items);
         adapter = new RVAdapter(this, data);
@@ -139,6 +167,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setVisibility(View.GONE);
 
+        //Start location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -155,9 +184,15 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
+                        Bundle params = new Bundle();
+                        params.putString("tabs", "map");
+                        mFirebaseAnalytics.logEvent("TabSelected", params);
                         Objects.requireNonNull(mapFragment.getView()).setVisibility(View.VISIBLE);
                         break;
                     case 1:
+                        params = new Bundle();
+                        params.putString("tabs", "list");
+                        mFirebaseAnalytics.logEvent("TabSelected", params);
                         recyclerView.setVisibility(View.VISIBLE);
 
                         // When ListView is selected, check if the data Object is empty, and if true, show alert.
@@ -219,6 +254,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
+                Bundle params = new Bundle();
+                params.putString("filter", "CashGroup");
+                mFirebaseAnalytics.logEvent("FilterApplied", params);
+
                 if (cashGroupIsSelected) {
 
                     cashGroupIsSelected = false;
@@ -275,6 +314,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         floatingCashPoolFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Bundle params = new Bundle();
+                params.putString("filter", "CashPool");
+                mFirebaseAnalytics.logEvent("FilterApplied", params);
 
                 if (cashPoolIsSelected) {
 
@@ -333,6 +376,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
+                Bundle params = new Bundle();
+                params.putString("filter", "Sparkasse");
+                mFirebaseAnalytics.logEvent("FilterApplied", params);
+
                 if (sparkasseIsSelected) {
 
                     cashGroupIsSelected = false;
@@ -387,6 +434,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         floatingVolksbankFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Bundle params = new Bundle();
+                params.putString("filter", "VolksbankenGroup");
+                mFirebaseAnalytics.logEvent("FilterApplied", params);
 
                 if (volksbankIsSelected) {
 
@@ -468,7 +519,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
 
         Log.i("onPause", "cache deleted");
-
     }
 
     public void onResume(){
@@ -517,6 +567,27 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+
+        // Get the navigation view
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Iterate trough all the menu items of the navigationView drawer, and set them as unchecked
+        for (int i = 0; i < navigationView.getMenu().size(); i++){
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+
+        // If drawer is open when back is pressed, then close
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
         switch (item.getItemId()){
@@ -528,6 +599,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
     }
 
+    @AddTrace(name = "MainOnMapReady")
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -539,7 +611,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // Check if the map has been loaded, and the View is not empty
-        if (mMap != null &&
+        if (mMap != null  &&
                 Objects.requireNonNull(mapFragment.getView()).findViewById(Integer.parseInt("1")) != null) {
 
             // Get the View
@@ -583,6 +655,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 final FloatingActionButton floatingSparkasseFilterButton = findViewById(R.id.filterSparkasseButton);
                 final FloatingActionButton floatingVolksbankFilterButton = findViewById(R.id.filterVolksbankButton);
 
+                Trace myTrace = FirebasePerformance.getInstance().newTrace("Main-getLocation");
+                myTrace.start();
                 for (Location location : locationResult.getLocations()) {
                     if (getApplicationContext() != null){
                         setmLastLocation(location);
@@ -637,6 +711,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                             }
                         } else {
+                            Bundle params = new Bundle();
+                            params.putString("outOfBounds", "true");
+                            mFirebaseAnalytics.logEvent("AppOpenedOutsideDE", params);
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
                             final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
@@ -645,17 +722,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                         setmLastLocation(location);
-
+                        myTrace.stop();
                         if (mCurrentLocationMarker != null) {
                             mCurrentLocationMarker.remove();
                         }
-
-                        // Place current location marker
-                        //latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                        //Move map camera
-                        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
                     }
                 }
             }
@@ -689,30 +759,36 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
     public void onRequestPermissionsResult(int reqestCode, @NonNull String permissions[], @NonNull int[] grantResults){
 
-            switch (reqestCode){
-                case MY_PERMISSIONS_REQUEST_LOCATION:{
+        switch (reqestCode){
+            case MY_PERMISSIONS_REQUEST_LOCATION:{
 
-                    // If request is cancelled, the result array is empty
-                    if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)){
+                // If request is cancelled, the result array is empty
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)){
 
-                        // Request was granted. Perform the location related tasks
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                    // Request was granted. Perform the location related tasks
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
-                            // Permissions granted, actiate the functionality that depends on the permission.
-                            Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_granted_DE), Toast.LENGTH_LONG).show();
-                            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                            mMap.setMyLocationEnabled(true);
-                        }
-                    } else {
-
-                        // Permissions denied, disable the functionality that depends on the permission.
-                        Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_denied_DE), Toast.LENGTH_LONG).show();
-                        final ProgressBar loadingProgressBar = findViewById(R.id.main_progresLoader);
-                        loadingProgressBar.setVisibility(View.GONE);
+                        // Permissions granted, actiate the functionality that depends on the permission.
+                        Bundle params = new Bundle();
+                        params.putString("granted", "true");
+                        mFirebaseAnalytics.logEvent("LocationPermission", params);
+                        Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_granted_DE), Toast.LENGTH_LONG).show();
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                        mMap.setMyLocationEnabled(true);
                     }
+                } else {
+
+                    // Permissions denied, disable the functionality that depends on the permission.
+                    Bundle params = new Bundle();
+                    params.putString("granted", "false");
+                    mFirebaseAnalytics.logEvent("LocationPermission", params);
+                    Toast.makeText(this, MainMapAtmDisplay.this.getString(R.string.permission_denied_DE), Toast.LENGTH_LONG).show();
+                    final ProgressBar loadingProgressBar = findViewById(R.id.main_progresLoader);
+                    loadingProgressBar.setVisibility(View.GONE);
                 }
             }
         }
+    }
 
     public void setmLastLocation(Location Location) {
         Location mLastLocation1 = Location;
@@ -725,6 +801,12 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         if (latLng != null) {
             return latLng;
         } else return null;
+    }
+
+    public FragmentManager getFM(){
+
+        FragmentManager fm = getSupportFragmentManager();
+        return fm;
     }
 
 }

@@ -5,12 +5,14 @@ import android.location.Address;
 import android.location.Geocoder;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.IOException;
 import java.util.List;
 
 public class AddressDecoder {
 
+    @AddTrace(name = "AddressDecoder-getLocationFromAddress")
     public static LatLng getLocationFromAddress(Context mContext, String mAddress){
 
         Geocoder coder = new Geocoder(mContext);

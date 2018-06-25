@@ -9,7 +9,9 @@ import android.widget.TextView;
 import android.os.Handler;
 
 public class CustomAlertDialog {
+
     public void showDialog(Activity activity, String msg){
+
             final Dialog dialog = new Dialog(activity);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCancelable(false);
