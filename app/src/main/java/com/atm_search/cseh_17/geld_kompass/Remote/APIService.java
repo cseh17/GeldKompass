@@ -1,8 +1,9 @@
 package com.atm_search.cseh_17.geld_kompass.Remote;
 
 import com.atm_search.cseh_17.geld_kompass.Model.MyAtms;
-import com.atm_search.cseh_17.geld_kompass.ModelOSM.MyOsmAtms;
 
+
+import com.atm_search.cseh_17.geld_kompass.ModelOSM.MyOsmAtms;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Url;

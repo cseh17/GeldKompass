@@ -23,8 +23,8 @@
         android:name=".GeldKompassApp">
 
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBH_ClYzw0X-bne77QWXEXbpbUU6dRL1tg" />
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDho5Ix4QolUtBH2tZ23DBV09hSPvJsw_M"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -42,9 +42,6 @@
         </activity>
 
         <activity android:name=".MainMapAtmDisplay"/>
-        <activity
-            android:name=".ReportFormFragment"
-            android:parentActivityName=".MainMapAtmDisplay" />
 
     </application>
 
