@@ -252,14 +252,14 @@ public class SearchFor {
                                                                                     if (placeName.toLowerCase().contains("apo")) {
                                                                                         markerOptions.title("Deutsche Apotheker und Ärzte Bank");
                                                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                                        thisRow.iconId = images[14];
-                                                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
+                                                                                        thisRow.iconId = R.drawable.ic_new_apo_bank_marker3;
+                                                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_apo_bank_marker3));
                                                                                     } else {
                                                                                         if (placeName.toLowerCase().contains("degussa")) {
                                                                                             markerOptions.title("Degussa Bank");
                                                                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                                            thisRow.iconId = images[15];
-                                                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
+                                                                                            thisRow.iconId = R.drawable.ic_new_degussa_bank_marker;
+                                                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_degussa_bank_marker));
                                                                                         } else {
                                                                                             if (placeName.toLowerCase().contains("lbbw") || placeName.toLowerCase().contains("wüttemb")) {
                                                                                                 markerOptions.title("LBBW");
@@ -474,10 +474,10 @@ public class SearchFor {
                                                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
                                                         } else {
                                                             if (entry.mMarkerOptionsTitle.toLowerCase().contains("apo")) {
-                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
+                                                                mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_apo_bank_marker3));
                                                             } else {
                                                                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
-                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
+                                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_degussa_bank_marker));
                                                                 } else {
                                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("lbbw") || entry.mMarkerOptionsTitle.toLowerCase().contains("wüttemb")) {
                                                                         mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lb_bw_logo_final));
@@ -995,14 +995,14 @@ public class SearchFor {
                                                                                     if (placeName.toLowerCase().contains("apo")) {
                                                                                         markerOptions.title("Deutsche Apotheker und Ärzte Bank");
                                                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                                        thisRow.iconId = images[14];
-                                                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
+                                                                                        thisRow.iconId = R.drawable.ic_new_apo_bank_marker3;
+                                                                                        markerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_apo_bank_marker3));
                                                                                     } else {
                                                                                         if (placeName.toLowerCase().contains("degussa")) {
                                                                                             markerOptions.title("Degussa Bank");
                                                                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                                            thisRow.iconId = images[15];
-                                                                                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
+                                                                                            thisRow.iconId = R.drawable.ic_new_degussa_bank_marker;
+                                                                                            markerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_degussa_bank_marker));
                                                                                         } else {
                                                                                             if (placeName.toLowerCase().contains("lbbw") || placeName.toLowerCase().contains("wüttemb")) {
                                                                                                 markerOptions.title("LBBW");
@@ -1216,10 +1216,10 @@ public class SearchFor {
                                                             mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
                                                         } else {
                                                             if (entry.mMarkerOptionsTitle.toLowerCase().contains("apo")) {
-                                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.apotheker_und_aerztebank_logo_final));
+                                                                mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_apo_bank_marker3));
                                                             } else {
                                                                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
-                                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.degussa_bank_logo_final));
+                                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_degussa_bank_marker));
                                                                 } else {
                                                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("lbbw") || entry.mMarkerOptionsTitle.toLowerCase().contains("wüttemb")) {
                                                                         mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.lb_bw_logo_final));

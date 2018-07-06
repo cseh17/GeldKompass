@@ -25,7 +25,7 @@
     <string name="KEY_for_latitude">This is the key to save the latitude.123456789</string>
     <string name="KEY_for_longitude">This is the key to save the longitude. 123456789</string>
     
-    <string name="App_Version">1.0 alpha</string>
+    <string name="App_Version">2.0 alpha</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
@@ -34,8 +34,7 @@
 
     <string name="report_title">
         Hier können Sie uns mitteilen: Fehlende, Fehlplatzierte oder doppelt angezeigte Bankautomaten.
-        Um den Prozess zu beschleunigen wird eine automatische Erfassung ihres Standortes analysiert und an uns gesendet.--
-        Es handelt sich um die Koordinaten Ihres Gerätes, welche genutzt werden, um Ihre Anfrage zu bearbeiten und den Bankautomaten zu bestimmen, von welchem Sie uns berichten. Die Daten sind anonymisiert.
+        Um den Prozess zu beschleunigen, wird Ihr Standort automatisch erfasst.
         Vielen Dank für Ihre Mithilfe!</string>
 
     <string name="report_permission_dialog_body">Die Folgende Funktion benötigt Ihr Einverständnis, uns Ihren Standort mitzuteilen.

@@ -126,11 +126,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="186" />
-                            <entry key="outputName" value="ic_image2vector_4" />
+                            <entry key="height" value="501" />
+                            <entry key="outputName" value="ic_new_apo_bank_marker3" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\image2vector-4.svg" />
-                            <entry key="width" value="400" />
+                            <entry key="sourceFile" value="D:\new_apo_bank_marker3.svg" />
+                            <entry key="width" value="376" />
                           </map>
                         </option>
                       </PersistentState>
