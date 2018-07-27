@@ -5,12 +5,13 @@
     <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
     <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuchen Sie es später erneut.</string>
 
-    <string name="no_result_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="no_result_alert_DE">Keine Ergebnisse in einem Umkreis von 1500m gefunden! Die Suche wird erweitert, um nach der erster Geldautomat in Ihrer Nähe zu suchen.</string>
+    <string name="no_result_distance_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_list_DE">Keine Ergebnisse! Die von Ihnen eingestellte Suche liefert keine Ergebnisse. Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
-    <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in einem Umkreis von 1500 m. Es tut uns Leid!</string>
-    <string name="no_result_alert_cash_pool_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat des CashPools in einem Umkreis von 1500 m. Es tut uns Leid!</string>
-    <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in einem Umkreis von 1500 m. Es tut uns Leid!</string>
-    <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in einem Umkreis von 1500 m. Es tut uns Leid!</string>
+    <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="no_result_alert_cash_pool_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat des CashPools in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in diesem Gebiet. Es tut uns Leid!</string>
 
     <string name="location_permission_title_DE">Achtung</string>
     <string name="location_permission_body_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort Ihres Gerätes</string>
@@ -20,12 +21,12 @@
     <string name="nav_bar_title_done">In der Nähe von: </string>
 
 
-    <string name="KEY_for_atms">This is the key to save data to the cache.12345678900987654321</string>
-    <string name="KEY_for_timestamp">This is the key to save the timestamp of the lased cached data.123456789987654321</string>
-    <string name="KEY_for_latitude">This is the key to save the latitude.123456789</string>
-    <string name="KEY_for_longitude">This is the key to save the longitude. 123456789</string>
+    <string name="KEY_for_atms">cache_save_atms_KEY</string>
+    <string name="KEY_for_timestamp">cache_save_timestamp_KEY</string>
+    <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
+    <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="App_Version">2.0 alpha</string>
+    <string name="App_Version">3.0 alpha</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
@@ -33,8 +34,8 @@
     <string name="mi_datenschutz">Datenschutz</string>
 
     <string name="report_title">
-        Hier können Sie uns mitteilen: Fehlende, Fehlplatzierte oder doppelt angezeigte Bankautomaten.
-        Um den Prozess zu beschleunigen, wird Ihr Standort automatisch erfasst.
+        Hier können Sie uns: fehlende, fehlplatzierte oder doppelt angezeigte Bankautomaten mitteilen.
+        Um den Prozess zu beschleunigen, Ihre anonymisierte Standort-Daten werden automatisch erfasst.
         Vielen Dank für Ihre Mithilfe!</string>
 
     <string name="report_permission_dialog_body">Die Folgende Funktion benötigt Ihr Einverständnis, uns Ihren Standort mitzuteilen.

@@ -1,8 +1,10 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -31,6 +33,7 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.report_form, container, false);
+        SharedPreferences reportingPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         final Spinner question1 = view.findViewById(R.id.question1_spinner);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()), R.array.report_spinner_problem, android.R.layout.simple_spinner_item );
@@ -52,9 +55,14 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
             }
         });
 
-        CustomWarningDialog dialog = new CustomWarningDialog();
-        dialog.showDialog(getActivity(), Objects.requireNonNull(getActivity()).getString(R.string.report_permission_dialog_body));
+        // Check if there is a sharedPreference called "isReportingLocationCollectionAllowed".
+        boolean isAllowed = reportingPreferences.getBoolean("isReportingLocationCollectionAllowed", false);
 
+        // If there is none, or the value of it is "false", create the dialog to ask for permission.
+        if (!isAllowed) {
+            CustomWarningDialog dialog = new CustomWarningDialog();
+            dialog.showDialog(getActivity(), getContext(), Objects.requireNonNull(getActivity()).getString(R.string.report_permission_dialog_body));
+        }
         return view;
     }
 }

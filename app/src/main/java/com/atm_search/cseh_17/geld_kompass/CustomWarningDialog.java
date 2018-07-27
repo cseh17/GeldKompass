@@ -3,6 +3,10 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.arch.lifecycle.ReportFragment;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -13,8 +17,10 @@ public class CustomWarningDialog{
 
 
 
-    public void showDialog (final Activity activity, String msg){
+    public void showDialog (final Activity activity, Context context, String msg){
 
+        SharedPreferences reportingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences.Editor prefEditor = reportingPreferences.edit();
 
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -37,6 +43,10 @@ public class CustomWarningDialog{
         dialogButtonPos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // If the user clicks on the allow button, set the value for the SharedPreferences to "true".
+                prefEditor.putBoolean("isReportingLocationCollectionAllowed", true);
+                prefEditor.apply();
                 dialog.dismiss();
             }
 

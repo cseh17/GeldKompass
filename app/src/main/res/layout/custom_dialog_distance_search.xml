@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:id="@+id/custom_attention_logo_search_distance"
+        android:gravity="center"
+        android:background="@color/colorSecondary"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/custom_attention_logo2_search_distance"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorSecondary"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_dialog_image" />
+
+    <TextView
+        android:id="@+id/custom_attention_search_distance_logo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="!"
+        android:textColor="@color/white"
+        android:textSize="60sp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Error Message"
+        android:id="@+id/custom_attention_search_distance_text_dialog"
+        android:layout_below="@+id/custom_attention_logo_search_distance"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="18sp"
+        android:textColor="#ff000000"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
+
+    <ProgressBar
+        android:id="@+id/dialog_progresLoader"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="visible"
+        android:layout_marginTop="10dp"
+        android:indeterminateTintMode="src_atop"
+        android:layout_below="@+id/custom_attention_search_distance_text_dialog"
+        android:indeterminateTint="@color/colorSecondary"
+        />
+
+    <Button
+        android:layout_width="104dp"
+        android:layout_height="31.56dp"
+        android:id="@+id/custom_attention_search_distance_button"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        />
+
+</RelativeLayout>

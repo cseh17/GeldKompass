@@ -682,7 +682,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         if (allowedBoundsGermany.contains(latLng)) {
 
                             // Move Camera
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
 
                             // Check for connectivity
                             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);

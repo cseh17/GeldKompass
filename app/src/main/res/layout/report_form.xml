@@ -59,7 +59,7 @@
             android:background="@drawable/spinner_border"/>
 
         <Button
-            android:layout_width="104dp"
+            android:layout_width="124dp"
             android:layout_height="31.56dp"
             android:id="@+id/rf_submit_button"
             android:layout_gravity="center_vertical|center_horizontal"
@@ -67,7 +67,7 @@
             android:textColor="#ffffffff"
             android:background="@drawable/submit_btn"
             android:textSize="16sp"
-            android:text="Submit"
+            android:text="Abschiecken"
             android:focusable="false"/>
 
         <ProgressBar
