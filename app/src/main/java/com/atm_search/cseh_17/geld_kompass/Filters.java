@@ -101,13 +101,13 @@ public class Filters {
                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
                     } else {
                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("hypo")) {
-                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hypo_logo_final));
+                            mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_hypo_marker));
                         } else {
                             if (entry.mMarkerOptionsTitle.toLowerCase().contains("deutsche")) {
-                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.deutschebank_logo_final));
+                                mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_deutsche_bank_marker));
                             } else {
                                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("post")) {
-                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.postbank_logo_final));
+                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_postbank_marker));
                                 }
                             }
                         }
@@ -241,15 +241,15 @@ public class Filters {
                                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_degussa_bank_marker));
                                     } else {
                                         if (entry.mMarkerOptionsTitle.toLowerCase().contains("oldenburgische landesbank") || entry.mMarkerOptionsTitle.toLowerCase().contains("olb")) {
-                                            mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.oldenburgische_landesbank_logo_final));
+                                            mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_olb_marker3));
                                         } else {
                                             if (entry.mMarkerOptionsTitle.toLowerCase().contains("südwest")) {
-                                                mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.suedwestbank_logo_final));
+                                                mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_suedwestbank_marker2));
                                             } else {
                                                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("pax")) {
-                                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.paxbank_logo_final));
+                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_pax_bank_marker2));
                                                 } else {
-                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3 ));
+                                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
                                                 }
                                             }
                                         }
@@ -362,7 +362,7 @@ public class Filters {
                     }
 
                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")) {
-                        mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.sparkasse_logo_final));
+                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparkasse_marker5));
                     }
 
 
@@ -490,7 +490,7 @@ public class Filters {
 
                     }
 
-                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.volksbank_logo_final));
+                    mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_volksbank_gruppe_marker2));
 
                     // Add Marker to map
                     mMarkerOptions.title(entry.mMarkerOptionsTitle);

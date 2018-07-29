@@ -47,7 +47,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         addWindowSnippet(marker, mWindow);
         ImageView image = mWindow.findViewById(R.id.ciw_logo);
         if (getTitle(marker).toLowerCase().contains("sparkasse")){
-            image.setImageResource(R.drawable.detail_logo_sparkasse);
+            image.setImageResource(R.drawable.ic_cw_sparkasse);
         } else {
             if (getTitle(marker).toLowerCase().contains("deutsche") | getTitle(marker).toLowerCase().contains("commerz") | getTitle(marker).toLowerCase().contains("post") | getTitle(marker).toLowerCase().contains("hypo") | getTitle(marker).toLowerCase().contains("dresdener")){
                 image.setImageResource(R.drawable.ic_cw_cash_group);
@@ -55,7 +55,36 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
                 if (getTitle(marker).toLowerCase().contains("bbb") | getTitle(marker).toLowerCase().contains("pax") | getTitle(marker).toLowerCase().contains("santander") | getTitle(marker).toLowerCase().contains("sparda") | getTitle(marker).toLowerCase().contains("targo") | getTitle(marker).toLowerCase().contains("degussa") | getTitle(marker).toLowerCase().contains("südwest") | getTitle(marker).toLowerCase().contains("national") | getTitle(marker).toLowerCase().contains("olb") | getTitle(marker).toLowerCase().contains("oldenburgische")){
                     image.setImageResource(R.drawable.ic_cw_cash_pool);
                 } else {
-                    image.setImageResource(R.drawable.ic_cw_generic5);
+                    if (getTitle(marker).toLowerCase().contains("volks")
+                            || (getTitle(marker).toLowerCase().contains("aachener"))
+                            || (getTitle(marker).toLowerCase().contains("bopfing"))
+                            || (getTitle(marker).toLowerCase().contains("brühl"))
+                            || (getTitle(marker).toLowerCase().contains("donau"))
+                            || (getTitle(marker).toLowerCase().contains("erfurter"))
+                            || (getTitle(marker).toLowerCase().contains("federsee bank"))
+                            || (getTitle(marker).toLowerCase().contains("frankenberger bank"))
+                            || (getTitle(marker).toLowerCase().contains("geno"))
+                            || (getTitle(marker).toLowerCase().contains("genossenschafts bank münchen"))
+                            || (getTitle(marker).toLowerCase().contains("gls"))
+                            || (getTitle(marker).toLowerCase().contains("unterlegäu"))
+                            || (getTitle(marker).toLowerCase().contains("kölner"))
+                            || (getTitle(marker).toLowerCase().contains("ievo"))
+                            || (getTitle(marker).toLowerCase().contains("liga"))
+                            || (getTitle(marker).toLowerCase().contains("märki"))
+                            || (getTitle(marker).toLowerCase().contains("münchener bank"))
+                            || (getTitle(marker).toLowerCase().contains("raiffeisen"))
+                            || (getTitle(marker).toLowerCase().contains("rv"))
+                            || (getTitle(marker).toLowerCase().contains("darlehenkasse"))
+                            || (getTitle(marker).toLowerCase().contains("spaar & kredit"))
+                            || (getTitle(marker).toLowerCase().contains("spaar&kredit"))
+                            || (getTitle(marker).toLowerCase().contains("spreewald"))
+                            || (getTitle(marker).toLowerCase().contains("vr"))
+                            || (getTitle(marker).toLowerCase().contains("waldecker"))
+                            || (getTitle(marker).toLowerCase().contains("team"))) {
+                        image.setImageResource(R.drawable.ic_cw_volksbank);
+                    } else {
+                        image.setImageResource(R.drawable.ic_cw_generic5);
+                    }
                 }
             }
         }

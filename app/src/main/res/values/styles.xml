@@ -13,8 +13,10 @@
     <!-- Splash Screen. -->
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="android:windowBackground">@drawable/splash_screen_v16</item>
-
+        <item name="android:windowBackground">@drawable/new_splash_screen4</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>

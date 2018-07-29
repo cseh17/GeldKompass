@@ -81,7 +81,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
-    int[] images = {R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.deutschebank_logo_final, R.drawable.hypo_logo_final, R.drawable.ing_logo_final, R.drawable.paxbank_logo_final, R.drawable.postbank_logo_final, R.drawable.psd_bank_logo_final, R.drawable.santander_logo_final, R.drawable.sparda_bank_logo_final, R.drawable.sparkasse_logo_final, R.drawable.targobank_logo_final, R.drawable.volksbank_logo_final, R.drawable.lb_bw_logo_final, R.drawable.lb_bw_logo_final,  R.drawable.lb_bw_logo_final, R.drawable.lbb_logo_final,R.drawable.oldenburgische_landesbank_logo_final, R.drawable.suedwestbank_logo_final};
+    int[] images = {R.drawable.targobank_logo_final};
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
     private FirebaseAnalytics mFirebaseAnalytics;
