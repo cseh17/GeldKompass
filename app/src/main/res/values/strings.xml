@@ -26,7 +26,7 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="App_Version">3.0 alpha</string>
+    <string name="App_Version">4.1 alpha</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
@@ -43,9 +43,10 @@
         Falls Sie nicht zustimmen, wählen Sie "Nein". Sie werden die App wie gewohnt weiternutzen können.</string>
 
     <string-array name="report_spinner_problem">
-        <item>Ein fehlender Bankautomat</item>
-        <item>Ein Fehlplatzierter Bankautomat</item>
-        <item>Ein doppelt angezeigter Bankautomat</item>
+        <item>Ein fehlender Geldautomat</item>
+        <item>Ein Fehlplatzierter Geldautomat</item>
+        <item>Ein doppelt angezeigter Geldautomat</item>
+        <item>Ein nicht mehr existierender Geldautomat</item>
     </string-array>
 
     <string-array name="report_spinner_banks">
@@ -62,8 +63,7 @@
         <item>HypoVereinsbank</item>
         <item>Apotheker und Ärztebank</item>
         <item>Degussa Bank</item>
-        <item>LLBW</item>
-        <item>Landesbank Berlin</item>
+        <item>BW Bank</item>
         <item>Oldenburgische Landesbank</item>
         <item>Südwestbank</item>
         <item>ING DiBa</item>
@@ -73,5 +73,10 @@
 
     <string name="question1">Was möchten Sie uns mitteilen?</string>
     <string name="question2">Gehört der Bankautomat, von dem Sie berichten möchten, zu einer der folgenden Bankinstitute? (Falls nicht, wählen Sie "andere" am Ende der Liste)</string>
+
+    <string name="logo_credentials_bbbank">Das BBBank-Logo ist Eigentum von BBBank eG.</string>
+    <string name="logo_credentials_degussa_bank">Das Degussa Bank-Logo ist Eigentum von Degussa Bank AG.</string>
+    <string name="logo_credentials_sudwestbank">Das Südwestbank-Logo ist Eigentum von Südwestbank AG.</string>
+    <string name="logo_credentials_disclaimer">Alle die oben genannten Logos werden mit Erlabniss des Eigentümers werwendet.</string>
 
 </resources>

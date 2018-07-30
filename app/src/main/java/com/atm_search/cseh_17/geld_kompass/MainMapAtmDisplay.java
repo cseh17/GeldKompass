@@ -114,7 +114,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                        // Create FragmentManager & initialize AüüInfoFragment & ReportFormFragment
+                        // Create FragmentManager & initialize InfoFragment & ReportFormFragment
                         FragmentManager fm = getSupportFragmentManager();
                         appInfoFragment = new AppInfoFragment();
                         reportFragment = new ReportFormFragment();
@@ -122,6 +122,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         switch (item.getItemId()) {
 
                             case R.id.report_missing:
+                                setNavButtonUnclickable();
                                 Bundle params = new Bundle();
                                 params.putString("menuItem", "report_missing");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
@@ -131,9 +132,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
                                 item.setChecked(true);
                                 mDrawerLayout.closeDrawers();
+                                setNavButtonClickable();
                                 break;
 
                             case R.id.about:
+                                setNavButtonUnclickable();
                                 params = new Bundle();
                                 params.putString("menuItem", "about");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
@@ -142,6 +145,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                                 ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
                                 mDrawerLayout.closeDrawers();
+                                setNavButtonClickable();
                                 break;
 
                             default:
@@ -585,6 +589,29 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             super.onBackPressed();
         }
 
+    }
+
+
+    public void setNavButtonUnclickable(){
+
+        // Get the navigation view
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Iterate trough all the menu items of the navigationView drawer, and set them as unclickable
+        for (int i = 0; i < navigationView.getMenu().size(); i++){
+            navigationView.getMenu().getItem(i).setCheckable(false);
+        }
+    }
+
+    public void setNavButtonClickable(){
+
+        // Get the navigation view
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Iterate trough all the menu items of the navigationView drawer, and set them as unclickable
+        for (int i = 0; i < navigationView.getMenu().size(); i++){
+            navigationView.getMenu().getItem(i).setCheckable(true);
+        }
     }
 
     @Override
