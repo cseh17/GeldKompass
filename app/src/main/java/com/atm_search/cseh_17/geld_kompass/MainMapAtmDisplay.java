@@ -1,6 +1,7 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -31,6 +32,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -41,7 +44,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -52,6 +54,9 @@ import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -85,6 +90,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private AdView mAdView;
 
 
     @AddTrace(name = "MainOnCreate")
@@ -107,15 +113,22 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         // Set the Drawer Layout (menu)
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
+        //Initialise AdMob ads
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544/6300978111");
+        mAdView = findViewById(R.id.mainListAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         // Implement menu functionality and click listeners
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
+                    String mFragmentToSet = null;
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                         // Create FragmentManager & initialize InfoFragment & ReportFormFragment
-                        FragmentManager fm = getSupportFragmentManager();
+                        //FragmentManager fm = getSupportFragmentManager();
                         appInfoFragment = new AppInfoFragment();
                         reportFragment = new ReportFormFragment();
 
@@ -126,10 +139,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 Bundle params = new Bundle();
                                 params.putString("menuItem", "report_missing");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
-                                FragmentTransaction ft;
-                                ft = fm.beginTransaction();
-                                ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                //FragmentTransaction ft;
+                                //ft = fm.beginTransaction();
+                                //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                //ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                mFragmentToSet = "report";
                                 item.setChecked(true);
                                 mDrawerLayout.closeDrawers();
                                 setNavButtonClickable();
@@ -141,9 +155,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 params.putString("menuItem", "about");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
                                 item.setChecked(true);
-                                ft = fm.beginTransaction();
-                                ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                //ft = fm.beginTransaction();
+                                //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                //ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                mFragmentToSet = "info";
                                 mDrawerLayout.closeDrawers();
                                 setNavButtonClickable();
                                 break;
@@ -152,6 +167,47 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 mDrawerLayout.closeDrawers();
                                 return true;
                         }
+
+                        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+                            @Override
+                            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+                            }
+
+                            @Override
+                            public void onDrawerOpened(@NonNull View drawerView) {
+
+                            }
+
+                            @Override
+                            public void onDrawerClosed(@NonNull View drawerView) {
+
+                                // Create FragmentManager & initialize InfoFragment & ReportFormFragment
+                                FragmentManager fm = getSupportFragmentManager();
+
+                                if (mFragmentToSet == "report") {
+                                    FragmentTransaction ft;
+                                    ft = fm.beginTransaction();
+                                    ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                    mFragmentToSet = null;
+                                }
+
+                                if (mFragmentToSet == "info") {
+                                    FragmentTransaction ft;
+                                    ft = fm.beginTransaction();
+                                    ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                    mFragmentToSet = null;
+                                }
+
+                            }
+
+                            @Override
+                            public void onDrawerStateChanged(int newState) {
+
+                            }
+                        });
                         return true;
                     }
                 }
@@ -826,5 +882,5 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         LatLng latLng = new LatLng(latitude, longitude);
         return latLng;
     }
-
 }
+
