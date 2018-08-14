@@ -1,7 +1,6 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 import android.Manifest;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -32,13 +31,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.atm_search.cseh_17.geld_kompass.Remote.APIService;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -57,6 +55,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -80,6 +79,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     SupportMapFragment mapFragment;
     AppInfoFragment appInfoFragment;
     static ReportFormFragment reportFragment;
+    DatenschutzFragment datenschutzFragment;
     private FusedLocationProviderClient mFusedLocationClient;
     APIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
@@ -90,7 +90,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private AdView mAdView;
+    private AdView mBannerAdListView;
+    private InterstitialAd mInterstitialAd;
+
 
 
     @AddTrace(name = "MainOnCreate")
@@ -114,10 +116,21 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         //Initialise AdMob ads
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544/6300978111");
-        mAdView = findViewById(R.id.mainListAdView);
+        MobileAds.initialize(this, "ca-app-pub-3182911509384087~8231949051");
+        mBannerAdListView = findViewById(R.id.mainListAdView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mBannerAdListView.loadAd(adRequest);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3182911509384087/5866953241");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        //Set an AdListner to reload Interstitial ads after being closed
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed(){
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
 
         // Implement menu functionality and click listeners
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -131,6 +144,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         //FragmentManager fm = getSupportFragmentManager();
                         appInfoFragment = new AppInfoFragment();
                         reportFragment = new ReportFormFragment();
+                        datenschutzFragment = new DatenschutzFragment();
 
                         switch (item.getItemId()) {
 
@@ -139,6 +153,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 Bundle params = new Bundle();
                                 params.putString("menuItem", "report_missing");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
+                                if (mInterstitialAd.isLoaded()){
+                                    mInterstitialAd.show();
+                                }
                                 //FragmentTransaction ft;
                                 //ft = fm.beginTransaction();
                                 //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
@@ -159,6 +176,20 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                                 //ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
                                 mFragmentToSet = "info";
+                                mDrawerLayout.closeDrawers();
+                                setNavButtonClickable();
+                                break;
+
+                            case R.id.datenschutz:
+                                setNavButtonUnclickable();
+                                params = new Bundle();
+                                params.putString("menuItem", "datenschutz");
+                                mFirebaseAnalytics.logEvent("MenuItemPressed", params);
+                                if (mInterstitialAd.isLoaded()){
+                                    mInterstitialAd.show();
+                                }
+                                item.setChecked(true);
+                                mFragmentToSet = "datenschutz";
                                 mDrawerLayout.closeDrawers();
                                 setNavButtonClickable();
                                 break;
@@ -190,6 +221,14 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                     ft = fm.beginTransaction();
                                     ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                                     ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                    mFragmentToSet = null;
+                                }
+
+                                if (mFragmentToSet == "datenschutz") {
+                                    FragmentTransaction ft;
+                                    ft = fm.beginTransaction();
+                                    ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ft.add(R.id.main_activity_layout, datenschutzFragment).addToBackStack(null).commit();
                                     mFragmentToSet = null;
                                 }
 

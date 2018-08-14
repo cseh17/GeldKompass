@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import android.support.design.widget.NavigationView;
 import android.view.LayoutInflater;
 
 import android.view.View;
@@ -21,9 +20,6 @@ import android.widget.Spinner;
 
 
 import com.google.firebase.perf.metrics.AddTrace;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.AdRequest;
 
 import java.util.Objects;
 
@@ -38,12 +34,6 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
 
         View view = inflater.inflate(R.layout.report_form, container, false);
         SharedPreferences reportingPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        //Initialise AdMob ads
-        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544/6300978111");
-        AdView mAdView = view.findViewById(R.id.mainListAdView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         final Spinner question1 = view.findViewById(R.id.question1_spinner);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()), R.array.report_spinner_problem, android.R.layout.simple_spinner_item );
