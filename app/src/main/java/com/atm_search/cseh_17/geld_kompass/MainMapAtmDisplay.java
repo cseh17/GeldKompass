@@ -781,7 +781,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 myTrace.start();
                 for (Location location : locationResult.getLocations()) {
                     if (getApplicationContext() != null){
-                        setmLastLocation(location);
 
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
@@ -843,7 +842,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         }
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                        setmLastLocation(location);
                         myTrace.stop();
                         if (mCurrentLocationMarker != null) {
                             mCurrentLocationMarker.remove();
@@ -912,14 +910,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
     }
 
-    public void setmLastLocation(Location Location) {
-        Location mLastLocation = Location;
-    }
-
     public static LatLng getLocation(){
 
-        LatLng latLng = new LatLng(latitude, longitude);
-        return latLng;
+        return new LatLng(latitude, longitude);
     }
 }
 

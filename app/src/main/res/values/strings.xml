@@ -26,7 +26,7 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="App_Version">5.0 alpha</string>
+    <string name="App_Version">5.1 alpha</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
