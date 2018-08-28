@@ -3,7 +3,6 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.arch.lifecycle.ReportFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

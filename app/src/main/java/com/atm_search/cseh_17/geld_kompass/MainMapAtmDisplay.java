@@ -36,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.atm_search.cseh_17.geld_kompass.Remote.APIService;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -52,6 +53,10 @@ import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -75,6 +80,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     SupportMapFragment mapFragment;
     AppInfoFragment appInfoFragment;
     static ReportFormFragment reportFragment;
+    DatenschutzFragment datenschutzFragment;
     private FusedLocationProviderClient mFusedLocationClient;
     APIService mService;
     private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
@@ -85,6 +91,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private AdView mBannerAdListView;
+    private InterstitialAd mInterstitialAd;
+    private LatLng defaultLocation = new LatLng(51.163375, 10.447683);
+    private LatLng mLastLocation;
+
 
 
     @AddTrace(name = "MainOnCreate")
@@ -107,17 +118,36 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         // Set the Drawer Layout (menu)
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
+        //Initialise AdMob ads
+        MobileAds.initialize(this, "ca-app-pub-3182911509384087~8231949051");
+        mBannerAdListView = findViewById(R.id.mainListAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mBannerAdListView.loadAd(adRequest);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3182911509384087/5866953241");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        //Set an AdListner to reload Interstitial ads after being closed
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed(){
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+
         // Implement menu functionality and click listeners
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
+                    String mFragmentToSet = null;
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                         // Create FragmentManager & initialize InfoFragment & ReportFormFragment
-                        FragmentManager fm = getSupportFragmentManager();
+                        //FragmentManager fm = getSupportFragmentManager();
                         appInfoFragment = new AppInfoFragment();
                         reportFragment = new ReportFormFragment();
+                        datenschutzFragment = new DatenschutzFragment();
 
                         switch (item.getItemId()) {
 
@@ -126,10 +156,14 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 Bundle params = new Bundle();
                                 params.putString("menuItem", "report_missing");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
-                                FragmentTransaction ft;
-                                ft = fm.beginTransaction();
-                                ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                if (mInterstitialAd.isLoaded()){
+                                    mInterstitialAd.show();
+                                }
+                                //FragmentTransaction ft;
+                                //ft = fm.beginTransaction();
+                                //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                //ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                mFragmentToSet = "report";
                                 item.setChecked(true);
                                 mDrawerLayout.closeDrawers();
                                 setNavButtonClickable();
@@ -141,9 +175,24 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 params.putString("menuItem", "about");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
                                 item.setChecked(true);
-                                ft = fm.beginTransaction();
-                                ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                //ft = fm.beginTransaction();
+                                //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                //ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                mFragmentToSet = "info";
+                                mDrawerLayout.closeDrawers();
+                                setNavButtonClickable();
+                                break;
+
+                            case R.id.datenschutz:
+                                setNavButtonUnclickable();
+                                params = new Bundle();
+                                params.putString("menuItem", "datenschutz");
+                                mFirebaseAnalytics.logEvent("MenuItemPressed", params);
+                                if (mInterstitialAd.isLoaded()){
+                                    mInterstitialAd.show();
+                                }
+                                item.setChecked(true);
+                                mFragmentToSet = "datenschutz";
                                 mDrawerLayout.closeDrawers();
                                 setNavButtonClickable();
                                 break;
@@ -152,6 +201,55 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 mDrawerLayout.closeDrawers();
                                 return true;
                         }
+
+                        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+                            @Override
+                            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+                            }
+
+                            @Override
+                            public void onDrawerOpened(@NonNull View drawerView) {
+
+                            }
+
+                            @Override
+                            public void onDrawerClosed(@NonNull View drawerView) {
+
+                                // Create FragmentManager & initialize InfoFragment & ReportFormFragment
+                                FragmentManager fm = getSupportFragmentManager();
+
+                                if (mFragmentToSet == "report") {
+                                    FragmentTransaction ft;
+                                    ft = fm.beginTransaction();
+                                    ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ft.add(R.id.main_activity_layout, reportFragment).addToBackStack(null).commit();
+                                    mFragmentToSet = null;
+                                }
+
+                                if (mFragmentToSet == "datenschutz") {
+                                    FragmentTransaction ft;
+                                    ft = fm.beginTransaction();
+                                    ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ft.add(R.id.main_activity_layout, datenschutzFragment).addToBackStack(null).commit();
+                                    mFragmentToSet = null;
+                                }
+
+                                if (mFragmentToSet == "info") {
+                                    FragmentTransaction ft;
+                                    ft = fm.beginTransaction();
+                                    ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
+                                    mFragmentToSet = null;
+                                }
+
+                            }
+
+                            @Override
+                            public void onDrawerStateChanged(int newState) {
+
+                            }
+                        });
                         return true;
                     }
                 }
@@ -298,7 +396,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredCashGroup(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredCashGroup(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -419,7 +517,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredSparkasse(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredSparkasse(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -478,7 +576,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredVolksbank(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredVolksbank(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -633,8 +731,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mLocationRequest = LocationRequest.create();
 
         // Automatic location update set to 2 min.
-        mLocationRequest.setInterval(120000);
-        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setInterval(180000);
+        mLocationRequest.setFastestInterval(180000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // Check if the map has been loaded, and the View is not empty
@@ -648,6 +746,13 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationCompass.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
             layoutParams.setMargins(30, 280,0, 0);
+
+            // Set camera to default location when last location is not available
+            if (mLastLocation == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+            } else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLastLocation));
+            }
         }
 
         // Check for Android(SDK) version.
@@ -686,24 +791,16 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                 myTrace.start();
                 for (Location location : locationResult.getLocations()) {
                     if (getApplicationContext() != null){
-                        setmLastLocation(location);
 
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
 
                         LatLng latLng = new LatLng(latitude, longitude);
 
-                        try {
-                            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                            if (addresses.isEmpty()){
-                                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_no_result));
-                            } else {
-                                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_done) + " " + addresses.get(0).getLocality());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        mLastLocation = latLng;
+
+                        // Set the NavigationBar Subtitle to show to actual location -> city name.
+                        Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_done) + " " + GetCityNameFromCoordinates.getCityName(latitude, longitude, MainMapAtmDisplay.this));
 
                         // Check if the location is inside DE
                         if (allowedBoundsGermany.contains(latLng)) {
@@ -748,7 +845,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         }
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                        setmLastLocation(location);
                         myTrace.stop();
                         if (mCurrentLocationMarker != null) {
                             mCurrentLocationMarker.remove();
@@ -817,14 +913,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
     }
 
-    public void setmLastLocation(Location Location) {
-        Location mLastLocation = Location;
-    }
-
     public static LatLng getLocation(){
 
-        LatLng latLng = new LatLng(latitude, longitude);
-        return latLng;
+        return new LatLng(latitude, longitude);
     }
-
 }
+
