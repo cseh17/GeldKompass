@@ -5,13 +5,14 @@
     <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
     <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuchen Sie es später erneut.</string>
 
-    <string name="no_result_alert_DE">Keine Ergebnisse in einem Umkreis von 1500m gefunden! Die Suche wird erweitert, um nach der erster Geldautomat in Ihrer Nähe zu suchen.</string>
+    <string name="no_result_alert_DE">Keine Ergebnisse in einem Umkreis von 1500m gefunden für die von Ihnen gesuchte Bankgruppe! Die Suche wird erweitert, um nach der erster Geldautomat in Ihrer Nähe zu suchen. Das kann bis 1 Minute dauern.</string>
     <string name="no_result_distance_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_list_DE">Keine Ergebnisse! Die von Ihnen eingestellte Suche liefert keine Ergebnisse. Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_cash_pool_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat des CashPools in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in diesem Gebiet. Es tut uns Leid!</string>
+    <string name="general_error">Es tut uns Leid! Ein unbekanter Fehler ist aufgetreten.</string>
 
     <string name="location_permission_title_DE">Achtung</string>
     <string name="location_permission_body_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort Ihres Gerätes</string>
@@ -26,7 +27,7 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="App_Version">5.1 alpha</string>
+    <string name="App_Version">6.2 alpha</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
@@ -130,7 +131,7 @@
 </p>
 <br/>
 <p>
-    - Zurverfügungstellung des Onlineangebotes, seiner Funktionen und Inhalte.
+    - Zur verfügungstellung des Onlineangebotes, seiner Funktionen und Inhalte.
     - Sicherheitsmaßnahmen.
     - Reichweitenmessung/Marketing
 </p>

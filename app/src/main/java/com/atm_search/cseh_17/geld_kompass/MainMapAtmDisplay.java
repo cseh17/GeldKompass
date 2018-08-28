@@ -42,6 +42,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -92,6 +93,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mBannerAdListView;
     private InterstitialAd mInterstitialAd;
+    private LatLng defaultLocation = new LatLng(51.163375, 10.447683);
+    private LatLng mLastLocation;
 
 
 
@@ -393,7 +396,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredCashGroup(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredCashGroup(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -514,7 +517,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredSparkasse(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredSparkasse(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -573,7 +576,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredVolksbank(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredVolksbank(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -728,8 +731,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mLocationRequest = LocationRequest.create();
 
         // Automatic location update set to 2 min.
-        mLocationRequest.setInterval(120000);
-        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setInterval(180000);
+        mLocationRequest.setFastestInterval(180000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // Check if the map has been loaded, and the View is not empty
@@ -743,6 +746,13 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationCompass.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
             layoutParams.setMargins(30, 280,0, 0);
+
+            // Set camera to default location when last location is not available
+            if (mLastLocation == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+            } else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLastLocation));
+            }
         }
 
         // Check for Android(SDK) version.
@@ -787,17 +797,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                         LatLng latLng = new LatLng(latitude, longitude);
 
-                        try {
-                            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                            if (addresses.isEmpty()){
-                                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_no_result));
-                            } else {
-                                Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_done) + " " + addresses.get(0).getLocality());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        mLastLocation = latLng;
+
+                        // Set the NavigationBar Subtitle to show to actual location -> city name.
+                        Objects.requireNonNull(getSupportActionBar()).setSubtitle(MainMapAtmDisplay.this.getString(R.string.nav_bar_title_done) + " " + GetCityNameFromCoordinates.getCityName(latitude, longitude, MainMapAtmDisplay.this));
 
                         // Check if the location is inside DE
                         if (allowedBoundsGermany.contains(latLng)) {
