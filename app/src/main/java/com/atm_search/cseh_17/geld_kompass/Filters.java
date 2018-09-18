@@ -3,8 +3,6 @@ package com.atm_search.cseh_17.geld_kompass;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +14,6 @@ import com.atm_search.cseh_17.geld_kompass.Remote.APIService;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -28,9 +25,9 @@ import com.google.maps.android.SphericalUtil;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import android.os.Handler;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -146,13 +143,11 @@ public class Filters {
 
 
         if (data.isEmpty()) {
-            //CustomAlertDialog alert = new CustomAlertDialog();
-            //alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_group_DE));
             CustomSearchDistanceDialog alert_distance = new CustomSearchDistanceDialog();
             Dialog dialog = alert_distance.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
             osmFirstBankCashGroup(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
             loadingProgressBar.setVisibility(View.GONE);
-            return false;
+            return true;
         } else {
 
             loadingProgressBar.postDelayed(new Runnable() {
@@ -165,7 +160,7 @@ public class Filters {
         }
     }
 
-    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final int[] images, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
+    public static boolean nearByBanksFilteredCashPool(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
         mMap.clear();
         data.clear();
@@ -251,7 +246,7 @@ public class Filters {
                                 mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_sparda_bank_marker5));
                             } else {
                                 if (entry.mMarkerOptionsTitle.toLowerCase().contains("targo")) {
-                                    mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
+                                    mMarkerOptions.icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_new_targobank_map_marker));
                                 } else {
                                     if (entry.mMarkerOptionsTitle.toLowerCase().contains("degussa")) {
                                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_degussa_bank_marker));
@@ -296,9 +291,9 @@ public class Filters {
             //alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_pool_DE));
             CustomSearchDistanceDialog alert_distance = new CustomSearchDistanceDialog();
             Dialog dialog = alert_distance.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
-            osmFirstBankCashPool(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data, dialog);
+            osmFirstBankCashPool(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
             loadingProgressBar.setVisibility(View.GONE);
-            return false;
+            return true;
         } else {
 
             loadingProgressBar.postDelayed(new Runnable() {
@@ -403,7 +398,7 @@ public class Filters {
             Dialog dialog = alert_distance.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
             osmFirstBankSparkasse(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
             loadingProgressBar.setVisibility(View.GONE);
-            return false;
+            return true;
         } else {
 
                 loadingProgressBar.postDelayed(new Runnable() {
@@ -504,7 +499,7 @@ public class Filters {
             Dialog dialog = alert_distance.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
             osmFirstBankVolksbank(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
             loadingProgressBar.setVisibility(View.GONE);
-            return false;
+            return true;
         } else {
 
             loadingProgressBar.postDelayed(new Runnable() {
@@ -531,12 +526,16 @@ public class Filters {
         Log.i("osmFirstBankCashGroup", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance = 0;
+        int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
             distance = 3000;
         } else {
-            distance = 20000;
+            if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
+                distance = 5000;
+            } else {
+                distance = 20000;
+            }
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
@@ -562,6 +561,13 @@ public class Filters {
                                         editedResponse.add(item);
                                     }
                                 }
+
+
+                                // Access the progressBar from the custom dialog, and configure it
+                                ProgressBar mProgressBar = dialog.findViewById(R.id.dialog_progresLoader);
+                                mProgressBar.setVisibility(View.VISIBLE);
+                                mProgressBar.setMax(editedResponse.size());
+                                int progressStatus = 0;
 
                                 for (Elements item : editedResponse) {
 
@@ -609,6 +615,8 @@ public class Filters {
                                             }
                                         }
                                     }
+                                    progressStatus++;
+                                    mProgressBar.setProgress(progressStatus);
                                 }
 
                                 // Sort the edited response list by distance from actual location
@@ -728,10 +736,6 @@ public class Filters {
     @AddTrace(name = "osmFirstAtmCashGroup")
     private static void osmFirstAtmCashGroup(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
 
-        // Clear data and map in order to avoid doubles on list.
-        //mMap.clear();
-        //data.clear();
-        //adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -908,7 +912,6 @@ public class Filters {
 
                                 if (data.isEmpty()) {
 
-
                                     // Handle if no results were found
                                     CustomAlertDialog alert = new CustomAlertDialog();
                                     alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_cash_group_DE));
@@ -933,7 +936,7 @@ public class Filters {
     }
 
     @AddTrace(name = "osmFirstBankCashPool")
-    private static void osmFirstBankCashPool(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final int[] images, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog){
+    private static void osmFirstBankCashPool(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog){
 
         // Clear data and map in order to avoid doubles on list.
         mMap.clear();
@@ -946,13 +949,16 @@ public class Filters {
         Log.i("osmFirstBankCashPool", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance = 0;
+        int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
             distance = 3000;
         } else {
-
-            distance = 20000;
+            if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
+                distance = 5000;
+            } else {
+                distance = 20000;
+            }
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
@@ -970,7 +976,7 @@ public class Filters {
                             if (Objects.requireNonNull(response.body()).getElements().length != 0) {
 
                                 // Create new list, calculate distance to each point, and add them to the list to be sorted.
-                                LinkedList<Elements> editedResponse = new LinkedList<>();
+                                final LinkedList<Elements> editedResponse = new LinkedList<>();
                                 LinkedList<Elements> filteredResponse = new LinkedList<>();
 
                                 for (Elements item : Objects.requireNonNull(response.body()).getElements()) {
@@ -978,6 +984,9 @@ public class Filters {
                                         editedResponse.add(item);
                                     }
                                 }
+
+                                // Access the progressBar from the custom dialog, and configure it
+
 
                                 for (Elements item : editedResponse) {
 
@@ -1111,8 +1120,8 @@ public class Filters {
                                                 if (placeName.toLowerCase().contains("targo")) {
                                                     markerOptions.title("TargoBank");
                                                     markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                    thisRow.iconId = images[0];
-                                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
+                                                    thisRow.iconId = R.drawable.ic_new_targobank_map_marker;
+                                                    markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_targobank_map_marker));
                                                     } else {
                                                     if (placeName.toLowerCase().contains("degussa")) {
                                                         markerOptions.title("Degussa Bank");
@@ -1167,7 +1176,7 @@ public class Filters {
 
                         // If no result was found, aka data is empty, do search for the category atm.
                         if (data.isEmpty()) {
-                            osmFirstAtmCashPool(mService, latitude, longitude, mMap, mActivity, mContext, images, adapter, data, dialog);
+                            osmFirstAtmCashPool(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
                         }
                     }
 
@@ -1181,12 +1190,8 @@ public class Filters {
     }
 
     @AddTrace(name = "osmFirstAtmCashPool")
-    private static void osmFirstAtmCashPool(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final int[] images, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
+    private static void osmFirstAtmCashPool(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
 
-        // Clear data and map in order to avoid doubles on list.
-        //mMap.clear();
-        //data.clear();
-        //adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -1345,8 +1350,8 @@ public class Filters {
                                                     if (placeName.toLowerCase().contains("targo")) {
                                                         markerOptions.title("TargoBank");
                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                        thisRow.iconId = images[0];
-                                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.targobank_logo_final));
+                                                        thisRow.iconId = R.drawable.ic_new_targobank_map_marker;
+                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_targobank_map_marker));
                                                     } else {
                                                         if (placeName.toLowerCase().contains("degussa")) {
                                                             markerOptions.title("Degussa Bank");
@@ -1443,12 +1448,16 @@ public class Filters {
         Log.i("osmFirstBankSparkasse", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance = 0;
+        int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
             distance = 3000;
         } else {
-            distance = 20000;
+            if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
+                distance = 5000;
+            } else {
+                distance = 20000;
+            }
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
@@ -1615,10 +1624,6 @@ public class Filters {
     @AddTrace(name = "osmFirstAtmSparkasse")
     private static void osmFirstAtmSparkasse(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
 
-        // Clear data and map in order to avoid doubles on list.
-        //mMap.clear();
-        //data.clear();
-        //adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -1799,9 +1804,9 @@ public class Filters {
     private static void osmFirstBankVolksbank(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog){
 
         // Clear data and map in order to avoid doubles on list.
-        //mMap.clear();
-        //data.clear();
-        //adapter.notifyDataSetChanged();
+        mMap.clear();
+        data.clear();
+        adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -1809,12 +1814,16 @@ public class Filters {
         Log.i("osmFirstBankVolksbank", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance = 0;
+        int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
             distance = 3000;
         } else {
-            distance = 20000;
+            if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
+                distance = 5000;
+            } else {
+                distance = 20000;
+            }
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
@@ -2004,10 +2013,6 @@ public class Filters {
     @AddTrace(name = "osmFirstAtmVolksbank")
     private static void osmFirstAtmVolksbank(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
 
-        // Clear data and map in order to avoid doubles on list.
-        //mMap.clear();
-        //data.clear();
-        //adapter.notifyDataSetChanged();
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
@@ -2216,7 +2221,9 @@ public class Filters {
                 include(SphericalUtil.computeOffset(center, distance, 180)).
                 include(SphericalUtil.computeOffset(center,distance, 270)).build();
     }
+
 }
+
 
 
 

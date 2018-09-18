@@ -23,7 +23,6 @@ public class CustomSearchDistanceDialog{
 
         return dialog;
     }
-
 }
 
 

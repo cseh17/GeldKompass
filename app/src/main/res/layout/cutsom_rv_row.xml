@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/rv_row_icon"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
@@ -17,23 +18,23 @@
 
     <TextView
         android:id="@+id/rv_row_title"
-        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
         android:paddingTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_toEndOf="@+id/rv_row_icon"
         android:textSize="23sp"
-        android:text="Dummy Text"/>
+        android:text="@string/app_name"/>
 
     <TextView
         android:id="@+id/rv_row_subtitle"
-        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rv_row_title"
         android:layout_gravity="center_vertical"
         android:layout_toEndOf="@+id/rv_row_icon"
-        android:text="Dummy Text 2"
+        android:text="@string/app_name"
         android:textSize="17sp" />
 </RelativeLayout>

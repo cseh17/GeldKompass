@@ -5,6 +5,7 @@
     android:background="#ffffffff">
 
     <ImageView
+        android:contentDescription="@null"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:id="@+id/custom_attention_logo"
@@ -13,6 +14,7 @@
         android:scaleType="fitCenter" />
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/custom_attention_logo2"
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -34,13 +36,13 @@
         android:layout_marginTop="18dp"
         android:text="!"
         android:textColor="@color/white"
-        android:textSize="60dp" />
+        android:textSize="60sp" />
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error Message"
+        android:text="@string/general_error_message_title"
         android:id="@+id/custom_attention_text_dialog"
         android:layout_below="@+id/custom_attention_logo"
         android:layout_marginTop="20dp"
@@ -61,7 +63,7 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/ic_dialog_button3"
             android:textColor="#ffffffff"
-            android:text="Erlauben"
+            android:text="@string/error_dialog_permission_button_positive"
             android:textSize="22sp"
             android:textAlignment="center"
             android:layout_below="@+id/custom_attention_text_dialog"/>
@@ -74,8 +76,7 @@
             android:layout_marginStart="160dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/ic_dialog_button3"
-            android:text="Nein"
-            android:textAlignment="center"
+            android:text="@string/error_dialog_permission_button_negative"
             android:textColor="#ffffffff"
             android:textSize="22sp"
             android:layout_below="@+id/custom_attention_text_dialog" />

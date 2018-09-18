@@ -37,14 +37,14 @@
                     android:id="@+id/map_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Karte"/>
+                    android:text="@string/main_tab_first"/>
 
 
                 <android.support.design.widget.TabItem
                     android:id="@+id/list_tab"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Liste"/>
+                    android:text="@string/main_tab_second"/>
 
         </android.support.design.widget.TabLayout>
 
@@ -87,6 +87,19 @@
                 android:layout_marginTop="10dp"
                 android:indeterminateTintMode="src_atop"
                 android:indeterminateTint="@color/colorSecondary"
+                />
+
+            <ProgressBar
+                android:id="@+id/secondary_progresLoader"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:indeterminate="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:progressTint="@color/colorSecondary"
+                android:progressTintMode="src_atop"
                 />
 
             <android.support.design.widget.FloatingActionButton

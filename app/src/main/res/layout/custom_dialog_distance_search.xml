@@ -5,6 +5,7 @@
     android:background="#ffffffff">
 
     <ImageView
+        android:contentDescription="@null"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:id="@+id/custom_attention_logo_search_distance"
@@ -13,6 +14,7 @@
         android:scaleType="fitCenter" />
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/custom_attention_logo2_search_distance"
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -40,7 +42,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error Message"
+        android:text="@string/general_error_message_title"
         android:id="@+id/custom_attention_search_distance_text_dialog"
         android:layout_below="@+id/custom_attention_logo_search_distance"
         android:layout_marginTop="20dp"

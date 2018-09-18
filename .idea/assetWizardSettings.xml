@@ -51,7 +51,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="105" />
+                                                <entry key="scalingPercent" value="61" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -63,7 +63,8 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="70" />
+                                                <entry key="scalingPercent" value="109" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -75,15 +76,14 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="backgroundImage" value="D:\image2vector-2-2.svg" />
+                                      <entry key="backgroundImage" value="D:\app_logo4_final.png" />
                                       <entry key="backgroundLayerName" value="ic_geld_kompass_background" />
-                                      <entry key="foregroundAssetType" value="CLIP_ART" />
+                                      <entry key="foregroundImage" value="D:\app_logo5.png" />
                                       <entry key="foregroundLayerName" value="ic_geld_kompass_foreground" />
-                                      <entry key="legacyIconShape" value="NONE" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
                                       <entry key="outputName" value="ic_geld_kompass_icons" />
-                                      <entry key="previewDensity" value="XXHIGH" />
                                       <entry key="showSafeZone" value="false" />
-                                      <entry key="webIconShape" value="NONE" />
+                                      <entry key="webIconShape" value="CIRCLE" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -100,11 +100,6 @@
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>
@@ -126,11 +121,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="350" />
-                            <entry key="outputName" value="ic_new_filter_volksbank_button2" />
+                            <entry key="height" value="501" />
+                            <entry key="outputName" value="ic_new_targobank_map_marker" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\new_filter_volksbank_button2.svg" />
-                            <entry key="width" value="350" />
+                            <entry key="sourceFile" value="D:\new_targobank_map_marker.svg" />
+                            <entry key="width" value="376" />
                           </map>
                         </option>
                       </PersistentState>

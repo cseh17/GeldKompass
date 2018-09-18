@@ -6,6 +6,7 @@
     android:background="@drawable/layout_selector">
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/ciw_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,11 +19,11 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/ciw_logo"
         android:textSize="20sp"
-        android:paddingLeft="10dp"
-        android:paddingRight="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="5dp"
         android:paddingTop="5dp"
         android:gravity="center_vertical"
-        android:text="Dummy Text"
+        android:text="@string/app_name"
         android:clickable="false"/>
 
     <TextView
@@ -31,11 +32,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ciw_title"
         android:layout_toEndOf="@+id/ciw_logo"
-        android:paddingLeft="10dp"
-        android:paddingRight="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="5dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:text="Dummy Text 2"
+        android:text="@string/app_name"
         android:textSize="16sp"
         android:clickable="false"/>
 

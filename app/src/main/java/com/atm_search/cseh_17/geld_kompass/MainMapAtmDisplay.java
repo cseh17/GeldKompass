@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -61,8 +59,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
@@ -87,7 +83,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     LinkedList<RVRowInformation> data = new LinkedList<>(Collections.<RVRowInformation>emptyList());
-    int[] images = {R.drawable.targobank_logo_final};
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -367,10 +362,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     sparkasseIsSelected = false;
                     volksbankIsSelected = false;
                     floatingCashGroupFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
-                    //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
-                    //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey) , MainMapAtmDisplay.this, adapter);
-                    //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
                 } else {
                     cashGroupIsSelected = true;
                     cashPoolIsSelected = false;
@@ -429,7 +422,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     volksbankIsSelected = false;
                     floatingCashPoolFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                     //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
                     //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey) , MainMapAtmDisplay.this, adapter);
                     //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
@@ -457,7 +450,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     } else {
 
                         // if there is a connection, do job
-                        boolean returnValue = Filters.nearByBanksFilteredCashPool(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
+                        boolean returnValue = Filters.nearByBanksFilteredCashPool(mMap, data, mService, latitude, longitude, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter);
                         if (!returnValue){
                             cashGroupIsSelected = false;
                             cashPoolIsSelected = false;
@@ -490,7 +483,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     volksbankIsSelected = false;
                     floatingSparkasseFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                     //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
                     //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
                     //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
@@ -549,7 +542,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     volksbankIsSelected = false;
                     floatingVolksbankFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                     //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", browserKey), MainMapAtmDisplay.this, adapter);
-                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                    SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
                     //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, browserKey), MainMapAtmDisplay.this, adapter);
                     //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
                 } else {
@@ -829,7 +822,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 floatingSparkasseFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                                 floatingVolksbankFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                                 //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
-                                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
+                                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
                                 //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
                                 //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
 

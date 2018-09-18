@@ -9,17 +9,18 @@
     android:gravity="bottom">
 
     <ImageView
+        android:contentDescription="@null"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@drawable/app_logo4_final"
+        android:src="@drawable/app_logo5"
         android:id="@+id/menu_header_logo"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Geldkompass"
+        android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:layout_toRightOf="@+id/menu_header_logo"
+        android:layout_toEndOf="@+id/menu_header_logo"
         android:paddingStart="11dp"
         android:paddingTop="8dp"/>
 

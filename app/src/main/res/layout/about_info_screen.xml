@@ -7,16 +7,18 @@
     android:background="@android:color/white">
 
     <ImageView
+        android:contentDescription="@null"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginTop="90dp"
-        android:src="@drawable/app_logo4_final"/>
+        android:src="@drawable/app_logo5"
+/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/App_Version"
+        android:text="@string/app_version"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
 
@@ -30,9 +32,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/logo_credentials_bbbank"
+        android:text="@string/app_logo_credentials"
         android:layout_gravity="center"
         android:layout_marginTop="200dp"
+        android:textSize="8sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/logo_credentials_bbbank"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
         android:textSize="8sp"/>
 
     <TextView

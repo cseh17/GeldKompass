@@ -5,6 +5,7 @@
     android:background="#ffffffff">
 
     <ImageView
+        android:contentDescription="@null"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:id="@+id/custom_alert_logo"
@@ -13,6 +14,7 @@
         android:scaleType="fitCenter" />
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/custom_alert_logo2"
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -26,6 +28,7 @@
         android:src="@drawable/ic_dialog_image" />
 
     <TextView
+        android:contentDescription="@null"
         android:id="@+id/custom_alert_logo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,12 +37,12 @@
         android:layout_marginTop="18dp"
         android:text="X"
         android:textColor="@color/white"
-        android:textSize="60dp" />
+        android:textSize="60sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error Message"
+        android:text="@string/general_error_message_title"
         android:id="@+id/custom_alert_text_dialog"
         android:layout_below="@+id/custom_alert_logo"
         android:layout_marginTop="20dp"
@@ -61,7 +64,7 @@
         android:background="@drawable/ic_dialog_button3"
         android:layout_centerHorizontal="true"
         android:textColor="#ffffffff"
-        android:text="OK"
+        android:text="@string/error_dialog_button_text"
         android:textSize="22sp"/>
 
 </RelativeLayout>

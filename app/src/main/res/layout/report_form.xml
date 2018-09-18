@@ -68,7 +68,7 @@
                 android:textColor="#ffffffff"
                 android:background="@drawable/submit_btn"
                 android:textSize="16sp"
-                android:text="Abschicken"
+                android:text="@string/report_form_button_text"
                 android:focusable="false"/>
 
             <ProgressBar

@@ -5,7 +5,7 @@
     <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
     <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuchen Sie es später erneut.</string>
 
-    <string name="no_result_alert_DE">Keine Ergebnisse in einem Umkreis von 1500m gefunden für die von Ihnen gesuchte Bankgruppe! Die Suche wird erweitert, um nach der erster Geldautomat in Ihrer Nähe zu suchen. Das kann bis 1 Minute dauern.</string>
+    <string name="no_result_alert_DE">Keine Ergebnisse in einem Umkreis von 1500m gefunden für die von Ihnen gesuchte Bankgruppe! Die Suche wird erweitert, um nach der erster Geldautomat in Ihrer Nähe zu suchen.</string>
     <string name="no_result_distance_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_list_DE">Keine Ergebnisse! Die von Ihnen eingestellte Suche liefert keine Ergebnisse. Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in diesem Gebiet. Es tut uns Leid!</string>
@@ -15,11 +15,16 @@
     <string name="general_error">Es tut uns Leid! Ein unbekanter Fehler ist aufgetreten.</string>
 
     <string name="location_permission_title_DE">Achtung</string>
+    <string name="general_error_message_title">Error Message</string>
     <string name="location_permission_body_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort Ihres Gerätes</string>
     <string name="permission_granted_DE">Erlaubnis erteilt</string>
     <string name="permission_denied_DE">Erlaubnis verweigert</string>
     <string name="nav_bar_title_no_result">Standort wird ermittelt</string>
     <string name="nav_bar_title_done">In der Nähe von: </string>
+    <string name="error_dialog_button_text">OK</string>
+    <string name="error_dialog_permission_button_positive">Erlauben</string>
+    <string name="error_dialog_permission_button_negative">Nein</string>
+    <string name="report_form_button_text">Abschicken</string>
 
 
     <string name="KEY_for_atms">cache_save_atms_KEY</string>
@@ -27,8 +32,12 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="App_Version">6.2 alpha</string>
+    <string name="app_version">1.0 Beta</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
+
+
+    <string name="main_tab_first">Karte</string>
+    <string name="main_tab_second">Liste</string>
 
     <string name="mi_report_missing">Geldautomat melden</string>
     <string name="mi_about">Info</string>
@@ -75,6 +84,7 @@
     <string name="question1">Was möchten Sie uns mitteilen?</string>
     <string name="question2">Gehört der Bankautomat, von dem Sie berichten möchten, zu einer der folgenden Bankinstitute? (Falls nicht, wählen Sie "andere" am Ende der Liste)</string>
 
+    <string name="app_logo_credentials">Das Logo ist ein geändertes Model des Logos des Autors Freepik von www.flaticon.com</string>
     <string name="logo_credentials_bbbank">Das BBBank-Logo ist Eigentum von BBBank eG.</string>
     <string name="logo_credentials_degussa_bank">Das Degussa Bank-Logo ist Eigentum von Degussa Bank AG.</string>
     <string name="logo_credentials_sudwestbank">Das Südwestbank-Logo ist Eigentum von Südwestbank AG.</string>
