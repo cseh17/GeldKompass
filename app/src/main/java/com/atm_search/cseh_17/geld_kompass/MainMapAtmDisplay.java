@@ -723,9 +723,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
         mLocationRequest = LocationRequest.create();
 
-        // Automatic location update set to 2 min.
-        mLocationRequest.setInterval(180000);
-        mLocationRequest.setFastestInterval(180000);
+        // Automatic location update set to 4 min.
+        mLocationRequest.setInterval(240000);
+        mLocationRequest.setFastestInterval(240000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // Check if the map has been loaded, and the View is not empty

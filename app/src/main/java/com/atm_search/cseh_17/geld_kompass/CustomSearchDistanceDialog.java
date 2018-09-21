@@ -3,6 +3,8 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -18,6 +20,19 @@ public class CustomSearchDistanceDialog{
 
         TextView text = dialog.findViewById(R.id.custom_attention_search_distance_text_dialog);
         text.setText(msg);
+
+        // Add keyListener, in order to dismiss Dialog when back key is pressed
+        dialog.setOnKeyListener(new Dialog.OnKeyListener() {
+
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+
+                if (i == KeyEvent.KEYCODE_BACK) {
+                    dialog.dismiss();
+                }
+                return true;
+            }
+        });
 
         dialog.show();
 
