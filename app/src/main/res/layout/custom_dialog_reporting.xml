@@ -58,7 +58,7 @@
         <Button
             android:id="@+id/custom_dialog_attention_btn_accept"
             android:layout_width="120dp"
-            android:layout_height="31.56dp"
+            android:layout_height="40dp"
             android:layout_marginBottom="20dp"
             android:layout_marginStart="10dp"
             android:background="@drawable/ic_dialog_button3"
@@ -71,7 +71,7 @@
         <Button
             android:id="@+id/custom_dialog_attention_btn_denied"
             android:layout_width="120dp"
-            android:layout_height="31.56dp"
+            android:layout_height="40dp"
             android:layout_marginBottom="20dp"
             android:layout_marginStart="160dp"
             android:layout_marginEnd="10dp"

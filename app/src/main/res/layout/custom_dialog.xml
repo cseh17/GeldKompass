@@ -56,7 +56,7 @@
 
     <Button
         android:layout_width="104dp"
-        android:layout_height="31.56dp"
+        android:layout_height="40dp"
         android:id="@+id/custom_dialog_btn_dialog"
         android:gravity="center_vertical|center_horizontal"
         android:layout_below="@+id/custom_alert_text_dialog"

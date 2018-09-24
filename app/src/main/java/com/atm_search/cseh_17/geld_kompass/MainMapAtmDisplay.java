@@ -798,9 +798,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                         // Check if the location is inside DE
                         if (allowedBoundsGermany.contains(latLng)) {
 
-                            // Move Camera
-                            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-
                             // Check for connectivity
                             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -813,6 +810,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                                 loadingProgressBar.setVisibility(View.GONE);
                             } else {
+                                floatingCashGroupFilterButton.setClickable(true);
+                                floatingCashPoolFilterButton.setClickable(true);
+                                floatingSparkasseFilterButton.setClickable(true);
+                                floatingVolksbankFilterButton.setClickable(true);
                                 cashGroupIsSelected = false;
                                 cashPoolIsSelected = false;
                                 sparkasseIsSelected = false;
@@ -821,20 +822,28 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 floatingCashPoolFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                                 floatingSparkasseFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
                                 floatingVolksbankFilterButton.setBackgroundTintList(ColorStateList.valueOf(MainMapAtmDisplay.this.getColor(R.color.white)));
-                                //SearchFor.nearByBanks(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlBank(latitude, longitude, "bank", getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
-                                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
-                                //SearchFor.nearByAtms(mMap, data, mService, images, latitude, longitude, MainMapAtmDisplay.this, GenerateUrls.getUrlAtm(latitude, longitude, getResources().getString(R.string.browser_key)), MainMapAtmDisplay.this, adapter);
-                                //SearchFor.osmNearByAtms(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, images, adapter, data);
 
+                                SearchFor.osmNearByBanks(mService, latitude, longitude, mMap, MainMapAtmDisplay.this, MainMapAtmDisplay.this, adapter, data);
                             }
                         } else {
+
+                            // Set a flag in Firebase
                             Bundle params = new Bundle();
                             params.putString("outOfBounds", "true");
                             mFirebaseAnalytics.logEvent("AppOpenedOutsideDE", params);
+
+                            // Show custom alertDialog
                             CustomAlertDialog alert = new CustomAlertDialog();
                             alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.out_of_bounds_alert_DE));
                             final ProgressBar loadingProgressBar = MainMapAtmDisplay.this.findViewById(R.id.main_progresLoader);
                             loadingProgressBar.setVisibility(View.GONE);
+
+                            // Set the filter butons uncklickable
+                            floatingCashGroupFilterButton.setClickable(false);
+                            floatingCashPoolFilterButton.setClickable(false);
+                            floatingSparkasseFilterButton.setClickable(false);
+                            floatingVolksbankFilterButton.setClickable(false);
+
                         }
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());

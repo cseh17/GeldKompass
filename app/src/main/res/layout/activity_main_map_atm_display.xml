@@ -31,7 +31,9 @@
             android:layout_below="@+id/toolbar"
             app:tabIndicatorColor="@color/colorSecondary"
             app:tabMode="fixed"
-            app:tabGravity="fill">
+            app:tabGravity="fill"
+            app:tabTextColor="@color/white"
+            app:tabSelectedTextColor="@color/white">
 
                 <android.support.design.widget.TabItem
                     android:id="@+id/map_tab"
