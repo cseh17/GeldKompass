@@ -32,7 +32,7 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="app_version">6.2 Aplha</string>
+    <string name="app_version">6.4 Alpha</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
 
@@ -84,7 +84,7 @@
     <string name="question1">Was möchten Sie uns mitteilen?</string>
     <string name="question2">Gehört der Bankautomat, von dem Sie berichten möchten, zu einer der folgenden Bankinstitute? (Falls nicht, wählen Sie "andere" am Ende der Liste)</string>
 
-    <string name="app_logo_credentials">Das Logo ist ein geändertes Model des Logos des Autors Freepik von www.flaticon.com</string>
+    <string name="app_logo_credentials">Das Logo ist ein geändertes Modell des Logos des Autors Freepik von www.flaticon.com</string>
     <string name="logo_credentials_bbbank">Das BBBank-Logo ist Eigentum von BBBank eG.</string>
     <string name="logo_credentials_degussa_bank">Das Degussa Bank-Logo ist Eigentum von Degussa Bank AG.</string>
     <string name="logo_credentials_sudwestbank">Das Südwestbank-Logo ist Eigentum von Südwestbank AG.</string>

@@ -23,11 +23,11 @@ import com.google.firebase.perf.metrics.Trace;
 import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Objects;
-import android.os.Handler;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -526,10 +526,10 @@ public class Filters {
         Log.i("osmFirstBankCashGroup", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance;
+        final int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
-            distance = 3000;
+            distance = 2500;
         } else {
             if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
                 distance = 5000;
@@ -721,11 +721,16 @@ public class Filters {
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        osmFirstAtmCashGroup(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
+                        osmFirstAtmCashGroup(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstBankCashGroup", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            adapter.notifyDataSetChanged();
+                            osmFirstAtmCashGroup(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstBankCashGroupDistance-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstBankCashGroupDistance_load_data_miss", 1);
@@ -734,14 +739,14 @@ public class Filters {
     }
 
     @AddTrace(name = "osmFirstAtmCashGroup")
-    private static void osmFirstAtmCashGroup(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
+    private static void osmFirstAtmCashGroup(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog, int distance) {
 
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
 
         Log.i("osmFirstAtmCashGroup", "Request sent");
-        LatLngBounds coordinates = getBoundingBox(50000, latitude, longitude);
+        LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -927,6 +932,10 @@ public class Filters {
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstAtmCashGroup", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            dialog.dismiss();
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstAtmCashGroupDistance-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstAtmCashGroupDistance_load_data_miss", 1);
@@ -949,7 +958,7 @@ public class Filters {
         Log.i("osmFirstBankCashPool", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance;
+        final int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
             distance = 3000;
@@ -957,7 +966,7 @@ public class Filters {
             if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
                 distance = 5000;
             } else {
-                distance = 20000;
+                distance = 25000;
             }
         }
 
@@ -1172,16 +1181,28 @@ public class Filters {
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        dialog.dismiss();
 
                         // If no result was found, aka data is empty, do search for the category atm.
                         if (data.isEmpty()) {
-                            osmFirstAtmCashPool(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
+                            osmFirstAtmCashPool(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
+                        } else {
+                            dialog.dismiss();
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstBankCashPool", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            adapter.notifyDataSetChanged();
+
+                            // If no result was found, aka data is empty, do search for the category atm.
+                            if (data.isEmpty()) {
+                                osmFirstAtmCashPool(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
+                            } else {
+                                dialog.dismiss();
+                            }
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstBankCashPoolDistance-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstBankCashPoolDistance_load_data_miss", 1);
@@ -1190,14 +1211,14 @@ public class Filters {
     }
 
     @AddTrace(name = "osmFirstAtmCashPool")
-    private static void osmFirstAtmCashPool(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
+    private static void osmFirstAtmCashPool(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog, int distance) {
 
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
 
         Log.i("osmFirstAtmCashPool", "Request sent");
-        LatLngBounds coordinates = getBoundingBox(50000, latitude, longitude);
+        LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -1426,6 +1447,10 @@ public class Filters {
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstAtmCashPool", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            dialog.dismiss();
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstAtmCashPool-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstAtmCashPoolDistance_load_data_miss", 1);
@@ -1448,15 +1473,15 @@ public class Filters {
         Log.i("osmFirstBankSparkasse", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance;
+        final int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
-            distance = 3000;
+            distance = 2000;
         } else {
             if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
-                distance = 5000;
+                distance = 3500;
             } else {
-                distance = 20000;
+                distance = 10000;
             }
         }
 
@@ -1609,11 +1634,16 @@ public class Filters {
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        osmFirstAtmSparkasse(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
+                        osmFirstAtmSparkasse(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstBankSparkasse", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            adapter.notifyDataSetChanged();
+                            osmFirstAtmSparkasse(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstBankSparkasse-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstBankSparkasseDistance_load_data_miss", 1);
@@ -1622,14 +1652,14 @@ public class Filters {
     }
 
     @AddTrace(name = "osmFirstAtmSparkasse")
-    private static void osmFirstAtmSparkasse(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
+    private static void osmFirstAtmSparkasse(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog, int distance) {
 
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
 
         Log.i("osmFirstAtmSparkasse", "Request sent");
-        LatLngBounds coordinates = getBoundingBox(50000, latitude, longitude);
+        LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -1792,6 +1822,10 @@ public class Filters {
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstAtmSparkasse", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            dialog.dismiss();
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstAtmSparkasse-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstAtmSparkasseDistance_load_data_miss", 1);
@@ -1814,15 +1848,15 @@ public class Filters {
         Log.i("osmFirstBankVolksbank", "Request sent");
 
         // Check if the location is inside a big city. If yes, set the search-radius to 5000m, otherwise to 30000m.
-        int distance;
+        final int distance;
 
         if (CheckIfGrossstadt.checkIfGrossstadt(GetCityNameFromCoordinates.getCityName(latitude, longitude, mContext))){
-            distance = 3000;
+            distance = 2500;
         } else {
             if (CheckIfNearGrossstadt.checkIfNearGrossstadt(latitude, longitude)) {
-                distance = 5000;
+                distance = 3500;
             } else {
-                distance = 20000;
+                distance = 10000;
             }
         }
 
@@ -1949,32 +1983,7 @@ public class Filters {
                                     LatLng latLng = new LatLng(lat, lng);
                                     markerOptions.position(latLng);
 
-                                    if (placeName.toLowerCase().contains("volks")
-                                            || (placeName.toLowerCase().contains("aachener"))
-                                            || (placeName.toLowerCase().contains("bopfing"))
-                                            || (placeName.toLowerCase().contains("brühl"))
-                                            || (placeName.toLowerCase().contains("donau"))
-                                            || (placeName.toLowerCase().contains("erfurter"))
-                                            || (placeName.toLowerCase().contains("federsee bank"))
-                                            || (placeName.toLowerCase().contains("frankenberger bank"))
-                                            || (placeName.toLowerCase().contains("geno"))
-                                            || (placeName.toLowerCase().contains("genossenschafts bank münchen"))
-                                            || (placeName.toLowerCase().contains("gls"))
-                                            || (placeName.toLowerCase().contains("unterlegäu"))
-                                            || (placeName.toLowerCase().contains("kölner"))
-                                            || (placeName.toLowerCase().contains("ievo"))
-                                            || (placeName.toLowerCase().contains("liga"))
-                                            || (placeName.toLowerCase().contains("märki"))
-                                            || (placeName.toLowerCase().contains("münchener bank"))
-                                            || (placeName.toLowerCase().contains("raiffeisen"))
-                                            || (placeName.toLowerCase().contains("rv"))
-                                            || (placeName.toLowerCase().contains("darlehenkasse"))
-                                            || (placeName.toLowerCase().contains("spaar & kredit"))
-                                            || (placeName.toLowerCase().contains("spaar&kredit"))
-                                            || (placeName.toLowerCase().contains("spreewald"))
-                                            || (placeName.toLowerCase().contains("vr"))
-                                            || (placeName.toLowerCase().contains("waldecker"))
-                                            || (placeName.toLowerCase().contains("team"))) {
+                                    if (CheckIfVolksbank.checkIfVolksbank(placeName.toLowerCase())){
                                         markerOptions.title("Volksbank Gruppe");
                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                         thisRow.iconId = R.drawable.ic_new_volksbank_gruppe_marker2;
@@ -1998,11 +2007,16 @@ public class Filters {
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        osmFirstAtmVolksbank(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
+                        osmFirstAtmVolksbank(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstBankVolksbank", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            adapter.notifyDataSetChanged();
+                            osmFirstAtmVolksbank(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog, distance);
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstBankVolksbankDistance-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstBankVolksbankDistance_load_data_miss", 1);
@@ -2011,14 +2025,14 @@ public class Filters {
     }
 
     @AddTrace(name = "osmFirstAtmVolksbank")
-    private static void osmFirstAtmVolksbank(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog) {
+    private static void osmFirstAtmVolksbank(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data, final Dialog dialog, int distance) {
 
         if (cachedEntries !=null) {
             cachedEntries.clear();
         }
 
         Log.i("osmFirstAtmVolksbank", "Request sent");
-        LatLngBounds coordinates = getBoundingBox(50000, latitude, longitude);
+        LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -2136,32 +2150,7 @@ public class Filters {
                                     markerOptions.position(latLng);
                                     markerOptions.title(placeName);
 
-                                    if (placeName.toLowerCase().contains("volks")
-                                            || (placeName.toLowerCase().contains("aachener"))
-                                            || (placeName.toLowerCase().contains("bopfing"))
-                                            || (placeName.toLowerCase().contains("brühl"))
-                                            || (placeName.toLowerCase().contains("donau"))
-                                            || (placeName.toLowerCase().contains("erfurter"))
-                                            || (placeName.toLowerCase().contains("federsee bank"))
-                                            || (placeName.toLowerCase().contains("frankenberger bank"))
-                                            || (placeName.toLowerCase().contains("geno"))
-                                            || (placeName.toLowerCase().contains("genossenschafts bank münchen"))
-                                            || (placeName.toLowerCase().contains("gls"))
-                                            || (placeName.toLowerCase().contains("unterlegäu"))
-                                            || (placeName.toLowerCase().contains("kölner"))
-                                            || (placeName.toLowerCase().contains("ievo"))
-                                            || (placeName.toLowerCase().contains("liga"))
-                                            || (placeName.toLowerCase().contains("märki"))
-                                            || (placeName.toLowerCase().contains("münchener bank"))
-                                            || (placeName.toLowerCase().contains("raiffeisen"))
-                                            || (placeName.toLowerCase().contains("rv"))
-                                            || (placeName.toLowerCase().contains("darlehenkasse"))
-                                            || (placeName.toLowerCase().contains("spaar & kredit"))
-                                            || (placeName.toLowerCase().contains("spaar&kredit"))
-                                            || (placeName.toLowerCase().contains("spreewald"))
-                                            || (placeName.toLowerCase().contains("vr"))
-                                            || (placeName.toLowerCase().contains("waldecker"))
-                                            || (placeName.toLowerCase().contains("team"))) {
+                                    if (CheckIfVolksbank.checkIfVolksbank(placeName.toLowerCase())){
                                         markerOptions.title("Volksbank Gruppe");
                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                         thisRow.iconId = R.drawable.ic_new_volksbank_gruppe_marker2;
@@ -2203,6 +2192,10 @@ public class Filters {
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstAtmVolksbank", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            dialog.dismiss();
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstAtmVolksbankDistance-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstAtmVolksbankDistance_load_data_miss", 1);

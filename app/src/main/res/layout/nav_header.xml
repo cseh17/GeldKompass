@@ -17,11 +17,12 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_toEndOf="@+id/menu_header_logo"
         android:paddingStart="11dp"
+        android:paddingEnd="11dp"
         android:paddingTop="8dp"/>
 
 </RelativeLayout>

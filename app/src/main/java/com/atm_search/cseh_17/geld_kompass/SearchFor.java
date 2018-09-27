@@ -24,6 +24,7 @@ import com.google.maps.android.SphericalUtil;
 
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -385,6 +386,12 @@ public class SearchFor {
 
                         @Override
                         public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                            Log.i("osmNearByBanks", "timeout");
+                            if (t instanceof SocketTimeoutException){
+                                adapter.notifyDataSetChanged();
+                                loadingProgressBar.setVisibility(View.GONE);
+                                osmNearByAtms(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data);
+                            }
                             Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmNearByBanks-fails");
                             myTrace.start();
                             myTrace.incrementMetric("osmNearByBanks_load_data_miss", 1);
@@ -857,6 +864,15 @@ public class SearchFor {
 
                         @Override
                         public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                            Log.i("osmNearByAtms", "timeout");
+                            if (t instanceof SocketTimeoutException){
+                                loadingProgressBar.setVisibility(View.GONE);
+                                searchButton.setClickable(true);
+                                cashGroupFilterButton.setClickable(true);
+                                cashPoolFilterButton.setClickable(true);
+                                sparkasseFilterButton.setClickable(true);
+                                volksbankFilterButton.setClickable(true);
+                            }
                             Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmNearByAtms-fails");
                             myTrace.start();
                             myTrace.incrementMetric("osmNearByAtms_load_data_miss", 1);
@@ -890,7 +906,7 @@ public class SearchFor {
 
         Log.i("osmFirstBankDistance", "Request sent");
 
-        final LatLngBounds coordinates = getBoundingBox(30000, latitude, longitude);
+        final LatLngBounds coordinates = getBoundingBox(10000, latitude, longitude);
 
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
@@ -1162,6 +1178,11 @@ public class SearchFor {
 
                     @Override
                     public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                        Log.i("osmFirstBankDistance", "timeout");
+                        if (t instanceof SocketTimeoutException){
+                            adapter.notifyDataSetChanged();
+                            osmFirstAtmDistance(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
+                        }
                         Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstBankDistance-fails");
                         myTrace.start();
                         myTrace.incrementMetric("osmFirstBankDistance_load_data_miss", 1);
@@ -1180,7 +1201,7 @@ public class SearchFor {
 
 
             Log.i("osmFirstAtmDistance", "Request sent");
-            LatLngBounds coordinates = getBoundingBox(50000, latitude, longitude);
+            LatLngBounds coordinates = getBoundingBox(10000, latitude, longitude);
             String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
             Log.i("Gnerated URL", url);
 
@@ -1450,6 +1471,15 @@ public class SearchFor {
 
                         @Override
                         public void onFailure(@NonNull Call<MyOsmAtms> call, @NonNull Throwable t) {
+                            Log.i("osmFirstAtmDistance", "timeout");
+                            if (t instanceof SocketTimeoutException){
+                                dialog.dismiss();
+                                searchButton.setClickable(true);
+                                cashGroupFilterButton.setClickable(true);
+                                cashPoolFilterButton.setClickable(true);
+                                sparkasseFilterButton.setClickable(true);
+                                volksbankFilterButton.setClickable(true);
+                            }
                             Trace myTrace = FirebasePerformance.getInstance().newTrace("SearchFor-osmFirstAtmDistance-fails");
                             myTrace.start();
                             myTrace.incrementMetric("osmFirstAtmDistance_load_data_miss", 1);

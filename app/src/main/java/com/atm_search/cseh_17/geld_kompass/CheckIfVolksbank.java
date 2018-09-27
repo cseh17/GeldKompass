@@ -29,6 +29,7 @@ public class CheckIfVolksbank {
                 || (toCheck.toLowerCase().contains("spreewald"))
                 || (toCheck.toLowerCase().contains("vr"))
                 || (toCheck.toLowerCase().contains("waldecker"))
-                || (toCheck.toLowerCase().contains("team"));
+                || (toCheck.toLowerCase().contains("team"))
+                || (toCheck.toLowerCase().contains("bensberg"));
     }
 }

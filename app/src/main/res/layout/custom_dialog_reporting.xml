@@ -29,8 +29,9 @@
 
     <TextView
         android:id="@+id/custom_attention_logo_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
@@ -40,7 +41,7 @@
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/general_error_message_title"
         android:id="@+id/custom_attention_text_dialog"

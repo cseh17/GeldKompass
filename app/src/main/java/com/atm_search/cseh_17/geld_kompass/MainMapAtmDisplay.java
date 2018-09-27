@@ -86,11 +86,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     RVAdapter adapter;
     boolean cashGroupIsSelected, cashPoolIsSelected, sparkasseIsSelected, volksbankIsSelected;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private AdView mBannerAdListView;
-    private InterstitialAd mInterstitialAd;
+    private InterstitialAd mReportFragmentInterstitialAd, mDatenschutzFragmentInterstitialAd;
     private LatLng defaultLocation = new LatLng(51.163375, 10.447683);
     private LatLng mLastLocation;
-
 
 
     @AddTrace(name = "MainOnCreate")
@@ -115,18 +113,30 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
         //Initialise AdMob ads
         MobileAds.initialize(this, "ca-app-pub-3182911509384087~8231949051");
-        mBannerAdListView = findViewById(R.id.mainListAdView);
+        AdView mBannerAdListView = findViewById(R.id.mainListAdView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mBannerAdListView.loadAd(adRequest);
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3182911509384087/5866953241");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        mReportFragmentInterstitialAd = new InterstitialAd(this);
+        mReportFragmentInterstitialAd.setAdUnitId("ca-app-pub-3182911509384087/5866953241");
+        mReportFragmentInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mDatenschutzFragmentInterstitialAd = new InterstitialAd(this);
+        mDatenschutzFragmentInterstitialAd.setAdUnitId("ca-app-pub-3182911509384087/7706774172");
+        mDatenschutzFragmentInterstitialAd.loadAd(new AdRequest.Builder().build());
+
 
         //Set an AdListner to reload Interstitial ads after being closed
-        mInterstitialAd.setAdListener(new AdListener(){
+        mReportFragmentInterstitialAd.setAdListener(new AdListener(){
             @Override
             public void onAdClosed(){
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                mReportFragmentInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+
+        mDatenschutzFragmentInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed(){
+                mDatenschutzFragmentInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
         });
 
@@ -151,8 +161,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 Bundle params = new Bundle();
                                 params.putString("menuItem", "report_missing");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
-                                if (mInterstitialAd.isLoaded()){
-                                    mInterstitialAd.show();
+                                if (mReportFragmentInterstitialAd.isLoaded()){
+                                    mReportFragmentInterstitialAd.show();
                                 }
                                 //FragmentTransaction ft;
                                 //ft = fm.beginTransaction();
@@ -170,9 +180,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 params.putString("menuItem", "about");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
                                 item.setChecked(true);
-                                //ft = fm.beginTransaction();
-                                //ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                //ft.add(R.id.main_activity_layout, appInfoFragment).addToBackStack(null).commit();
                                 mFragmentToSet = "info";
                                 mDrawerLayout.closeDrawers();
                                 setNavButtonClickable();
@@ -183,8 +190,8 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                                 params = new Bundle();
                                 params.putString("menuItem", "datenschutz");
                                 mFirebaseAnalytics.logEvent("MenuItemPressed", params);
-                                if (mInterstitialAd.isLoaded()){
-                                    mInterstitialAd.show();
+                                if (mDatenschutzFragmentInterstitialAd.isLoaded()){
+                                    mDatenschutzFragmentInterstitialAd.show();
                                 }
                                 item.setChecked(true);
                                 mFragmentToSet = "datenschutz";
@@ -653,7 +660,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                             onMapReady(mMap);
                             Log.i("onResume", "reload map");
                         }
-                    },1500);
+                    },2500);
 
                 }
             }
@@ -681,7 +688,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         }
 
     }
-
 
     public void setNavButtonUnclickable(){
 
