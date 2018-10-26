@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -111,7 +112,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         // Set the Drawer Layout (menu)
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        //Initialise AdMob ads
+        // Initialise AdMob ads
         MobileAds.initialize(this, "ca-app-pub-3182911509384087~8231949051");
         AdView mBannerAdListView = findViewById(R.id.mainListAdView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -125,7 +126,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mDatenschutzFragmentInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
-        //Set an AdListner to reload Interstitial ads after being closed
+        // Set an AdListner to reload Interstitial ads after being closed
         mReportFragmentInterstitialAd.setAdListener(new AdListener(){
             @Override
             public void onAdClosed(){
@@ -626,6 +627,9 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     public void onResume(){
         super.onResume();
 
+        // Check if the GPS Module is enabled
+        checkGPS(this);
+
         // Get the navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -924,6 +928,22 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     public static LatLng getLocation(){
 
         return new LatLng(latitude, longitude);
+    }
+
+    public boolean isGPSEnabled (Context mContext){
+        LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        return Objects.requireNonNull(locationManager).isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public void checkGPS(Context mContext){
+
+        if (!isGPSEnabled(mContext)){
+            CustomAlertDialog alert = new CustomAlertDialog();
+            alert.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.location_permission_gps_not_enabled));
+            Log.i("GPS","disabled");
+        } else {
+            Log.i("GPS", "enabled");
+        }
     }
 }
 

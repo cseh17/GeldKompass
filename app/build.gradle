@@ -16,8 +16,8 @@ android {
         applicationId 'de.atm_search.cseh_17.geld_kompass'
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 17
-        versionName "6.4 Alpha"
+        versionCode 20
+        versionName "6.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
     }
@@ -39,14 +39,14 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:customtabs:27.1.1'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.android.gms:play-services-places:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.google.firebase:firebase-ads:15.0.1'
-    implementation 'com.google.firebase:firebase-perf:16.1.0'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.3'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-ads:17.0.0'
+    implementation 'com.google.firebase:firebase-perf:16.1.2'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.4'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
     implementation 'com.google.maps.android:android-maps-utils:0.4.4'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.8.8'

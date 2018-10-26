@@ -5,7 +5,7 @@
     <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
     <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuchen Sie es später erneut.</string>
 
-    <string name="no_result_alert_DE">Keine Ergebnisse in einem Umkreis von 1500m gefunden für die von Ihnen gesuchte Bankgruppe! Die Suche wird erweitert, um nach der erster Geldautomat in Ihrer Nähe zu suchen.</string>
+    <string name="no_result_alert_DE">Keine Ergebnisse im Umkreis von 1500m für die von Ihnen gesuchte Bankgruppe gefunden! Die Suche wird erweitert, um nach dem nächsten Geldautomat in Ihrer Nähe zu suchen.</string>
     <string name="no_result_distance_alert_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_list_DE">Keine Ergebnisse! Die von Ihnen eingestellte Suche liefert keine Ergebnisse. Es befindet sich kein Geldautomat in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_cash_group_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der CashGroup in diesem Gebiet. Es tut uns Leid!</string>
@@ -17,6 +17,7 @@
     <string name="location_permission_title_DE">Achtung</string>
     <string name="general_error_message_title">Error Message</string>
     <string name="location_permission_body_DE">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort Ihres Gerätes</string>
+    <string name="location_permission_gps_not_enabled">Um diese App benutzen zu können, benötigen wir Zugang zu dem Standort Ihres Gerätes. Bitte aktivieren Sie die GPS-Funktion Ihres Gerätes.</string>
     <string name="permission_granted_DE">Erlaubnis erteilt</string>
     <string name="permission_denied_DE">Erlaubnis verweigert</string>
     <string name="nav_bar_title_no_result">Standort wird ermittelt</string>
@@ -32,7 +33,7 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="app_version">6.4 Alpha</string>
+    <string name="app_version">6.7</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
 

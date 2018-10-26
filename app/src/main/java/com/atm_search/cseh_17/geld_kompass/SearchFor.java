@@ -44,6 +44,7 @@ public class SearchFor {
     private static long lastSaved;
     private static double lat, lng;
     private static final LinkedList<AtmDataStructure> toCache = new LinkedList<>(Collections.<AtmDataStructure>emptyList());
+    private static boolean showGeneralError = true;
 
     private static LatLngBounds getBoundingBox( double distance, double latitude, double longitude){
 
@@ -66,6 +67,7 @@ public class SearchFor {
         final FloatingActionButton cashPoolFilterButton = mActivity.findViewById(R.id.filterCashPoolButton);
         final FloatingActionButton sparkasseFilterButton = mActivity.findViewById(R.id.filterSparkasseButton);
         final FloatingActionButton volksbankFilterButton = mActivity.findViewById(R.id.filterVolksbankButton);
+
         searchButton.setClickable(false);
         cashGroupFilterButton.setClickable(false);
         cashPoolFilterButton.setClickable(false);
@@ -99,6 +101,7 @@ public class SearchFor {
             Log.i("osmNearByBanks", "Request sent");
 
             final LatLngBounds coordinates = getBoundingBox(1500, latitude, longitude);
+            showGeneralError = true;
 
             String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
             Log.i("Gnerated URL", url);
@@ -136,8 +139,11 @@ public class SearchFor {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -597,7 +603,15 @@ public class SearchFor {
                                             String address = item.getTags().getAddrStreet() + " " + item.getTags().getAddrHousenumber() + " " + item.getTags().getAddrPostcode() + " " + item.getTags().getAddrCity();
                                             Log.i("Address", address);
                                             LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
-                                            item.setDistance(Distance.distance1(Objects.requireNonNull(addressCoordinates).latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                            if (addressCoordinates != null) {
+                                                item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                            } else {
+                                                if (showGeneralError) {
+                                                    CustomAlertDialog alert = new CustomAlertDialog();
+                                                    alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                    showGeneralError = false;
+                                                }
+                                            }
                                         } else {
                                             if (item.getLat() != null && item.getLon() != null) {
 
@@ -907,6 +921,7 @@ public class SearchFor {
         Log.i("osmFirstBankDistance", "Request sent");
 
         final LatLngBounds coordinates = getBoundingBox(10000, latitude, longitude);
+        showGeneralError = true;
 
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
@@ -945,7 +960,15 @@ public class SearchFor {
                                         String address = item.getTags().getAddrStreet() + " " + houseNumber + " " + item.getTags().getAddrPostcode() + " " + item.getTags().getAddrCity();
                                         Log.i("Address", address);
                                         LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
-                                        item.setDistance(Distance.distance1(Objects.requireNonNull(addressCoordinates).latitude, latitude, Objects.requireNonNull(addressCoordinates).longitude, longitude, 0, 0));
+                                        if (addressCoordinates != null) {
+                                            item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                        } else {
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
+                                        }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
 
@@ -1233,7 +1256,15 @@ public class SearchFor {
                                             String address = item.getTags().getAddrStreet() + " " + item.getTags().getAddrHousenumber() + " " + item.getTags().getAddrPostcode() + " " + item.getTags().getAddrCity();
                                             Log.i("Address", address);
                                             LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
-                                            item.setDistance(Distance.distance1(Objects.requireNonNull(addressCoordinates).latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                            if (addressCoordinates != null) {
+                                                item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                            } else {
+                                                if (showGeneralError) {
+                                                    CustomAlertDialog alert = new CustomAlertDialog();
+                                                    alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                    showGeneralError = false;
+                                                }
+                                            }
                                         } else {
                                             if (item.getLat() != null && item.getLon() != null) {
 
