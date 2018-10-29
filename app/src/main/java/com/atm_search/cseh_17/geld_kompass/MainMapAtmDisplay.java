@@ -387,7 +387,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -448,7 +448,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -508,7 +508,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -567,7 +567,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -648,7 +648,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
             // If there is a connection, do the search
-            if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+            if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                 // If there is no connection, show an alert dialog
                 CustomAlertDialog dialog = new CustomAlertDialog();
@@ -812,7 +812,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                             // If there is a connection, do the search
-                            if(!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                            if(CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                                 // if there is no connection, show an alert dialog
                                 CustomAlertDialog dialog = new CustomAlertDialog();

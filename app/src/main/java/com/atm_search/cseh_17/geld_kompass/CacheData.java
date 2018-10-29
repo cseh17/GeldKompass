@@ -9,12 +9,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 
-public final class CacheData {
+final class CacheData {
 
     private CacheData() {
     }
 
-    public static void writeAtmData(Context mContext, String key, LinkedList<AtmDataStructure> mObject) throws IOException {
+    static void writeAtmData(Context mContext, String key, LinkedList<AtmDataStructure> mObject) throws IOException {
 
         FileOutputStream fos = mContext.openFileOutput(key, Context.MODE_PRIVATE);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -23,7 +23,7 @@ public final class CacheData {
         fos.close();
     }
 
-    public static void writeObject(Context mContext, String key, Object mObject) throws IOException {
+    static void writeObject(Context mContext, String key, Object mObject) throws IOException {
 
         FileOutputStream fos = mContext.openFileOutput(key, Context.MODE_PRIVATE);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -32,7 +32,7 @@ public final class CacheData {
         fos.close();
     }
 
-    public static Object readObject(Context mContext, String key) throws IOException, ClassNotFoundException {
+    static Object readObject(Context mContext, String key) throws IOException, ClassNotFoundException {
 
         FileInputStream fis = mContext.openFileInput(key);
         ObjectInputStream ois = new ObjectInputStream(fis);

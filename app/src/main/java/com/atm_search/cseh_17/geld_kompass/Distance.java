@@ -4,10 +4,10 @@ package com.atm_search.cseh_17.geld_kompass;
  * Created by cseh_17 on 29.03.2018.
  */
 
-public class Distance {
+class Distance {
 
-    public static double distance1(double lat1, double lat2, double lon1,
-                                  double lon2, double el1, double el2) {
+    static double distance1(double lat1, double lat2, double lon1,
+                            double lon2) {
 
         final int R = 6371; // Radius of the earth
 
@@ -19,7 +19,7 @@ public class Distance {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c * 1000; // convert to meters
 
-        double height = el1 - el2;
+        double height = (double) 0 - (double) 0;
 
         distance = Math.pow(distance, 2) + Math.pow(height, 2);
 

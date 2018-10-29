@@ -1,7 +1,9 @@
 package com.atm_search.cseh_17.geld_kompass;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
@@ -22,7 +24,6 @@ import android.widget.Spinner;
 import com.google.firebase.perf.metrics.AddTrace;
 
 import java.util.Objects;
-
 
 public class ReportFormFragment extends android.support.v4.app.Fragment{
 
@@ -49,9 +50,23 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressBar loadingProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.rf_progressLoader);
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                new NetworkTraffic(getActivity(), question1, question2, loadingProgressBar).execute();
+
+                // Check for connectivity
+                ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                // If there is a connection, do the search
+                if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+
+                    // if there is no connection, show an alert dialog
+                    CustomAlertDialog dialog = new CustomAlertDialog();
+                    dialog.showDialog(getActivity(), Objects.requireNonNull(getActivity()).getString(R.string.no_internet_alert_DE));
+                } else {
+
+                    // if there is a connection submit
+                    final ProgressBar loadingProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.rf_progressLoader);
+                    loadingProgressBar.setVisibility(View.VISIBLE);
+                    new NetworkTraffic(getActivity(), question1, question2, loadingProgressBar).execute();
+                }
             }
         });
 

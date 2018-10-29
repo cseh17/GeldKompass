@@ -12,11 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.os.Handler;
 
-public class CustomWarningDialog{
+class CustomWarningDialog{
 
-
-
-    public void showDialog (final Activity activity, Context context, String msg){
+    void showDialog(final Activity activity, Context context, String msg){
 
         SharedPreferences reportingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         final SharedPreferences.Editor prefEditor = reportingPreferences.edit();

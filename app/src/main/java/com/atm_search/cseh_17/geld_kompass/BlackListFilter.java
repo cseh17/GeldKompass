@@ -1,8 +1,8 @@
 package com.atm_search.cseh_17.geld_kompass;
 
-public class BlackListFilter {
+class BlackListFilter {
 
-    public static boolean isBlacklisted(String placeName) {
+    static boolean isBlacklisted(String placeName) {
         return !placeName.toLowerCase().contains("schwä")
                 && !placeName.toLowerCase().contains("que")
                 && !placeName.toLowerCase().contains("ready")

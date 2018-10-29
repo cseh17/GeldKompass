@@ -1,7 +1,7 @@
 package com.atm_search.cseh_17.geld_kompass;
 
-public class CheckIfGrossstadt {
-    public static boolean checkIfGrossstadt(String stadt) {
+class CheckIfGrossstadt {
+    static boolean checkIfGrossstadt(String stadt) {
 
         return stadt.contains("Berlin")
                 || stadt.contains("Hamburg")

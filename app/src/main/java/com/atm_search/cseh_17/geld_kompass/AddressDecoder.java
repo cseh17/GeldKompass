@@ -10,10 +10,10 @@ import com.google.firebase.perf.metrics.AddTrace;
 import java.io.IOException;
 import java.util.List;
 
-public class AddressDecoder {
+class AddressDecoder {
 
     @AddTrace(name = "AddressDecoder-getLocationFromAddress")
-    public static LatLng getLocationFromAddress(Context mContext, String mAddress){
+    static LatLng getLocationFromAddress(Context mContext, String mAddress){
 
         Geocoder coder = new Geocoder(mContext);
         List<Address> address;

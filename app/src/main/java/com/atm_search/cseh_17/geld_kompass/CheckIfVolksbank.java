@@ -1,8 +1,8 @@
 package com.atm_search.cseh_17.geld_kompass;
 
-public class CheckIfVolksbank {
+class CheckIfVolksbank {
 
-    public static boolean checkIfVolksbank(String toCheck){
+    static boolean checkIfVolksbank(String toCheck){
 
         return toCheck.toLowerCase().contains("volks")
                 || (toCheck.toLowerCase().contains("aachener"))

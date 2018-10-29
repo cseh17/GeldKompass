@@ -8,9 +8,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.os.Handler;
 
-public class CustomAlertDialog {
+class CustomAlertDialog {
 
-    public void showDialog(Activity activity, String msg){
+    void showDialog(Activity activity, String msg){
 
             final Dialog dialog = new Dialog(activity);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

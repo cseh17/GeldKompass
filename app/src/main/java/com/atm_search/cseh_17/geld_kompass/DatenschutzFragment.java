@@ -1,6 +1,5 @@
 package com.atm_search.cseh_17.geld_kompass;
 
-
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.perf.metrics.AddTrace;
-
 
 public class DatenschutzFragment extends android.support.v4.app.Fragment{
 

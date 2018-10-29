@@ -4,12 +4,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-public class CheckConnection {
+class CheckConnection {
 
-    public static boolean isConnected(ConnectivityManager cm) {
-        //ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+    static boolean isConnected(ConnectivityManager cm) {
+
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (null != activeNetwork) {
+        if (activeNetwork == null) {
+            Log.i("Connected to:", " No connection");
+            return false;
+        } else {
             if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
                 Log.i("Connected to", " WiFi");
             }
@@ -17,9 +20,6 @@ public class CheckConnection {
                 Log.i("Connected to", " mobile");
             }
             return true;
-        } else {
-            Log.i("Connected to:", " No connection");
-            return false;
         }
     }
 }

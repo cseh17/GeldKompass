@@ -37,8 +37,7 @@ import retrofit2.Response;
 import static android.content.ContentValues.TAG;
 import static com.atm_search.cseh_17.geld_kompass.BitmapDescriptorFromVector.bitmapDescriptorFromVector;
 
-
-public class SearchFor {
+class SearchFor {
 
     private static LinkedList<AtmDataStructure> cachedEntries;
     private static long lastSaved;
@@ -58,7 +57,7 @@ public class SearchFor {
     }
 
     @AddTrace(name = "osmNearByBanks")
-    public static void osmNearByBanks(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data){
+    static void osmNearByBanks(final APIService mService, final double latitude, final double longitude, final GoogleMap mMap, final Activity mActivity, final Context mContext, final RVAdapter adapter, final LinkedList<RVRowInformation> data){
 
         final ProgressBar loadingProgressBar = mActivity.findViewById(R.id.main_progresLoader);
         loadingProgressBar.setVisibility(View.VISIBLE);
@@ -93,7 +92,7 @@ public class SearchFor {
             Log.e("Cache error:", "No data found in cache");
         }
 
-        if (cachedEntries == null || cachedEntries.isEmpty() || Distance.distance1(lat, latitude, lng, longitude, 0, 0) > 100 || ((System.currentTimeMillis() / 1000) - lastSaved) > 600) {
+        if (cachedEntries == null || cachedEntries.isEmpty() || Distance.distance1(lat, latitude, lng, longitude) > 100 || ((System.currentTimeMillis() / 1000) - lastSaved) > 600) {
 
             // Clear toCache to avoid duplicates in cashed data
             toCache.clear();
@@ -137,7 +136,7 @@ public class SearchFor {
                                         Log.i("Address", address);
                                         LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
                                         if (addressCoordinates != null) {
-                                            item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                            item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
                                             if (showGeneralError) {
                                                 CustomAlertDialog alert = new CustomAlertDialog();
@@ -148,7 +147,7 @@ public class SearchFor {
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
 
-                                            item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude, 0, 0));
+                                            item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude));
                                         }
                                     }
 
@@ -446,7 +445,7 @@ public class SearchFor {
         }
         myTrace.stop();
 
-        if (cachedEntries != null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude, 0, 0) < 151 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
+        if (cachedEntries != null && !cachedEntries.isEmpty() && Distance.distance1(lat, latitude, lng, longitude) < 151 && ((System.currentTimeMillis() / 1000) - lastSaved) < 600) {
 
             mMap.clear();
             data.clear();
@@ -456,7 +455,7 @@ public class SearchFor {
             MarkerOptions mMarkerOptions = new MarkerOptions();
             AtmDataStructure firstEntry = cachedEntries.getFirst();
 
-            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude, 0, 0);
+            Double locationToAtmDistance = Distance.distance1(firstEntry.mMarkerOptionLat, latitude, firstEntry.mMarkerOptionLng, longitude);
             if (locationToAtmDistance > 400) {
 
                 //Move map camera
@@ -604,7 +603,7 @@ public class SearchFor {
                                             Log.i("Address", address);
                                             LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
                                             if (addressCoordinates != null) {
-                                                item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                                item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                             } else {
                                                 if (showGeneralError) {
                                                     CustomAlertDialog alert = new CustomAlertDialog();
@@ -615,7 +614,7 @@ public class SearchFor {
                                         } else {
                                             if (item.getLat() != null && item.getLon() != null) {
 
-                                                item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude, 0, 0));
+                                                item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude));
                                             }
                                         }
 
@@ -961,7 +960,7 @@ public class SearchFor {
                                         Log.i("Address", address);
                                         LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
                                         if (addressCoordinates != null) {
-                                            item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                            item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
                                             if (showGeneralError) {
                                                 CustomAlertDialog alert = new CustomAlertDialog();
@@ -972,7 +971,7 @@ public class SearchFor {
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
 
-                                            item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude, 0, 0));
+                                            item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude));
                                         }
                                     }
 
@@ -1257,7 +1256,7 @@ public class SearchFor {
                                             Log.i("Address", address);
                                             LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
                                             if (addressCoordinates != null) {
-                                                item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude, 0, 0));
+                                                item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                             } else {
                                                 if (showGeneralError) {
                                                     CustomAlertDialog alert = new CustomAlertDialog();
@@ -1268,7 +1267,7 @@ public class SearchFor {
                                         } else {
                                             if (item.getLat() != null && item.getLon() != null) {
 
-                                                item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude, 0, 0));
+                                                item.setDistance(Distance.distance1(Double.parseDouble(item.getLat()), latitude, Double.parseDouble(item.getLon()), longitude));
                                             }
                                         }
 

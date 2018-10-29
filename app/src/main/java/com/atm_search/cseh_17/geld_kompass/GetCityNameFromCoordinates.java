@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class GetCityNameFromCoordinates {
-    public static String getCityName(double lat, double lng, Context mContext) {
+class GetCityNameFromCoordinates {
+    static String getCityName(double lat, double lng, Context mContext) {
 
         String city = "";
         try {

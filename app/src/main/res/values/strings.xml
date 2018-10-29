@@ -33,7 +33,7 @@
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
     
-    <string name="app_version">6.7</string>
+    <string name="app_version">6.8</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
 
@@ -46,7 +46,7 @@
 
     <string name="report_title">
         Hier können Sie uns: fehlende, fehlplatzierte oder doppelt angezeigte Bankautomaten mitteilen.
-        Um den Prozess zu beschleunigen, Ihre anonymisierte Standort-Daten werden automatisch erfasst.
+        Um den Prozess zu beschleunigen, werden Ihre anonymisierte Standort-Daten automatisch erfasst.
         Vielen Dank für Ihre Mithilfe!</string>
 
     <string name="report_permission_dialog_body">Die Folgende Funktion benötigt Ihr Einverständnis, uns Ihren Standort mitzuteilen.
@@ -83,7 +83,7 @@
     </string-array>
 
     <string name="question1">Was möchten Sie uns mitteilen?</string>
-    <string name="question2">Gehört der Bankautomat, von dem Sie berichten möchten, zu einer der folgenden Bankinstitute? (Falls nicht, wählen Sie "andere" am Ende der Liste)</string>
+    <string name="question2">Gehört der Bankautomat, über den Sie berichten möchten, zu einem der folgenden Bankinstitute? (Falls nicht, wählen Sie "andere" am Ende der Liste)</string>
 
     <string name="app_logo_credentials">Das Logo ist ein geändertes Modell des Logos des Autors Freepik von www.flaticon.com</string>
     <string name="logo_credentials_bbbank">Das BBBank-Logo ist Eigentum von BBBank eG.</string>

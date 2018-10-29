@@ -9,10 +9,10 @@ import java.util.Locale;
 
 import com.google.firebase.perf.metrics.AddTrace;
 
-public class CoordinatesDecoder {
+class CoordinatesDecoder {
 
     @AddTrace(name = "CoordinateDecoder-getCompleteAdress")
-    protected static String getCompleteAddress(Context mContext, double latitude, double longitude){
+    static String getCompleteAddress(Context mContext, double latitude, double longitude){
 
         String strAdd = "";
         Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
