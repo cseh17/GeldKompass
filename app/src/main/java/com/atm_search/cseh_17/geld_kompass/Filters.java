@@ -40,6 +40,7 @@ class Filters {
     private static LinkedList<AtmDataStructure> cachedEntries;
     private static long lastSaved;
     private static double lat, lng;
+    private static boolean showGeneralError = true;
 
     static boolean nearByBanksFilteredCashGroup(final GoogleMap mMap, final LinkedList<RVRowInformation> data, final APIService mService, final double latitude, final double longitude, final Context mContext, final Activity mActivity, final RVAdapter adapter) {
 
@@ -539,6 +540,7 @@ class Filters {
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
 
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
@@ -587,8 +589,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -750,6 +755,7 @@ class Filters {
 
         Log.i("osmFirstAtmCashGroup", "Request sent");
         LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -784,8 +790,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -984,6 +993,7 @@ class Filters {
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
 
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Generated URL", url);
@@ -1028,8 +1038,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -1235,6 +1248,7 @@ class Filters {
 
         Log.i("osmFirstAtmCashPool", "Request sent");
         LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -1269,8 +1283,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -1502,6 +1519,7 @@ class Filters {
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
 
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
@@ -1543,8 +1561,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -1679,6 +1700,7 @@ class Filters {
 
         Log.i("osmFirstAtmSparkasse", "Request sent");
         LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -1713,8 +1735,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -1890,6 +1915,7 @@ class Filters {
         }
 
         final LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
 
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude+ ");way[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=bank](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
@@ -1931,8 +1957,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {
@@ -2065,6 +2094,7 @@ class Filters {
 
         Log.i("osmFirstAtmVolksbank", "Request sent");
         LatLngBounds coordinates = getBoundingBox(distance, latitude, longitude);
+        showGeneralError = true;
         String url = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");way[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + ");relation[amenity=atm](" + coordinates.southwest.latitude + "," + coordinates.southwest.longitude + "," + coordinates.northeast.latitude + "," + coordinates.northeast.longitude + "););out%20body;%3E;out%20skel%20qt;";
         Log.i("Gnerated URL", url);
 
@@ -2099,8 +2129,11 @@ class Filters {
                                         if (addressCoordinates != null) {
                                             item.setDistance(Distance.distance1(addressCoordinates.latitude, latitude, addressCoordinates.longitude, longitude));
                                         } else {
-                                            CustomAlertDialog alert = new CustomAlertDialog();
-                                            alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                            if (showGeneralError) {
+                                                CustomAlertDialog alert = new CustomAlertDialog();
+                                                alert.showDialog(mActivity, mContext.getString(R.string.general_error));
+                                                showGeneralError = false;
+                                            }
                                         }
                                     } else {
                                         if (item.getLat() != null && item.getLon() != null) {

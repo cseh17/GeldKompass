@@ -3,6 +3,7 @@ package com.atm_search.cseh_17.geld_kompass;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Location;
@@ -73,7 +74,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private GoogleMap mMap;
     private static double latitude, longitude;
     private LocationRequest mLocationRequest;
-    private Marker mCurrentLocationMarker;
     SupportMapFragment mapFragment;
     AppInfoFragment appInfoFragment;
     static ReportFormFragment reportFragment;
@@ -96,6 +96,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        if (!isTaskRoot() && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER) && getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+            finish();
+            return;
+        }
 
         // Obtain the FirebaseAnalytics instance
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -272,7 +277,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setVisibility(View.GONE);
 
-        //Start location client
+        // Start location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -387,7 +392,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -448,7 +453,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -508,7 +513,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -567,7 +572,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                     ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     // If there is a connection, do the search
-                    if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                         // if there is no connection, show an alert dialog
                         CustomAlertDialog dialog = new CustomAlertDialog();
@@ -617,6 +622,11 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             CacheData.writeObject(this, this.getString(R.string.KEY_for_latitude), latitude);
             CacheData.writeObject(this, this.getString(R.string.KEY_for_longitude), longitude);
 
+            // Check if mLastLocation is not null, and if not, than cache the last location coordinates
+            if (mLastLocation != null){
+                CacheData.writeObject(this, this.getString(R.string.KEY_for_last_location), mLastLocation);
+            }
+
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -630,6 +640,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         // Check if the GPS Module is enabled
         checkGPS(this);
 
+        // Start location client
+        if (mFusedLocationClient == null) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        }
         // Get the navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -637,6 +651,26 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         for (int i = 0; i < navigationView.getMenu().size(); i++){
             navigationView.getMenu().getItem(i).setChecked(false);
         }
+
+        // Try to get the last location from the cache
+        Trace myTrace = FirebasePerformance.getInstance().newTrace("last_location_cache");
+        myTrace.start();
+
+        try {
+
+            // Retrieve the coordinates from the internal storage
+            mLastLocation = (LatLng) CacheData.readObject(this, this.getString(R.string.KEY_for_last_location));
+
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("Cache error:", "No data found in cache");
+        }
+
+        if (mLastLocation != null){
+            myTrace.incrementMetric("last_location_cache_hit", 1);
+        } else {
+            myTrace.incrementMetric("last_location_cache_miss", 1);
+        }
+        myTrace.stop();
 
         // Check if app returned from background
         GeldKompassApp mGeldKompassApp = (GeldKompassApp)this.getApplication();
@@ -648,7 +682,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
             // If there is a connection, do the search
-            if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+            if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                 // If there is no connection, show an alert dialog
                 CustomAlertDialog dialog = new CustomAlertDialog();
@@ -739,23 +773,30 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // Check if the map has been loaded, and the View is not empty
-        if (mMap != null  &&
-                Objects.requireNonNull(mapFragment.getView()).findViewById(Integer.parseInt("1")) != null) {
+        if (mMap != null && mapFragment.getView() != null){
+            if (mapFragment.getView().findViewById(Integer.parseInt("1")) != null) {
 
-            // Get the View
-            View locationCompass = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("5"));
+                // Get the View
+                View locationCompass = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("5"));
 
-            // Position the CompassButton
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationCompass.getLayoutParams();
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-            layoutParams.setMargins(30, 280,0, 0);
+                // Position the CompassButton
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationCompass.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                layoutParams.setMargins(30, 280,0, 0);
 
-            // Set camera to default location when last location is not available
-            if (mLastLocation == null) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+                // Set camera to default location when last location is not available
+                if (mLastLocation == null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+                } else {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLastLocation));
+                }
             } else {
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLastLocation));
+                CustomAlertDialog dialog = new CustomAlertDialog();
+                dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.map_error));
             }
+        } else {
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showDialog(MainMapAtmDisplay.this, MainMapAtmDisplay.this.getString(R.string.map_error));
         }
 
         // Check for Android(SDK) version.
@@ -812,7 +853,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
                             ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                             // If there is a connection, do the search
-                            if(CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                            if(!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
 
                                 // if there is no connection, show an alert dialog
                                 CustomAlertDialog dialog = new CustomAlertDialog();
@@ -858,9 +899,6 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
                         Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                         myTrace.stop();
-                        if (mCurrentLocationMarker != null) {
-                            mCurrentLocationMarker.remove();
-                        }
                     }
                 }
             }

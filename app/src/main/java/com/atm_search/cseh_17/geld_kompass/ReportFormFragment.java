@@ -21,12 +21,16 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.perf.metrics.AddTrace;
 
 import java.util.Objects;
 
+
 public class ReportFormFragment extends android.support.v4.app.Fragment{
 
+    private LatLngBounds allowedBoundsGermany = new LatLngBounds(new LatLng( 47.2701115, 5.8663425), new LatLng(55.0815,15.0418962));
 
     @Nullable
     @Override
@@ -51,21 +55,29 @@ public class ReportFormFragment extends android.support.v4.app.Fragment{
             @Override
             public void onClick(View view) {
 
-                // Check for connectivity
-                ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                // Check if location is inside DE
+                LatLng mLocation = MainMapAtmDisplay.getLocation();
+                if (allowedBoundsGermany.contains(mLocation)) {
 
-                // If there is a connection, do the search
-                if (CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+                    // Check for connectivity
+                    ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                    // if there is no connection, show an alert dialog
-                    CustomAlertDialog dialog = new CustomAlertDialog();
-                    dialog.showDialog(getActivity(), Objects.requireNonNull(getActivity()).getString(R.string.no_internet_alert_DE));
+                    // If there is a connection, do the search
+                    if (!CheckConnection.isConnected(Objects.requireNonNull(cm))) {
+
+                        // if there is no connection, show an alert dialog
+                        CustomAlertDialog dialog = new CustomAlertDialog();
+                        dialog.showDialog(getActivity(), Objects.requireNonNull(getActivity()).getString(R.string.no_internet_alert_DE));
+                    } else {
+
+                        // if there is a connection submit
+                        final ProgressBar loadingProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.rf_progressLoader);
+                        loadingProgressBar.setVisibility(View.VISIBLE);
+                        new NetworkTraffic(getActivity(), question1, question2, loadingProgressBar).execute();
+                    }
                 } else {
-
-                    // if there is a connection submit
-                    final ProgressBar loadingProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.rf_progressLoader);
-                    loadingProgressBar.setVisibility(View.VISIBLE);
-                    new NetworkTraffic(getActivity(), question1, question2, loadingProgressBar).execute();
+                    CustomAlertDialog dialog = new CustomAlertDialog();
+                    dialog.showDialog(getActivity(), Objects.requireNonNull(getActivity()).getString(R.string.out_of_bounds_alert_DE2));
                 }
             }
         });

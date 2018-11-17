@@ -3,6 +3,7 @@
     <string name="title_activity_main_map_atm_display">GeldKompass</string>
     <string name="no_internet_alert_DE">Keine Internetverbindung! Überprüfen Sie das Interneterbindung und versuchen Sie es erneut.</string>
     <string name="out_of_bounds_alert_DE">Diese App funktioniert nur innerhalb Deutschlands.</string>
+    <string name="out_of_bounds_alert_DE2">Diese Funktion funktioniert nur innerhalb Deutschlands.</string>
     <string name="on_failure_alert_DE">Es tut uns Leid! Der Server antwortet nicht. Versuchen Sie es später erneut.</string>
 
     <string name="no_result_alert_DE">Keine Ergebnisse im Umkreis von 1500m für die von Ihnen gesuchte Bankgruppe gefunden! Die Suche wird erweitert, um nach dem nächsten Geldautomat in Ihrer Nähe zu suchen.</string>
@@ -13,6 +14,7 @@
     <string name="no_result_alert_sparkasse_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Sparkasse in diesem Gebiet. Es tut uns Leid!</string>
     <string name="no_result_alert_volksbank_DE">Keine Ergebnisse! Es befindet sich kein Geldautomat der Volksbank Gruppe in diesem Gebiet. Es tut uns Leid!</string>
     <string name="general_error">Es tut uns Leid! Ein unbekanter Fehler ist aufgetreten.</string>
+    <string name="map_error">Es tut uns Leid! Ein Fehler beim Kartenladen ist aufgetreten. Bitte versuchen Sie es erneut.</string>
 
     <string name="location_permission_title_DE">Achtung</string>
     <string name="general_error_message_title">Error Message</string>
@@ -32,8 +34,9 @@
     <string name="KEY_for_timestamp">cache_save_timestamp_KEY</string>
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
+    <string name="KEY_for_last_location">cache_save_last_location</string>
     
-    <string name="app_version">6.8</string>
+    <string name="app_version">6.9 </string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
 

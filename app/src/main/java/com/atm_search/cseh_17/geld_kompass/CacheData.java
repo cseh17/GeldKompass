@@ -2,6 +2,8 @@ package com.atm_search.cseh_17.geld_kompass;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
