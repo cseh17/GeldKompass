@@ -1325,105 +1325,111 @@ class SearchFor {
                                         }
                                     }
 
-                                    Elements theFirst = filteredResponse.getFirst();
 
-                                    // Get the first result from the checked List and do other jobs
-                                    if (theFirst.getIsValid()) {
+                                    // Check if the filteredResponse list is not empty
+                                    if (filteredResponse.size() > 0) {
+                                        Log.i("First element", filteredResponse.getFirst().getTags().getName());
 
-                                        RVRowInformation thisRow = new RVRowInformation();
+                                        Elements theFirst = filteredResponse.getFirst();
 
-                                        // Check if the first element is closer than 2000 or further, and adjust the map zoom accordingly
-                                        if (theFirst.getDistance() > 2000) {
+                                        // Get the first result from the checked List and do other jobs
+                                        if (theFirst.getIsValid()) {
 
-                                            // Move map camera
-                                            LatLng latLng = new LatLng(latitude, longitude);
-                                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
-                                        } else {
-                                            LatLng latLng = new LatLng(latitude, longitude);
-                                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-                                        }
+                                            RVRowInformation thisRow = new RVRowInformation();
 
-                                        double lat = 0;
-                                        double lng = 0;
-                                        MarkerOptions markerOptions = new MarkerOptions();
-                                        AtmDataStructure toCacheElement = new AtmDataStructure();
+                                            // Check if the first element is closer than 2000 or further, and adjust the map zoom accordingly
+                                            if (theFirst.getDistance() > 2000) {
 
-                                        if (theFirst.getLat() == null && theFirst.getTags().getAddrStreet() != null && theFirst.getTags().getAddrHousenumber() != null && theFirst.getTags().getAddrPostcode() != null && theFirst.getTags().getAddrCity() != null) {
+                                                // Move map camera
+                                                LatLng latLng = new LatLng(latitude, longitude);
+                                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                                            } else {
+                                                LatLng latLng = new LatLng(latitude, longitude);
+                                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+                                            }
 
-                                            String address = theFirst.getTags().getAddrStreet() + " " + theFirst.getTags().getAddrHousenumber() + " " + theFirst.getTags().getAddrPostcode() + " " + theFirst.getTags().getAddrCity();
-                                            LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
+                                            double lat = 0;
+                                            double lng = 0;
+                                            MarkerOptions markerOptions = new MarkerOptions();
+                                            AtmDataStructure toCacheElement = new AtmDataStructure();
 
-                                            lat = Objects.requireNonNull(addressCoordinates).latitude;
-                                            lng = Objects.requireNonNull(addressCoordinates).longitude;
+                                            if (theFirst.getLat() == null && theFirst.getTags().getAddrStreet() != null && theFirst.getTags().getAddrHousenumber() != null && theFirst.getTags().getAddrPostcode() != null && theFirst.getTags().getAddrCity() != null) {
 
-                                            toCacheElement.mMarkerOptionLat = lat;
-                                            toCacheElement.mMarkerOptionLng = lng;
-                                        } else {
-                                            if (theFirst.getLat() != null && theFirst.getLon() != null) {
+                                                String address = theFirst.getTags().getAddrStreet() + " " + theFirst.getTags().getAddrHousenumber() + " " + theFirst.getTags().getAddrPostcode() + " " + theFirst.getTags().getAddrCity();
+                                                LatLng addressCoordinates = AddressDecoder.getLocationFromAddress(mContext, address);
 
-                                                lat = Double.parseDouble(theFirst.getLat());
-                                                lng = Double.parseDouble(theFirst.getLon());
+                                                lat = Objects.requireNonNull(addressCoordinates).latitude;
+                                                lng = Objects.requireNonNull(addressCoordinates).longitude;
 
                                                 toCacheElement.mMarkerOptionLat = lat;
                                                 toCacheElement.mMarkerOptionLng = lng;
-                                            }
-                                        }
-
-                                        String placeName = theFirst.getTags().getOperator();
-                                        LatLng latLng = new LatLng(lat, lng);
-                                        markerOptions.position(latLng);
-                                        markerOptions.title(placeName);
-
-                                        if (placeName.toLowerCase().contains("deutsche")) {
-                                            markerOptions.title("Deutsche Bank");
-                                            markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                            thisRow.iconId = R.drawable.ic_new_deutsche_bank_marker;
-                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_deutsche_bank_marker));
-                                        } else {
-                                            if (placeName.toLowerCase().contains("ing")) {
-                                                markerOptions.title("ING DiBa");
-                                                markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                thisRow.iconId = R.drawable.ic_new_ing_marker;
-                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_ing_marker));
                                             } else {
-                                                if (placeName.toLowerCase().contains("pax")) {
-                                                    markerOptions.title("Pax Bank");
+                                                if (theFirst.getLat() != null && theFirst.getLon() != null) {
+
+                                                    lat = Double.parseDouble(theFirst.getLat());
+                                                    lng = Double.parseDouble(theFirst.getLon());
+
+                                                    toCacheElement.mMarkerOptionLat = lat;
+                                                    toCacheElement.mMarkerOptionLng = lng;
+                                                }
+                                            }
+
+                                            String placeName = theFirst.getTags().getOperator();
+                                            LatLng latLng = new LatLng(lat, lng);
+                                            markerOptions.position(latLng);
+                                            markerOptions.title(placeName);
+
+                                            if (placeName.toLowerCase().contains("deutsche")) {
+                                                markerOptions.title("Deutsche Bank");
+                                                markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
+                                                thisRow.iconId = R.drawable.ic_new_deutsche_bank_marker;
+                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_deutsche_bank_marker));
+                                            } else {
+                                                if (placeName.toLowerCase().contains("ing")) {
+                                                    markerOptions.title("ING DiBa");
                                                     markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                    thisRow.iconId = R.drawable.ic_new_pax_bank_marker2;
-                                                    markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_pax_bank_marker2));
+                                                    thisRow.iconId = R.drawable.ic_new_ing_marker;
+                                                    markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_ing_marker));
                                                 } else {
-                                                    if (placeName.toLowerCase().contains("post")) {
-                                                        markerOptions.title("Postbank");
+                                                    if (placeName.toLowerCase().contains("pax")) {
+                                                        markerOptions.title("Pax Bank");
                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                        thisRow.iconId = R.drawable.ic_new_postbank_marker;
-                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_postbank_marker));
+                                                        thisRow.iconId = R.drawable.ic_new_pax_bank_marker2;
+                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_pax_bank_marker2));
                                                     } else {
-                                                        if (placeName.toLowerCase().contains("sparkasse")) {
-                                                            markerOptions.title(placeName);
+                                                        if (placeName.toLowerCase().contains("post")) {
+                                                            markerOptions.title("Postbank");
                                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                            thisRow.iconId = R.drawable.ic_new_sparkasse_marker5;
-                                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparkasse_marker5));
+                                                            thisRow.iconId = R.drawable.ic_new_postbank_marker;
+                                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_postbank_marker));
                                                         } else {
-                                                            if (CheckIfVolksbank.checkIfVolksbank(placeName)){
-                                                                markerOptions.title("Volksbank Gruppe");
+                                                            if (placeName.toLowerCase().contains("sparkasse")) {
+                                                                markerOptions.title(placeName);
                                                                 markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                thisRow.iconId = R.drawable.ic_new_volksbank_gruppe_marker2;
-                                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_volksbank_gruppe_marker2));
+                                                                thisRow.iconId = R.drawable.ic_new_sparkasse_marker5;
+                                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparkasse_marker5));
                                                             } else {
-                                                                if (placeName.toLowerCase().contains("sparda")) {
-                                                                    markerOptions.title("Sparda-Bank");
+                                                                if (CheckIfVolksbank.checkIfVolksbank(placeName)) {
+                                                                    markerOptions.title("Volksbank Gruppe");
                                                                     markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                    thisRow.iconId = R.drawable.ic_new_sparda_bank_marker5;
-                                                                    markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparda_bank_marker5));
+                                                                    thisRow.iconId = R.drawable.ic_new_volksbank_gruppe_marker2;
+                                                                    markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_volksbank_gruppe_marker2));
                                                                 } else {
-                                                                    if (placeName.toLowerCase().contains("commerzbank")) {
-                                                                        markerOptions.title("Commerzbank");
+                                                                    if (placeName.toLowerCase().contains("sparda")) {
+                                                                        markerOptions.title("Sparda-Bank");
                                                                         markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
-                                                                        thisRow.iconId = R.drawable.ic_new_commerzbank_map_marker;
-                                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
+                                                                        thisRow.iconId = R.drawable.ic_new_sparda_bank_marker5;
+                                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparda_bank_marker5));
                                                                     } else {
-                                                                        thisRow.iconId = R.drawable.ic_new_general_map_marker3;
-                                                                        markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
+                                                                        if (placeName.toLowerCase().contains("commerzbank")) {
+                                                                            markerOptions.title("Commerzbank");
+                                                                            markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
+                                                                            thisRow.iconId = R.drawable.ic_new_commerzbank_map_marker;
+                                                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_commerzbank_map_marker));
+                                                                        } else {
+                                                                            thisRow.iconId = R.drawable.ic_new_general_map_marker3;
+                                                                            markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_general_map_marker3));
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -1431,24 +1437,23 @@ class SearchFor {
                                                     }
                                                 }
                                             }
+
+                                            toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
+                                            toCacheElement.mMarkerOptionSnippet = markerOptions.getSnippet();
+
+
+                                            // Add Marker to map
+                                            mMap.addMarker(markerOptions);
+                                            thisRow.rowTitle = markerOptions.getTitle();
+                                            thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", theFirst.getDistance());
+                                            toCacheElement.currentAtm = thisRow;
+
+                                            data.add(thisRow);
+                                            toCache.add(toCacheElement);
+                                            Collections.sort(data, new CompareDistancesOnDisplayList());
+                                            Collections.sort(toCache, new CompareDistanceOnCacheList());
                                         }
-
-                                        toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
-                                        toCacheElement.mMarkerOptionSnippet = markerOptions.getSnippet();
-
-
-                                        // Add Marker to map
-                                        mMap.addMarker(markerOptions);
-                                        thisRow.rowTitle = markerOptions.getTitle();
-                                        thisRow.rowSubtitle = String.format(Locale.GERMAN, "%.0f", theFirst.getDistance());
-                                        toCacheElement.currentAtm = thisRow;
-
-                                        data.add(thisRow);
-                                        toCache.add(toCacheElement);
-                                        Collections.sort(data, new CompareDistancesOnDisplayList());
-                                        Collections.sort(toCache, new CompareDistanceOnCacheList());
                                     }
-
                                     adapter.notifyDataSetChanged();
                                 } else {
 
