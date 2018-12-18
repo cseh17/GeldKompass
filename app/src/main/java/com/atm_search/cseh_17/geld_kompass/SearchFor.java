@@ -1319,22 +1319,17 @@ class SearchFor {
                                     Collections.sort(editedResponse, new CompareDistanceOnEditedList());
 
                                     for (Elements item : editedResponse){
-
                                         if (item.getIsValid() && !item.getType().equals("way")) {
                                             filteredResponse.add(item);
                                         }
                                     }
 
-
                                     // Check if the filteredResponse list is not empty
                                     if (filteredResponse.size() > 0) {
-                                        Log.i("First element", filteredResponse.getFirst().getTags().getName());
-
                                         Elements theFirst = filteredResponse.getFirst();
 
                                         // Get the first result from the checked List and do other jobs
                                         if (theFirst.getIsValid()) {
-
                                             RVRowInformation thisRow = new RVRowInformation();
 
                                             // Check if the first element is closer than 2000 or further, and adjust the map zoom accordingly

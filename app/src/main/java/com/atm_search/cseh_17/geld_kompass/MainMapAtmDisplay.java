@@ -90,7 +90,7 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
     private InterstitialAd mReportFragmentInterstitialAd, mDatenschutzFragmentInterstitialAd;
     private LatLng defaultLocation = new LatLng(51.163375, 10.447683);
     private LatLng mLastLocation;
-
+    private double cachedLastLocationLatitud, cachedLastLocationLongitude;
 
     @AddTrace(name = "MainOnCreate")
     protected void onCreate(Bundle savedInstanceState) {
@@ -624,14 +624,13 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
 
             // Check if mLastLocation is not null, and if not, than cache the last location coordinates
             if (mLastLocation != null){
-                CacheData.writeObject(this, this.getString(R.string.KEY_for_last_location), mLastLocation);
+                CacheData.writeObject(this, this.getString(R.string.KEY_for_last_location_latitude), mLastLocation.latitude);
+                CacheData.writeObject(this, this.getString(R.string.KEY_for_last_location_longitude), mLastLocation.longitude);
             }
 
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
-
-        Log.i("onPause", "cache deleted");
     }
 
     public void onResume(){
@@ -659,7 +658,10 @@ public class MainMapAtmDisplay extends AppCompatActivity implements
         try {
 
             // Retrieve the coordinates from the internal storage
-            mLastLocation = (LatLng) CacheData.readObject(this, this.getString(R.string.KEY_for_last_location));
+            cachedLastLocationLatitud = (double) CacheData.readObject(this, this.getString(R.string.KEY_for_last_location_latitude));
+            cachedLastLocationLongitude = (double) CacheData.readObject(this, this.getString(R.string.KEY_for_last_location_longitude));
+
+            mLastLocation = new LatLng(cachedLastLocationLatitud, cachedLastLocationLongitude);
 
         } catch (IOException | ClassNotFoundException e) {
             Log.e("Cache error:", "No data found in cache");

@@ -34,7 +34,8 @@
     <string name="KEY_for_timestamp">cache_save_timestamp_KEY</string>
     <string name="KEY_for_latitude">cache_save_latitude_KEY</string>
     <string name="KEY_for_longitude">cache_save_longitude_KEY</string>
-    <string name="KEY_for_last_location">cache_save_last_location</string>
+    <string name="KEY_for_last_location_latitude">cache_save_last_location_lat</string>
+    <string name="KEY_for_last_location_longitude">cache_save_last_location_lng</string>
     
     <string name="app_version">6.9 </string>
     <string name="copyright">© 2018 Krisztian Cseh</string>

@@ -353,7 +353,9 @@ class Filters {
             boolean isFirst = true;
             for (AtmDataStructure entry : cachedEntries) {
 
-                toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse");
+                toDisplay = entry.mMarkerOptionsTitle.toLowerCase().contains("sparkasse")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("bw")
+                        || entry.mMarkerOptionsTitle.toLowerCase().contains("wüttemb");
 
                 if (toDisplay) {
 
@@ -377,6 +379,9 @@ class Filters {
                         mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparkasse_marker5));
                     }
 
+                    if (entry.mMarkerOptionsTitle.toLowerCase().contains("bw") || entry.mMarkerOptionsTitle.toLowerCase().contains("wüttemb")) {
+                        mMarkerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_bw_bank_marker2));
+                    }
 
                     // Add Marker to map
                     mMarkerOptions.title(entry.mMarkerOptionsTitle);
@@ -393,8 +398,6 @@ class Filters {
         }
 
         if (data.isEmpty()) {
-            //CustomAlertDialog alert = new CustomAlertDialog();
-            //alert.showDialog(mActivity, mContext.getString(R.string.no_result_alert_sparkasse_DE));
             CustomSearchDistanceDialog alert_distance = new CustomSearchDistanceDialog();
             Dialog dialog = alert_distance.showDialog(mActivity, mContext.getString(R.string.no_result_alert_DE));
             osmFirstBankSparkasse(mService, latitude, longitude, mMap, mActivity, mContext, adapter, data, dialog);
@@ -1582,7 +1585,7 @@ class Filters {
                                         } else {
                                             item.setIsValid(BlackListFilter.isBlacklisted(item.getTags().getName()));
 
-                                            if (!item.getTags().getName().toLowerCase().contains("kasse")) {
+                                            if (!item.getTags().getName().toLowerCase().contains("kasse") || !item.getTags().getName().toLowerCase().contains("bw") || !item.getTags().getName().toLowerCase().contains("wüttemb")) {
                                                 item.setIsValid(false);
                                             }
                                         }
@@ -1655,6 +1658,13 @@ class Filters {
                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                             thisRow.iconId = R.drawable.ic_new_sparkasse_marker5;
                                             markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparkasse_marker5));
+                                        } else {
+                                            if (placeName.toLowerCase().contains("bw") || placeName.toLowerCase().contains("wüttemb")) {
+                                                markerOptions.title("BW Bank");
+                                                markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
+                                                thisRow.iconId = R.drawable.ic_new_bw_bank_marker2;
+                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_bw_bank_marker2));
+                                            }
                                         }
                                         toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
                                         toCacheElement.mMarkerOptionSnippet = markerOptions.getSnippet();
@@ -1759,7 +1769,7 @@ class Filters {
 
                                             String placeName = item.getTags().getOperator();
 
-                                            if (!placeName.toLowerCase().contains("sparkasse")){
+                                            if (!placeName.toLowerCase().contains("kasse") || !placeName.toLowerCase().contains("bw") || !placeName.toLowerCase().contains("wüttemb")) {
                                                 item.setIsValid(false);
                                             }
                                         }
@@ -1831,6 +1841,13 @@ class Filters {
                                             markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
                                             thisRow.iconId = R.drawable.ic_new_sparkasse_marker5;
                                             markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_sparkasse_marker5));
+                                        } else {
+                                            if (placeName.toLowerCase().contains("bw") || placeName.toLowerCase().contains("wüttemb")) {
+                                                markerOptions.title("BW Bank");
+                                                markerOptions.snippet(CoordinatesDecoder.getCompleteAddress(mContext, lat, lng));
+                                                thisRow.iconId = R.drawable.ic_new_bw_bank_marker2;
+                                                markerOptions.icon(bitmapDescriptorFromVector(mActivity, R.drawable.ic_new_bw_bank_marker2));
+                                            }
                                         }
 
                                         toCacheElement.mMarkerOptionsTitle = markerOptions.getTitle();
