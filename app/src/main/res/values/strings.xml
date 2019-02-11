@@ -37,7 +37,7 @@
     <string name="KEY_for_last_location_latitude">cache_save_last_location_lat</string>
     <string name="KEY_for_last_location_longitude">cache_save_last_location_lng</string>
     
-    <string name="app_version">6.9 </string>
+    <string name="app_version">6.10</string>
     <string name="copyright">© 2018 Krisztian Cseh</string>
 
 

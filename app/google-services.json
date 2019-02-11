@@ -23,8 +23,12 @@
           }
         },
         {
-          "client_id": "1063259531521-i96jil4erurs4bq2rfkmq13uvhvnmc43.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "1063259531521-p9472c1gourg2ah5rgcv8ngdc3ad5c6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.atm_search.cseh_17.geld_kompass",
+            "certificate_hash": "fdd4791906e79db7d6acadca57a01def3048e380"
+          }
         },
         {
           "client_id": "1063259531521-i96jil4erurs4bq2rfkmq13uvhvnmc43.apps.googleusercontent.com",
@@ -52,7 +56,8 @@
         "ads_service": {
           "status": 2
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-3182911509384087~8231949051"
     }
   ],
   "configuration_version": "1"
