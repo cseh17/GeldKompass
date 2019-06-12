@@ -20,6 +20,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_geld_kompass_icons_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
         android:name="de.atm_search.cseh_17.geld_kompass.GeldKompassApp"
         tools:ignore="GoogleAppIndexingWarning">
